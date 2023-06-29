@@ -30,6 +30,35 @@ const player = new Player({
     framesMax: 4,
 })
 
+const snail = new Customer({
+    position:{
+        x: 200,
+        y: 200
+    },
+    velocity: {
+        x: 0,
+        y: 10
+    },
+    imageSrc: './img/greenSnail/idle.png',
+    scale: 1.4,
+    framesMax: 1,
+})
+
+const grunt = new Enemy({
+    position:{
+        x: 400,
+        y: 200
+    },
+    velocity: {
+        x: 0,
+        y: 10
+    },
+    imageSrc: './img/badGuy1/idle.png',
+    scale: 1.4,
+    framesMax: 6,
+})
+
+
 // declaring keys state 
 const keys = {
     a: {
@@ -46,6 +75,8 @@ function animate(){
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     player.update()
+    snail.update()
+    grunt.update()
 
 
     // Player movement
