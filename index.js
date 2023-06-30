@@ -105,6 +105,7 @@ const grunt = new Enemy({
     framesMax: 6,
 })
 
+startRolls(grunt, 3500, 3)
 
 // declaring keys state 
 const keys = {
@@ -134,14 +135,10 @@ function animate(){
     }
     else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = player.speed
-        player.switchSprite('moveRight')
+        player.switchSprite('move')
         player.facing = 1
     } else {
-        if(player.facing === 1){
-            player.switchSprite('idleRight')
-        } else if(player.facing === -1){
-            player.switchSprite('idle')
-        }
+        player.switchSprite('idle')
         player.velocity.x = 0
     }
 
@@ -158,15 +155,7 @@ function animate(){
             console.log(player.facing)
         }
     } else if(player.velocity.y>0){
-        if(player.facing === 1){
-            player.switchSprite('idleRight')
-            console.log(player.facing)
-            return
-        }
-        else if(player.facing === -1){
             player.switchSprite('idle')
-            console.log(player.facing)
-        }
         }
 
 }

@@ -83,36 +83,39 @@ class Player {
     switchSprite(sprite) {
         switch (sprite) {
             case 'idle':
-                if(this.image != this.sprites.idle.image){
-                    this.framesHold = 30
-                    this.image = this.sprites.idle.image
-                    this.framesMax = this.sprites.idle.framesMax
-                    this.framesCurrent = 0    
-                }
-                break
-            case 'idleRight':
-                if(this.image != this.sprites.idleRight.image){
-                    this.framesHold = 30
-                this.image = this.sprites.idleRight.image
-                this.framesMax = this.sprites.idleRight.framesMax
-                this.framesCurrent = 0
+                if(this.facing === -1){
+                    if(this.image != this.sprites.idle.image){
+                        this.framesHold = 30
+                        this.image = this.sprites.idle.image
+                        this.framesMax = this.sprites.idle.framesMax
+                        this.framesCurrent = 0    
+                    }    
+                } else if(this.facing === 1){
+                    if(this.image != this.sprites.idleRight.image){
+                        this.framesHold = 30
+                    this.image = this.sprites.idleRight.image
+                    this.framesMax = this.sprites.idleRight.framesMax
+                    this.framesCurrent = 0
+                    }    
                 }
                 break
             case 'move':
-                if(this.image != this.sprites.move.image){
-                    this.framesHold = 8
-                this.image = this.sprites.move.image
-                this.framesMax = this.sprites.move.framesMax
-                this.framesCurrent = 0
-                this.facing = -1                }
-                break
-            case 'moveRight':
-                if(this.image != this.sprites.moveRight.image){
-                    this.framesHold = 8
-                this.image = this.sprites.moveRight.image
-                this.framesMax = this.sprites.moveRight.framesMax
-                this.framesCurrent = 0
-                this.facing = 1
+                if (this.facing === -1) {
+                    if (this.image != this.sprites.move.image) {
+                        this.framesHold = 8
+                        this.image = this.sprites.move.image
+                        this.framesMax = this.sprites.move.framesMax
+                        this.framesCurrent = 0
+                        this.facing = -1
+                    }
+                } else if (this.facing === 1) {
+                    if (this.image != this.sprites.moveRight.image) {
+                        this.framesHold = 8
+                        this.image = this.sprites.moveRight.image
+                        this.framesMax = this.sprites.moveRight.framesMax
+                        this.framesCurrent = 0
+                        this.facing = 1
+                    }
                 }
                 break
                 case 'jump':
@@ -248,6 +251,7 @@ class Customer{
         this.draw()
         this.animateFrames()
 
+        // Prevent walking off map
         if(this.position.x <=0){
             this.velocity.x = 1
             this.switchSprite('walkRight')
@@ -286,6 +290,9 @@ class Enemy{
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 20
+
+        // Movement
+        this.roll = 0
     }
 
     draw(){
@@ -318,10 +325,37 @@ class Enemy{
         }
     }
 
+    movementDecision(num){
+        if(num===0){
+            /*
+            if(this.velocity>1){
+                this.switchSprite('idleRight')
+            } else{
+                this.switchSprite('idle')
+            }
+            */
+            this.velocity.x = 0
+        } else if(num===1){
+            this.velocity.x = -1
+            //this.switchSprite('walk')
+        } else if(num===2){
+            this.velocity.x = 1
+            //this.switchSprite('walkRight')
+        }
+    }
+
     update(){
         this.draw()
         this.animateFrames()
 
+        // Prevent walking off map
+        if(this.position.x <=0){
+            this.velocity.x = 1
+            //this.switchSprite('walkRight')
+        } else if (this.position.x + this.image.width >= canvas.width){
+            this.velocity.x = -1
+            //this.switchSprite('walk')
+        }
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
 
