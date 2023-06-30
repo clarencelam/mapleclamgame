@@ -25,9 +25,35 @@ const player = new Player({
         x: 0,
         y: 10
     },
-    imageSrc: './img/player/stand.png',
+    imageSrc: './img/player/idle.png',
     scale: 1.4,
     framesMax: 4,
+    sprites: {
+        idle: {
+            imageSrc: './img/player/idle.png',
+            framesMax: 4
+        },
+        idleRight: {
+            imageSrc: './img/player/idleRight.png',
+            framesMax: 4
+        },
+        move: {
+            imageSrc: './img/player/move.png',
+            framesMax: 6
+        },
+        moveRight: {
+            imageSrc: './img/player/moveRight.png',
+            framesMax: 6
+        },
+        jump: {
+            imageSrc: './img/player/jump.png',
+            framesMax: 1
+        },
+        jumpRight: {
+            imageSrc: './img/player/jumpRight.png',
+            framesMax: 1
+        },
+    }
 })
 
 const snail = new Customer({
@@ -42,7 +68,28 @@ const snail = new Customer({
     imageSrc: './img/greenSnail/idle.png',
     scale: 1.4,
     framesMax: 1,
+    sprites: {
+        idle: {
+            imageSrc: './img/greenSnail/idle.png',
+            framesMax: 1
+        },
+        walk: {
+            imageSrc: './img/greenSnail/walk.png',
+            framesMax: 5
+        },
+        idleRight: {
+            imageSrc: './img/greenSnail/idleRight.png',
+            framesMax: 1
+        },
+        walkRight: {
+            imageSrc: './img/greenSnail/walkRight.png',
+            framesMax: 5
+        },
+
+    }
 })
+
+startRolls(snail, 3500, 3)
 
 const grunt = new Enemy({
     position:{
@@ -82,12 +129,45 @@ function animate(){
     // Player movement
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -player.speed
+        player.switchSprite('move')
+        player.facing = -1
     }
     else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = player.speed
+        player.switchSprite('moveRight')
+        player.facing = 1
     } else {
+        if(player.facing === 1){
+            player.switchSprite('idleRight')
+        } else if(player.facing === -1){
+            player.switchSprite('idle')
+        }
         player.velocity.x = 0
     }
+
+    // Jump logic
+    if (player.velocity.y<0){
+        console.log("jump")
+        if(player.facing === 1){
+            player.switchSprite('jumpRight')
+            console.log(player.facing)
+            return
+        }
+        else if(player.facing === -1){
+            player.switchSprite('jump')
+            console.log(player.facing)
+        }
+    } else if(player.velocity.y>0){
+        if(player.facing === 1){
+            player.switchSprite('idleRight')
+            console.log(player.facing)
+            return
+        }
+        else if(player.facing === -1){
+            player.switchSprite('idle')
+            console.log(player.facing)
+        }
+        }
 
 }
 animate()

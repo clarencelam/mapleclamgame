@@ -22,12 +22,13 @@ class Sprite {
 }
 
 class Player {
-    constructor({position, velocity, imageSrc, scale =1, framesMax = 1}){
+    constructor({position, velocity, imageSrc, scale =1, framesMax = 1, sprites}){
         this.position = position
         this.velocity = velocity
         this.image = new Image()
         this.image.src = imageSrc
         this.scale = scale
+        this.facing = -1 // 1 = right, -1 = left
 
         // stats
         this.speed = 5
@@ -41,6 +42,12 @@ class Player {
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 30
+        this.sprites = sprites
+        for (const sprite in this.sprites) {
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src = sprites[sprite].imageSrc
+        }
+
     }
 
     draw(){
@@ -70,6 +77,58 @@ class Player {
                     this.framesCurrent = 0
                 }
             }
+        }
+    }
+
+    switchSprite(sprite) {
+        switch (sprite) {
+            case 'idle':
+                if(this.image != this.sprites.idle.image){
+                    this.framesHold = 30
+                    this.image = this.sprites.idle.image
+                    this.framesMax = this.sprites.idle.framesMax
+                    this.framesCurrent = 0    
+                }
+                break
+            case 'idleRight':
+                if(this.image != this.sprites.idleRight.image){
+                    this.framesHold = 30
+                this.image = this.sprites.idleRight.image
+                this.framesMax = this.sprites.idleRight.framesMax
+                this.framesCurrent = 0
+                }
+                break
+            case 'move':
+                if(this.image != this.sprites.move.image){
+                    this.framesHold = 8
+                this.image = this.sprites.move.image
+                this.framesMax = this.sprites.move.framesMax
+                this.framesCurrent = 0
+                this.facing = -1                }
+                break
+            case 'moveRight':
+                if(this.image != this.sprites.moveRight.image){
+                    this.framesHold = 8
+                this.image = this.sprites.moveRight.image
+                this.framesMax = this.sprites.moveRight.framesMax
+                this.framesCurrent = 0
+                this.facing = 1
+                }
+                break
+                case 'jump':
+                    if(this.image != this.sprites.jump.image){
+                    this.image = this.sprites.jump.image
+                    this.framesMax = this.sprites.jump.framesMax
+                    this.framesCurrent = 0
+                    }
+                    break
+                case 'jumpRight':
+                    if(this.image != this.sprites.jumpRight.image){
+                    this.image = this.sprites.jumpRight.image
+                    this.framesMax = this.sprites.jumpRight.framesMax
+                    this.framesCurrent = 0
+                    }
+                    break    
         }
     }
 
@@ -90,7 +149,7 @@ class Player {
 }
 
 class Customer{
-    constructor({position, velocity, imageSrc, scale =1, framesMax = 1}){
+    constructor({position, velocity, imageSrc, scale =1, framesMax = 1, sprites}){
         this.position = position
         this.velocity = velocity
         this.image = new Image()
@@ -107,6 +166,14 @@ class Customer{
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 30
+        this.sprites = sprites
+        for (const sprite in this.sprites) {
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src = sprites[sprite].imageSrc
+        }
+
+        // Movement
+        this.roll = 0
     }
 
     draw(){
@@ -139,15 +206,60 @@ class Customer{
         }
     }
 
+    movementDecision(num){
+        if(num===0){
+            if(this.velocity>1){
+                this.switchSprite('idleRight')
+            } else{
+                this.switchSprite('idle')
+            }
+            this.velocity.x = 0
+        } else if(num===1){
+            this.velocity.x = -1
+            this.switchSprite('walk')
+        } else if(num===2){
+            this.velocity.x = 1
+            this.switchSprite('walkRight')
+        }
+    }
+
+    switchSprite(sprite) {
+        switch (sprite) {
+            case 'idle':
+                this.image = this.sprites.idle.image
+                this.framesMax = this.sprites.idle.framesMax
+                this.framesCurrent = 0
+                break
+            case 'walk':
+                this.image = this.sprites.walk.image
+                this.framesMax = this.sprites.walk.framesMax
+                this.framesCurrent = 0
+                break
+            case 'walkRight':
+                this.image = this.sprites.walkRight.image
+                this.framesMax = this.sprites.walkRight.framesMax
+                this.framesCurrent = 0
+                break
+
+        }
+    }
+
     update(){
         this.draw()
         this.animateFrames()
 
+        if(this.position.x <=0){
+            this.velocity.x = 1
+            this.switchSprite('walkRight')
+        } else if (this.position.x + this.image.width >= canvas.width){
+            this.velocity.x = -1
+            this.switchSprite('walk')
+        }
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
 
         // Handling platform gravity
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-140)){
             this.velocity.y = 0
         } else {
             this.velocity.y += this.gravity
