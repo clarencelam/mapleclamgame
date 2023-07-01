@@ -103,9 +103,35 @@ const grunt = new Enemy({
     imageSrc: './img/badGuy1/idle.png',
     scale: 1.4,
     framesMax: 6,
+    sprites: {
+        idle: {
+            imageSrc: './img/badGuy1/idle.png',
+            framesMax: 6
+        },
+        idleRight: {
+            imageSrc: './img/badGuy1/idleRight.png',
+            framesMax: 6
+        },
+        walk: {
+            imageSrc: './img/badGuy1/walk.png',
+            framesMax: 4
+        },
+        walkRight: {
+            imageSrc: './img/badGuy1/walkRight.png',
+            framesMax: 4
+        },
+        jump:{
+            imageSrc: './img/badGuy1/jump.png',
+            framesMax: 1
+        },
+        jumpRight:{
+            imageSrc: './img/badGuy1/jumpRight.png',
+            framesMax: 1
+        }
+    }
 })
 
-startRolls(grunt, 3500, 3)
+startRolls(grunt, 1000, 5)
 
 // declaring keys state 
 const keys = {
@@ -175,6 +201,8 @@ window.addEventListener('keydown', (event) => {
             case 'w':
                 player.velocity.y -= player.jumpHeight
                 break
+            case ' ':
+                //player.throw()
             }    
     }
 )

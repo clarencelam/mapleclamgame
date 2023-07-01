@@ -273,12 +273,13 @@ class Customer{
 }
 
 class Enemy{
-    constructor({position, velocity, imageSrc, scale =1, framesMax = 1}){
+    constructor({position, velocity, imageSrc, scale =1, framesMax = 1, sprites}){
         this.position = position
         this.velocity = velocity
         this.image = new Image()
         this.image.src = imageSrc
         this.scale = scale
+        this.facing = -1 // 1 = right, -1 = left
 
         // stats
         this.speed = 5
@@ -290,6 +291,12 @@ class Enemy{
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 20
+
+        this.sprites = sprites
+        for (const sprite in this.sprites) {
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src = sprites[sprite].imageSrc
+        }
 
         // Movement
         this.roll = 0
@@ -327,22 +334,87 @@ class Enemy{
 
     movementDecision(num){
         if(num===0){
-            /*
-            if(this.velocity>1){
-                this.switchSprite('idleRight')
-            } else{
-                this.switchSprite('idle')
-            }
-            */
+            this.switchSprite('idle')
             this.velocity.x = 0
         } else if(num===1){
             this.velocity.x = -1
-            //this.switchSprite('walk')
+            this.facing = -1
+            this.switchSprite('walk')
         } else if(num===2){
             this.velocity.x = 1
-            //this.switchSprite('walkRight')
+            this.facing = 1
+            this.switchSprite('walk')
+        } else if(num===3){
+            this.velocity.y = -10
+            this.switchSprite('jump')
+        } else if(num===4){
+            this.velocity.y = -10
+            this.switchSprite('jump')
         }
     }
+
+    switchSprite(sprite) {
+        console.log(this.facing)
+        let idleFramesHold = 40
+        let walkFramesHold = 18
+        let jumpFramesHold = 30
+        switch (sprite) {
+            case 'idle':
+                if(this.facing === -1){
+                    if(this.image != this.sprites.idle.image){
+                        this.framesHold = idleFramesHold
+                        this.image = this.sprites.idle.image
+                        this.framesMax = this.sprites.idle.framesMax
+                        this.framesCurrent = 0    
+                    }    
+                } else if(this.facing === 1){
+                    if(this.image != this.sprites.idleRight.image){
+                        this.framesHold = idleFramesHold
+                    this.image = this.sprites.idleRight.image
+                    this.framesMax = this.sprites.idleRight.framesMax
+                    this.framesCurrent = 0
+                    }    
+                }
+                break
+            case 'walk':
+                if (this.facing === -1) {
+                    if (this.image != this.sprites.walk.image) {
+                        this.framesHold = walkFramesHold
+                        this.image = this.sprites.walk.image
+                        this.framesMax = this.sprites.walk.framesMax
+                        this.framesCurrent = 0
+                        this.facing = -1
+                    }
+                } else if (this.facing === 1) {
+                    if (this.image != this.sprites.walkRight.image) {
+                        this.framesHold = walkFramesHold
+                        this.image = this.sprites.walkRight.image
+                        this.framesMax = this.sprites.walkRight.framesMax
+                        this.framesCurrent = 0
+                        this.facing = 1
+                    }
+                }
+                break
+                case 'jump':
+                    if (this.facing === -1) {
+                        if (this.image != this.sprites.jump.image) {
+                            this.framesHold = jumpFramesHold
+                            this.image = this.sprites.jump.image
+                            this.framesMax = this.sprites.jump.framesMax
+                            this.framesCurrent = 0
+                        }
+                    } else if (this.facing === 1) {
+                        if (this.image != this.sprites.jumpRight.image) {
+                            this.framesHold = jumpFramesHold
+                            this.image = this.sprites.jumpRight.image
+                            this.framesMax = this.sprites.jumpRight.framesMax
+                            this.framesCurrent = 0
+                        }
+                    }
+                    break    
+        }
+    }
+
 
     update(){
         this.draw()
@@ -351,15 +423,27 @@ class Enemy{
         // Prevent walking off map
         if(this.position.x <=0){
             this.velocity.x = 1
-            //this.switchSprite('walkRight')
+            this.facing = 1
+            this.switchSprite('walk')
         } else if (this.position.x + this.image.width >= canvas.width){
             this.velocity.x = -1
-            //this.switchSprite('walk')
+            this.facing = -1
+            this.switchSprite('walk')
         }
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
 
-        // Handling platform gravity
+        // Reset sprites after Jump
+        if((this.image === this.sprites.jump.image || this.image === this.sprites.jumpRight.image)
+        && this.velocity.y === 0){
+            if(this.velocity.x === 0){
+                this.switchSprite('idle')
+            } else if(
+                this.velocity.x !=0){
+                    this.switchSprite('walk')
+                }
+        }
+        // Handling platform gravity 
         if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
             this.velocity.y = 0
         } else {
