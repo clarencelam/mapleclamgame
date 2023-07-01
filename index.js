@@ -202,7 +202,7 @@ window.addEventListener('keydown', (event) => {
                 player.velocity.y -= player.jumpHeight
                 break
             case ' ':
-                //player.throw()
+                player.throw()
             }    
     }
 )

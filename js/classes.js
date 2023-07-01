@@ -21,6 +21,78 @@ class Sprite {
     }
 }
 
+class Food {
+    constructor ({position, velocity, imageSrc, direction, scale=1, framesMax=1}){
+        this.position = position
+        this.velocity = velocity
+        this.direction = direction
+
+        this.image = new Image()
+        this.image.src = imageSrc
+        this.scale = scale
+
+        // Sprite Crop
+        this.framesMax = framesMax
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 10
+
+        this.deceleration = .2
+        this.gravity = 0.5
+    }
+
+    draw(){
+        c.drawImage(
+            this.image,
+            // Sprite Crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // Position
+            this.position.x,
+            this.position.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale   
+        )
+    }
+
+    animateFrames(){
+        this.framesElapsed++
+
+        if (this.framesElapsed % this.framesHold ===0){
+            if(this.framesElapsed % this.framesHold === 0){
+                if (this.framesCurrent < this.framesMax -1){
+                    this.framesCurrent ++
+                } else {
+                    this.framesCurrent = 0
+                }
+            }
+        }
+    }
+
+    update(){
+        this.draw()
+        this.animateFrames()
+
+        if(this.velocity.x>0){
+            this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
+        }
+        this.position.x += this.velocity.x
+
+        this.position.y += this.velocity.y
+
+        // Handling platform gravity
+        
+        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+            this.velocity.y = 0
+        } else {
+            this.velocity.y += this.gravity
+        }
+        
+    }
+}
+
 class Player {
     constructor({position, velocity, imageSrc, scale =1, framesMax = 1, sprites}){
         this.position = position
@@ -33,7 +105,7 @@ class Player {
         // stats
         this.speed = 5
         this.jumpHeight = 10
-        this.gravity = 0.5
+        this.gravity = 0.3
 
         this.lastkey
 
@@ -48,6 +120,29 @@ class Player {
             sprites[sprite].image.src = sprites[sprite].imageSrc
         }
 
+        // Food Tracking
+        this.foods = []
+    }
+
+    throw(){
+        // create new food object
+        const food = new Food({
+                position:{
+                x: this.position.x,
+                y: this.position.y
+            },
+            velocity:{
+                x: 10,
+                y: 0
+            },
+            imageSrc: './img/food/apple.png', 
+            direction: this.facing,
+            scale: 1,
+            framesMax: 8,
+        })
+        this.foods.push(food)
+        console.log(food)
+        console.log(this.foods)
     }
 
     draw(){
@@ -138,6 +233,12 @@ class Player {
     update(){
         this.draw()
         this.animateFrames()
+
+        if(this.foods.length > 0){
+            for (const food in this.foods) {
+                this.foods[food].update()
+            }
+        }
 
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
