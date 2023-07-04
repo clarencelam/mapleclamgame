@@ -80,6 +80,9 @@ class Food {
             // Handling throw speed and deceleration
             if(this.velocity.x>0){
                 this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
+            } 
+            else if(this.velocity.x<0){     // food was thrown left
+                this.velocity.x = (this.velocity.x * 10 + this.deceleration * 10) /10
             }
             this.position.x += this.velocity.x
     
@@ -124,26 +127,26 @@ class Player {
 
         // Food Tracking
         this.cooking = false
-        this.cookSpeed = 1
+        this.cookSpeed = 30 // lower = faster (value = milliseconds between cook progress increments in setInterval)
         this.cookedFood = []
         this.cookedFoodLimit = 5
         this.foods = []
     }
 
     cookFood(){
-        // if not cooking and cooked limit is not reached, then add a food to cookedFood
+        // If not cooking and cooked limit is not reached, then add a food to cookedFood
         if(this.cooking === false && this.cookedFood.length<this.cookedFoodLimit){
             this.cooking = true
             var progress = 0
 
-            // every x milliseconds, 
-            var id = setInterval(cook, 100)
+            var id = setInterval(cook, this.cookSpeed)
             console.log("cookingstart")
             var self = this
 
             function cook(){
+                // If the cooking progress bar is full, add a new Food to cookedFood, set cooking to false, and restart cooking progress
                 if(progress >= 100){
-                    // Create food in cookedFood
+                    // Create food to add to cookedFood
                     const food = new Food({
                         position:{
                         x: 10+(30 * (self.cookedFood.length)),
@@ -160,14 +163,20 @@ class Player {
                 })
                 clearInterval(id)
                 self.cooking = false
+
+                // Reset cooking progress bar
+                var elem = document.getElementById("cookingProgress")
                 progress = 0
+                elem.style.width = progress + "%"
 
                 self.cookedFood.push(food)
-                console.log("order up!: " + self.cookedFood)
+                console.log("Order up! Foods Cooked: " + self.cookedFood.length)
 
                 } else{
-                    progress = progress + 10
-                    console.log("progress: " + progress)
+                    // Still cooking-- increment cooking progress bar (id=cookingProgress)
+                    var elem = document.getElementById("cookingProgress")
+                    progress = progress + 1
+                    elem.style.width = progress + "%"
                 }
             }
         }
@@ -183,7 +192,7 @@ class Player {
                 y: this.position.y
             },
             velocity:{
-                x: 10,
+                x: this.facing * 10,
                 y: 0
             },
             imageSrc: './img/food/apple.png', 
