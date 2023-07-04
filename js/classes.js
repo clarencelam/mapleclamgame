@@ -41,6 +41,9 @@ class Food {
         this.deceleration = .2
         this.gravity = 0.5
 
+        // Dissapear functionality
+        this.disappearTime = 500 // leave 100 for markedForDeath foods to "drop" off-screen
+        this.markedForDeath = false
     }
 
     draw(){
@@ -76,8 +79,34 @@ class Food {
     update(){
             this.draw()
             this.animateFrames()
+
+            // Iterate dissappear time
+            if(this.disappearTime>0){
+                this.disappearTime-=1
+                console.log(this.disappearTime)
+            }  
+            // Trigger markedForDeath
+            if (this.disappearTime === 200) {
+                this.markedForDeath = true
+                console.log("marked4death")
+            }
     
-            // Handling throw speed and deceleration
+            // IF marked for death, apply food-expiring y-axis phsyics (drop the food off screen)
+            if(this.markedForDeath === true){
+                this.position.y += this.velocity.y 
+                this.velocity.y += this.gravity
+            } else {
+                // IF not marked for death, apply regular platform gravity
+                this.position.y += this.velocity.y            
+                if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+                    this.velocity.y = 0
+                } else {
+                    this.velocity.y += this.gravity
+                }
+                
+            }
+
+            // Handling food physics, throw speed and deceleration
             if(this.velocity.x>0){
                 this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
             } 
@@ -86,14 +115,7 @@ class Food {
             }
             this.position.x += this.velocity.x
     
-            // Handling platform gravity
-            this.position.y += this.velocity.y            
-            if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
-                this.velocity.y = 0
-            } else {
-                this.velocity.y += this.gravity
-            }
-        }       
+        }
     }
 
 
@@ -149,8 +171,8 @@ class Player {
                     // Create food to add to cookedFood
                     const food = new Food({
                         position:{
-                        x: 10+(30 * (self.cookedFood.length)),
-                        y: canvas.height - 40
+                        x: 0,
+                        y: 0
                     },
                     velocity:{
                         x: 0,
@@ -165,18 +187,18 @@ class Player {
                 self.cooking = false
 
                 // Reset cooking progress bar
-                var elem = document.getElementById("cookingProgress")
+                var progressBar = document.getElementById("cookingProgress")
                 progress = 0
-                elem.style.width = progress + "%"
+                progressBar.style.width = progress + "%"                
 
                 self.cookedFood.push(food)
                 console.log("Order up! Foods Cooked: " + self.cookedFood.length)
 
                 } else{
                     // Still cooking-- increment cooking progress bar (id=cookingProgress)
-                    var elem = document.getElementById("cookingProgress")
+                    var progressBar = document.getElementById("cookingProgress")
+                    progressBar.style.width = progress + "%"
                     progress = progress + 1
-                    elem.style.width = progress + "%"
                 }
             }
         }
@@ -201,7 +223,17 @@ class Player {
             framesMax: 8,
         })
         this.foods.push(food)
-    }
+        } else{
+            var progressBar = document.getElementById("cookingProgress")
+            // Warn user of no cookedFood by flashing progressBar red
+            progressBar.style.background = "red" 
+            var resetBar = setTimeout(resetBarColor,250)
+            function resetBarColor(){
+                var progressBar = document.getElementById("cookingProgress")
+                progressBar.style.background = "#9c84b5" 
+                clearTimeout(resetBar)
+            }
+        }
     }
 
     draw(){
@@ -298,13 +330,20 @@ class Player {
         if(this.foods.length > 0){
             for (const food in this.foods) {
                 this.foods[food].update()
+
+                // Remove expired Thrown Food
+                if(this.foods[food].disappearTime ===0){
+                    this.foods.splice(food,1)
+                    console.log("food expiry! Index: " + food)
+                }
             }
         }
 
-        // Draw cooked unthrown food (ammo, essentially)
+        // Draw cooked unthrown food (ammo, essentially), setting its x & y position
         if(this.cookedFood.length > 0){
             for (let i in this.cookedFood){
-                this.cookedFood[i].position.x = 10 + (30 * i)
+                this.cookedFood[i].position.x = canvas.width/2+ 10 + (30 * i)
+                this.cookedFood[i].position.y = canvas.height - 40
                 this.cookedFood[i].draw()
             }
         }        

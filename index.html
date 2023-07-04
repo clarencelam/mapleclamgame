@@ -3,18 +3,36 @@
 
 <body>
     <div style="position: relative; display: inline-block">
+
+
         <div id="cookingTotal" 
         style="
         position: absolute;
-        bottom: -10;
-        width:100%;
-        background: grey">
+        bottom: 0;
+        width:50%;
+        background: rgb(39, 12, 36);
+        text-align: right">
             <div id="cookingProgress" 
             style="
+            position: absolute;
             width:1%;
-            height: 10px;
-            background: #9c84b5"></div>
+            height: 30px;
+            background: #9c84b5;
+            text-align: left;
+            "><img style="text-align: right" id="foodImage" 
+            src="img/chefHat.png"></div>
+
+            <div id="fullBar" 
+            style="
+            position: relative;
+            width: 100%;
+            text-align: right"
+            ><img style="text-align: right" id="foodImage" 
+            src="img/chefHat.png"></div>
+
+            
         </div>
+
     <canvas></canvas>
     </div>
 
