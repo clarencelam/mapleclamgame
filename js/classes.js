@@ -146,8 +146,8 @@ class Player {
                     // Create food in cookedFood
                     const food = new Food({
                         position:{
-                        x: 10,
-                        y: canvas.height - (50 * (self.cookedFood.length+1)) 
+                        x: 10+(30 * (self.cookedFood.length)),
+                        y: canvas.height - 40
                     },
                     velocity:{
                         x: 0,
@@ -174,10 +174,11 @@ class Player {
     }
 
     throw(){
-        // create new food object
 
-        // if cookedFood > 0, then throw
-        const food = new Food({
+        // get food from cookedFood
+        if(this.cookedFood.length>0){
+            this.cookedFood.splice(0,1)
+            const food = new Food({
                 position:{
                 x: this.position.x,
                 y: this.position.y
@@ -192,8 +193,7 @@ class Player {
             framesMax: 8,
         })
         this.foods.push(food)
-        console.log(food)
-        console.log(this.foods)
+    }
     }
 
     draw(){
