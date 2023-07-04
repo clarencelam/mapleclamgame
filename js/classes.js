@@ -44,6 +44,17 @@ class Food {
         // Dissapear functionality
         this.disappearTime = 500 // leave 100 for markedForDeath foods to "drop" off-screen
         this.markedForDeath = false
+
+        this.height = this.image.height * this.scale
+        this.width = this.image.width / this.framesMax * this.scale
+        
+        this.eaten = false
+    }
+
+    getEaten(cust){
+        this.eaten = true
+        const custYVelocity = cust.velocity.y
+        this.velocity.y = custYVelocity
     }
 
     draw(){
@@ -60,6 +71,16 @@ class Food {
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
+        /*
+        // Draw collision box
+        c.fisllStyle = "black"
+        c.fillRect(
+            this.position.x,
+            this.position.y,
+            this.image.width * this.scale / this.framesMax,
+            this.image.height * this.scale
+        )
+        */
     }
 
     animateFrames(){
@@ -83,27 +104,32 @@ class Food {
             // Iterate dissappear time
             if(this.disappearTime>0){
                 this.disappearTime-=1
-                console.log(this.disappearTime)
             }  
             // Trigger markedForDeath
-            if (this.disappearTime === 200) {
+            if (this.disappearTime === 200 && this.eaten === false) {
                 this.markedForDeath = true
-                console.log("marked4death")
             }
     
+
             // IF marked for death, apply food-expiring y-axis phsyics (drop the food off screen)
             if(this.markedForDeath === true){
                 this.position.y += this.velocity.y 
                 this.velocity.y += this.gravity
             } else {
-                // IF not marked for death, apply regular platform gravity
-                this.position.y += this.velocity.y            
-                if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
-                    this.velocity.y = 0
-                } else {
+                // IF eaten, allow food to drop food off screen
+                // to implement: if food drops off screen, delete 
+                if (this.eaten === true){
+                    this.position.y += this.velocity.y
                     this.velocity.y += this.gravity
+                } else{ 
+                    // Else, Apply regular platform gravity
+                    this.position.y += this.velocity.y            
+                    if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+                        this.velocity.y = 0
+                    } else {
+                        this.velocity.y += this.gravity
+                    }    
                 }
-                
             }
 
             // Handling food physics, throw speed and deceleration
@@ -131,7 +157,7 @@ class Player {
         this.jumping = false // calculated in update() function
 
         // stats
-        this.speed = 5
+        this.speed = 3
         this.jumpHeight = 10
         this.gravity = 0.3
 
@@ -153,19 +179,22 @@ class Player {
 
         // Food Tracking
         this.cooking = false
-        this.cookSpeed = 30 // lower = faster (value = milliseconds between cook progress increments in setInterval)
+        this.cookSpeed = 10 // lower = faster (value = milliseconds between cook progress increments in setInterval)
         this.cookedFood = []
-        this.cookedFoodLimit = 5
+        this.cookedFoodLimit = 3
         this.foods = []
+        
+        // For collision detection
+        this.height = this.image.height * this.scale
+        this.width = this.image.width / this.framesMax * this.scale
     }
     
     jump(){
+        // set Jumping = true, apply jump velocity
         if(this.jumping === false){
             this.velocity.y -= this.jumpHeight
             this.jumping = true
         }
-        console.log(this.jumping)
-
     }
 
     cookFood(){
@@ -205,7 +234,6 @@ class Player {
                 progressBar.style.width = progress + "%"                
 
                 self.cookedFood.push(food)
-                console.log("Order up! Foods Cooked: " + self.cookedFood.length)
 
                 } else{
                     // Still cooking-- increment cooking progress bar (id=cookingProgress)
@@ -357,8 +385,9 @@ class Player {
         // Draw cooked unthrown food (ammo, essentially), setting its x & y position
         if(this.cookedFood.length > 0){
             for (let i in this.cookedFood){
-                this.cookedFood[i].position.x = canvas.width/2+ 10 + (30 * i)
-                this.cookedFood[i].position.y = canvas.height - 40
+                this.cookedFood[i].scale = 1.2
+                this.cookedFood[i].position.x = 20 + (30 * i)
+                this.cookedFood[i].position.y = 15
                 this.cookedFood[i].draw()
             }
         }        
@@ -407,6 +436,17 @@ class Customer{
 
         // Movement
         this.roll = 0
+
+        // For collision detection
+        this.height = this.image.height * this.scale
+        this.width = this.image.width / this.framesMax * this.scale
+
+        this.eating = false
+    }
+
+    eat(){
+        this.eating = true
+        this.velocity.y -= 5
     }
 
     draw(){
@@ -423,6 +463,16 @@ class Customer{
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
+        /*
+        // Draw collision box
+        c.fisllStyle = "black"
+        c.fillRect(
+            this.position.x,
+            this.position.y,
+            this.image.width * this.scale / this.framesMax,
+            this.image.height * this.scale
+        )
+        */
     }
 
     animateFrames(){
@@ -493,10 +543,16 @@ class Customer{
         this.position.y += this.velocity.y
 
         // Handling platform gravity
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-140)){
-            this.velocity.y = 0
-        } else {
-            this.velocity.y += this.gravity
+        // If eating, apply gravity at all times
+        if (this.eating === true){
+            this.velocity.y += this.gravity/2
+        } else{
+            // If not eating, stop gravity when at floor of map
+            if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-140)){
+                this.velocity.y = 0
+            } else {
+                this.velocity.y += this.gravity
+            }    
         }
     }
 
@@ -530,6 +586,11 @@ class Enemy{
 
         // Movement
         this.roll = 0
+
+        // For collision detection
+        this.height = this.image.height * this.scale
+        this.width = this.image.width / this.framesMax * this.scale
+        console.log(this.image.height)
     }
 
     draw(){
@@ -546,6 +607,17 @@ class Enemy{
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
+
+        /*
+        // Draw collision box
+        c.fisllStyle = "black"
+        c.fillRect(
+            this.position.x,
+            this.position.y,
+            this.image.width * this.scale / this.framesMax,
+            this.image.height * this.scale
+        )
+        */
     }
 
     animateFrames(){

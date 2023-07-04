@@ -56,6 +56,48 @@ const player = new Player({
     }
 })
 
+const customers = []
+
+function genCusts(){
+    if(customers.length<4){
+        console.log('triggered cust spawn')
+        console.log(customers)
+        const snail = new Customer({
+            position:{
+                x: 200,
+                y: 200
+            },
+            velocity: {
+                x: 0,
+                y: 10
+            },
+            imageSrc: './img/greenSnail/idle.png',
+            scale: 1.4,
+            framesMax: 1,
+            sprites: {
+                idle: {
+                    imageSrc: './img/greenSnail/idle.png',
+                    framesMax: 1
+                },
+                walk: {
+                    imageSrc: './img/greenSnail/walk.png',
+                    framesMax: 5
+                },
+                idleRight: {
+                    imageSrc: './img/greenSnail/idleRight.png',
+                    framesMax: 1
+                },
+                walkRight: {
+                    imageSrc: './img/greenSnail/walkRight.png',
+                    framesMax: 5
+                },
+            }
+        })
+        customers.push(snail)
+        startRolls(snail, 3500, 3)
+    }
+}
+/*
 const snail = new Customer({
     position:{
         x: 200,
@@ -85,11 +127,11 @@ const snail = new Customer({
             imageSrc: './img/greenSnail/walkRight.png',
             framesMax: 5
         },
-
     }
 })
-
+customers.push(snail)
 startRolls(snail, 3500, 3)
+*/
 
 const grunt = new Enemy({
     position:{
@@ -149,8 +191,13 @@ function animate(){
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     player.update()
-    snail.update()
+    //snail.update()
     grunt.update()
+    genCusts()
+
+    for(const num in customers){
+        customers[num].update()
+    }
 
 
     // Player movement
@@ -181,6 +228,25 @@ function animate(){
             player.switchSprite('idle')
         }
 
+    // Detect Food Customer Collision
+    for(const i in player.foods){
+        //console.log(player.foods[i])
+        var thisFood = player.foods[i]
+        for(const num in customers){
+            var thisCust = customers[num]
+            if(spriteCollision ({
+                rectangle1: thisFood,
+                rectangle2: thisCust
+            })
+            && thisCust.eating === false
+            ){
+                console.log("Food & Customer collision!")
+                thisCust.eat()
+                thisFood.getEaten(thisCust)
+            }
+        }
+    }
+
 }
 animate()
 
@@ -188,14 +254,17 @@ animate()
 window.addEventListener('keydown', (event) => {
         switch (event.key) {
             case 'd':
+                case 'ArrowRight':
                 keys.d.pressed = true
                 player.lastKey = 'd'
                 break
             case 'a':
+                case 'ArrowLeft':
                 keys.a.pressed = true
                 player.lastKey = 'a'
                 break
             case 'w':
+                case 'ArrowUp':
                 player.jump()
                 break
             case ' ':
@@ -207,9 +276,12 @@ window.addEventListener('keydown', (event) => {
 window.addEventListener('keyup', (event) => {
     switch (event.key) {
         case 'd':
+            case 'ArrowRight':
             keys.d.pressed = false
             break
         case 'a':
+            case 'ArrowLeft':
+
             keys.a.pressed = false
             break    
     }
