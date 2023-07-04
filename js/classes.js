@@ -40,6 +40,7 @@ class Food {
 
         this.deceleration = .2
         this.gravity = 0.5
+
     }
 
     draw(){
@@ -73,26 +74,25 @@ class Food {
     }
 
     update(){
-        this.draw()
-        this.animateFrames()
-
-        if(this.velocity.x>0){
-            this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
-        }
-        this.position.x += this.velocity.x
-
-        this.position.y += this.velocity.y
-
-        // Handling platform gravity
-        
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
-            this.velocity.y = 0
-        } else {
-            this.velocity.y += this.gravity
-        }
-        
+            this.draw()
+            this.animateFrames()
+    
+            // Handling throw speed and deceleration
+            if(this.velocity.x>0){
+                this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
+            }
+            this.position.x += this.velocity.x
+    
+            // Handling platform gravity
+            this.position.y += this.velocity.y            
+            if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+                this.velocity.y = 0
+            } else {
+                this.velocity.y += this.gravity
+            }
+        }       
     }
-}
+
 
 // PLAYER CLASS
 class Player {
@@ -174,10 +174,9 @@ class Player {
     }
 
     throw(){
-
         // get food from cookedFood
         if(this.cookedFood.length>0){
-            this.cookedFood.splice(0,1)
+            this.cookedFood.shift()
             const food = new Food({
                 position:{
                 x: this.position.x,
@@ -292,13 +291,16 @@ class Player {
                 this.foods[food].update()
             }
         }
-        // Draw cooked foods (not thrown)
-        if(this.cookedFood.length > 0){
-            for (const food in this.cookedFood) {
-                this.cookedFood[food].draw()
-            }
-        }
 
+        // Draw cooked unthrown food (ammo, essentially)
+        if(this.cookedFood.length > 0){
+            for (let i in this.cookedFood){
+                this.cookedFood[i].position.x = 10 + (30 * i)
+                this.cookedFood[i].draw()
+            }
+        }        
+
+        // Move PLayer
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
 
