@@ -196,7 +196,7 @@ window.addEventListener('keydown', (event) => {
                 player.lastKey = 'a'
                 break
             case 'w':
-                player.velocity.y -= player.jumpHeight
+                player.jump()
                 break
             case ' ':
                 player.throw()

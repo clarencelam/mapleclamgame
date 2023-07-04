@@ -128,13 +128,17 @@ class Player {
         this.image.src = imageSrc
         this.scale = scale
         this.facing = -1 // 1 = right, -1 = left
+        this.jumping = false // calculated in update() function
 
         // stats
         this.speed = 5
         this.jumpHeight = 10
         this.gravity = 0.3
 
+        // movement mechanics
         this.lastkey
+        this.bottomYCords = 148 // base of level (where gravity should stop)
+        this.lastVelocity
 
         // Srite Crop
         this.framesMax = framesMax
@@ -153,6 +157,15 @@ class Player {
         this.cookedFood = []
         this.cookedFoodLimit = 5
         this.foods = []
+    }
+    
+    jump(){
+        if(this.jumping === false){
+            this.velocity.y -= this.jumpHeight
+            this.jumping = true
+        }
+        console.log(this.jumping)
+
     }
 
     cookFood(){
@@ -326,6 +339,8 @@ class Player {
         this.animateFrames()
         this.cookFood()
 
+        var lastVelocity = this.velocity.y // check if player is ascending or descending
+
         // Draw thrown food
         if(this.foods.length > 0){
             for (const food in this.foods) {
@@ -351,13 +366,18 @@ class Player {
         // Move PLayer
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
-
+        
         // Handling platform gravity
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
+        // If player is at bottom of map, stop gravity
+        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-this.bottomYCords)){
             this.velocity.y = 0
+            // Player on bottom -- set jumping to false
+            this.jumping = false
         } else {
+            // If player is above bottom of map, apply gravity
             this.velocity.y += this.gravity
         }
+
     }
 }
 
