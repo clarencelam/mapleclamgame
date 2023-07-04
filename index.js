@@ -170,15 +170,12 @@ function animate(){
 
     // Jump logic
     if (player.velocity.y<0){
-        console.log("jump")
         if(player.facing === 1){
             player.switchSprite('jumpRight')
-            console.log(player.facing)
             return
         }
         else if(player.facing === -1){
             player.switchSprite('jump')
-            console.log(player.facing)
         }
     } else if(player.velocity.y>0){
             player.switchSprite('idle')

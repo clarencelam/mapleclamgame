@@ -21,6 +21,7 @@ class Sprite {
     }
 }
 
+// FOOD CLASS
 class Food {
     constructor ({position, velocity, imageSrc, direction, scale=1, framesMax=1}){
         this.position = position
@@ -93,6 +94,7 @@ class Food {
     }
 }
 
+// PLAYER CLASS
 class Player {
     constructor({position, velocity, imageSrc, scale =1, framesMax = 1, sprites}){
         this.position = position
@@ -121,11 +123,60 @@ class Player {
         }
 
         // Food Tracking
+        this.cooking = false
+        this.cookSpeed = 1
+        this.cookedFood = []
+        this.cookedFoodLimit = 5
         this.foods = []
+    }
+
+    cookFood(){
+        // if not cooking and cooked limit is not reached, then add a food to cookedFood
+        if(this.cooking === false && this.cookedFood.length<this.cookedFoodLimit){
+            this.cooking = true
+            var progress = 0
+
+            // every x milliseconds, 
+            var id = setInterval(cook, 100)
+            console.log("cookingstart")
+            var self = this
+
+            function cook(){
+                if(progress >= 100){
+                    // Create food in cookedFood
+                    const food = new Food({
+                        position:{
+                        x: 10,
+                        y: canvas.height - (50 * (self.cookedFood.length+1)) 
+                    },
+                    velocity:{
+                        x: 0,
+                        y: 0
+                    },
+                    imageSrc: './img/food/apple.png', 
+                    direction: 1,
+                    scale: 1,
+                    framesMax: 8,
+                })
+                clearInterval(id)
+                self.cooking = false
+                progress = 0
+
+                self.cookedFood.push(food)
+                console.log("order up!: " + self.cookedFood)
+
+                } else{
+                    progress = progress + 10
+                    console.log("progress: " + progress)
+                }
+            }
+        }
     }
 
     throw(){
         // create new food object
+
+        // if cookedFood > 0, then throw
         const food = new Food({
                 position:{
                 x: this.position.x,
@@ -233,10 +284,18 @@ class Player {
     update(){
         this.draw()
         this.animateFrames()
+        this.cookFood()
 
+        // Draw thrown food
         if(this.foods.length > 0){
             for (const food in this.foods) {
                 this.foods[food].update()
+            }
+        }
+        // Draw cooked foods (not thrown)
+        if(this.cookedFood.length > 0){
+            for (const food in this.cookedFood) {
+                this.cookedFood[food].draw()
             }
         }
 
@@ -455,7 +514,6 @@ class Enemy{
     }
 
     switchSprite(sprite) {
-        console.log(this.facing)
         let idleFramesHold = 40
         let walkFramesHold = 18
         let jumpFramesHold = 30
