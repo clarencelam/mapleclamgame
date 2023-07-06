@@ -197,6 +197,10 @@ function animate(){
 
     for(const num in customers){
         customers[num].update()
+        if(customers[num].position.y > canvas.height){
+            customers.splice(num, 1)
+            console.log('delete cust')
+        }
     }
 
 
@@ -232,19 +236,22 @@ function animate(){
     for(const i in player.foods){
         //console.log(player.foods[i])
         var thisFood = player.foods[i]
-        for(const num in customers){
-            var thisCust = customers[num]
-            if(spriteCollision ({
-                rectangle1: thisFood,
-                rectangle2: thisCust
-            })
-            && thisCust.eating === false
-            ){
-                console.log("Food & Customer collision!")
-                thisCust.eat()
-                thisFood.getEaten(thisCust)
+        if(thisFood.FOODSTATE != "eaten"){
+            for(const num in customers){
+                var thisCust = customers[num]
+                if(spriteCollision ({
+                    rectangle1: thisFood,
+                    rectangle2: thisCust
+                })
+                && thisCust.eating === false
+                ){
+                    console.log("Food & Customer collision!")
+                    thisCust.eat()
+                    thisFood.getEaten(thisCust)
+                }
             }
         }
+
     }
 
 }

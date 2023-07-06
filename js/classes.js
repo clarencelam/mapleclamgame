@@ -43,18 +43,19 @@ class Food {
 
         // Dissapear functionality
         this.disappearTime = 500 // leave 100 for markedForDeath foods to "drop" off-screen
-        this.markedForDeath = false
 
         this.height = this.image.height * this.scale
         this.width = this.image.width / this.framesMax * this.scale
         
-        this.eaten = false
+        // setting states for food 
+        this.FOODSTATE = "active"
     }
 
     getEaten(cust){
-        this.eaten = true
-        const custYVelocity = cust.velocity.y
-        this.velocity.y = custYVelocity
+        this.FOODSTATE = "eaten"
+
+        const yDifferential = cust.position.y - this.position.y
+        console.log(yDifferential)
     }
 
     draw(){
@@ -100,47 +101,52 @@ class Food {
     update(){
             this.draw()
             this.animateFrames()
+            console.log(this.state)
 
-            // Iterate dissappear time
-            if(this.disappearTime>0){
-                this.disappearTime-=1
-            }  
-            // Trigger markedForDeath
-            if (this.disappearTime === 200 && this.eaten === false) {
-                this.markedForDeath = true
-            }
-    
 
-            // IF marked for death, apply food-expiring y-axis phsyics (drop the food off screen)
-            if(this.markedForDeath === true){
-                this.position.y += this.velocity.y 
-                this.velocity.y += this.gravity
-            } else {
-                // IF eaten, allow food to drop food off screen
-                // to implement: if food drops off screen, delete 
-                if (this.eaten === true){
-                    this.position.y += this.velocity.y
-                    this.velocity.y += this.gravity
-                } else{ 
-                    // Else, Apply regular platform gravity
+            switch(this.FOODSTATE){
+                case "active":
+                    // Iterate dissappear time
+                    if(this.disappearTime>0){
+                        this.disappearTime-=1
+                    }  
+                    // Trigger markedForDeath
+                    if (this.disappearTime === 200) {
+                        this.markedForDeath = true
+                        this.FOODSTATE = "markedForDeath"
+                    }
+
+                    // Apply gravity except when on bottom platform
                     this.position.y += this.velocity.y            
                     if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-148)){
                         this.velocity.y = 0
                     } else {
                         this.velocity.y += this.gravity
                     }    
-                }
+                break
+
+                case 'markedForDeath':
+                    // IF marked for death, apply food-expiring y-axis phsyics (drop the food off screen)
+                    this.position.y += this.velocity.y 
+                    this.velocity.y += this.gravity    
+                break
+
+                case 'eaten':
+                    // IF eaten, allow food to drop food off screen
+                    // have food follow customer
+                    this.position.y += this.velocity.y
+                    this.velocity.y += this.gravity
+                break
             }
 
-            // Handling food physics, throw speed and deceleration
+            // Handle x-position logic
             if(this.velocity.x>0){
                 this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
             } 
             else if(this.velocity.x<0){     // food was thrown left
                 this.velocity.x = (this.velocity.x * 10 + this.deceleration * 10) /10
             }
-            this.position.x += this.velocity.x
-    
+            this.position.x += this.velocity.x        
         }
     }
 
