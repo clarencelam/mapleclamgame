@@ -258,13 +258,17 @@ function animate(){
     for(const i in player.foods){
         var thisFood = player.foods[i]
         if(thisFood.FOODSTATE === "eaten"){
-        }
-        for(const i in customers){
-            var thisCust = customers[i]
-            if(thisCust.eating === true){
-                console.log('followNOW')
-                thisFood.velocity.x = thisCust.velocity.x
-                thisFood.velocity.y = thisCust.velocity.y
+            for(const i in customers){
+                var thisCust = customers[i]
+                if(thisCust.eating === true){
+                    if(spriteCollision ({
+                        rectangle1: thisFood,
+                        rectangle2: thisCust
+                    })){
+                        thisFood.position.x = thisCust.position.x + 25
+                        thisFood.position.y = thisCust.position.y + 10
+                    }
+                }
             }
         }
     }

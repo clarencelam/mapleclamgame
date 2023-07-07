@@ -131,21 +131,33 @@ class Food {
                     // IF eaten, allow food to drop food off screen
                     // have food follow customer
                     this.position.y += this.velocity.y
-                    this.velocity.y += this.gravity
+                   // this.velocity.y += this.gravity
                     if(this.position.y > canvas.height){
                         this.FOODSTATE = "markedForDeath"
                     }
                 break
             }
 
-            // Handle x-position logic
-            if(this.velocity.x>0){
-                this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
-            } 
-            else if(this.velocity.x<0){     // food was thrown left
-                this.velocity.x = (this.velocity.x * 10 + this.deceleration * 10) /10
+           // Handle x-position logic
+            switch(this.FOODSTATE){
+                case "active":
+                case 'markedForDeath':
+                    if(this.velocity.x>0){
+                        this.velocity.x = (this.velocity.x * 10 - this.deceleration * 10) / 10 // bypass floating point arithmetic js issue
+                    } 
+                    else if(this.velocity.x<0){     // food was thrown left
+                        this.velocity.x = (this.velocity.x * 10 + this.deceleration * 10) /10
+                    }
+                    this.position.x += this.velocity.x     
+                break
+
+                case 'eaten':
+                    this.position.x += this.velocity.x   
+                break
             }
-            this.position.x += this.velocity.x        
+
+
+            // Handle x-position logic
         }
     }
 
@@ -257,7 +269,7 @@ class Player {
             const food = new Food({
                 position:{
                 x: this.position.x,
-                y: this.position.y
+                y: this.position.y + (this.image.height/2)
             },
             velocity:{
                 x: this.facing * 10,
@@ -447,6 +459,7 @@ class Customer{
         this.width = this.image.width / this.framesMax * this.scale
 
         this.eating = false
+        this.facing = -1 // 1 = right, -1 = left
     }
 
     eat(){
@@ -504,9 +517,11 @@ class Customer{
             this.velocity.x = 0
         } else if(num===1){
             this.velocity.x = -1
+            this.facing = -1
             this.switchSprite('walk')
         } else if(num===2){
             this.velocity.x = 1
+            this.facing = 1
             this.switchSprite('walkRight')
         }
     }
@@ -514,7 +529,11 @@ class Customer{
     switchSprite(sprite) {
         switch (sprite) {
             case 'idle':
-                this.image = this.sprites.idle.image
+                if(this.facing === 1){
+                    this.image = this.sprites.idleRight.image
+                } else{
+                    this.image = this.sprites.idle.image
+                }
                 this.framesMax = this.sprites.idle.framesMax
                 this.framesCurrent = 0
                 break
