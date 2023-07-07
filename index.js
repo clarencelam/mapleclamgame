@@ -57,11 +57,11 @@ const player = new Player({
 })
 
 const customers = []
+const coins = []
 
 function genCusts(){
     if(customers.length<4){
         console.log('triggered cust spawn')
-        console.log(customers)
         const snail = new Customer({
             position:{
                 x: 200,
@@ -97,41 +97,24 @@ function genCusts(){
         startRolls(snail, 3500, 3)
     }
 }
-/*
-const snail = new Customer({
-    position:{
-        x: 200,
-        y: 200
-    },
-    velocity: {
-        x: 0,
-        y: 10
-    },
-    imageSrc: './img/greenSnail/idle.png',
-    scale: 1.4,
-    framesMax: 1,
-    sprites: {
-        idle: {
-            imageSrc: './img/greenSnail/idle.png',
-            framesMax: 1
-        },
-        walk: {
-            imageSrc: './img/greenSnail/walk.png',
-            framesMax: 5
-        },
-        idleRight: {
-            imageSrc: './img/greenSnail/idleRight.png',
-            framesMax: 1
-        },
-        walkRight: {
-            imageSrc: './img/greenSnail/walkRight.png',
-            framesMax: 5
-        },
-    }
-})
-customers.push(snail)
-startRolls(snail, 3500, 3)
-*/
+
+function genCoin(pos_x,pos_y){
+        console.log('triggered coin spawn')
+        const coin = new Coin({
+            position:{
+                x: pos_x,
+                y: pos_y
+            },
+            velocity: {
+                x: 0,
+                y: -5
+            },
+            imageSrc: './img/money/coin.png',
+            scale: 1,
+            framesMax: 4,
+        })
+        coins.push(coin)
+}
 
 const grunt = new Enemy({
     position:{
@@ -201,6 +184,11 @@ function animate(){
             console.log('delete cust')
         }
     }
+
+    for(const num in coins){
+        coins[num].update()
+    }
+
     player.update()
 
 
@@ -247,7 +235,26 @@ function animate(){
                     })){
                         console.log("Food & Customer collision!")
                         thisCust.eat()
-                        thisFood.getEaten(thisCust)    
+                        thisFood.getEaten(thisCust)
+                        var pos_x = thisCust.position.x + (thisCust.width/2)
+                        var pos_y = thisCust.position.y// + (thisCust.height/2)
+
+                        //genCoin(pos_x, pos_y-40)                
+                        //console.log(coins)
+                        const coin = new Coin({
+                            position:{
+                                x: pos_x,
+                                y: pos_y 
+                            },
+                            velocity: {
+                                x: 0,
+                                y: -10
+                            },
+                            imageSrc: './img/money/coin.png',
+                            scale: 1,
+                            framesMax: 4,
+                        })
+                        coins.push(coin)                
                     }
                 }
             }
@@ -265,16 +272,14 @@ function animate(){
                         rectangle1: thisFood,
                         rectangle2: thisCust
                     })){
-
                         var custCenterPointX = thisCust.position.x + (thisCust.width/2)
                         var custCenterPointY = thisCust.position.y + (thisCust.height/2)
                         var foodCenterPointX = thisFood.position.x + (thisFood.width/2)
                         var foodCenterPointY = thisFood.position.y + (thisFood.height/2)
                         var xDifferential = custCenterPointX - foodCenterPointX 
-                        // if negative, cust is on left of food, vice versa
                         var yDifferential = custCenterPointY - foodCenterPointY
-                        // if positive, cust is below food, vice versa
 
+                        // Move food to middle of customer sprite
                         if(xDifferential === 0){
                             thisFood.velocity.x = 0
                         } else if(xDifferential >0){

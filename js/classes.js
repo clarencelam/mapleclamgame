@@ -24,7 +24,7 @@ class Sprite {
 // COIN CLASS
 
 class Coin {
-    constructor ({position, velocity, imageSrc, direction, scale=1, framesMax=1}){
+    constructor ({position, velocity, imageSrc, scale=1, framesMax=1}){
         this.position = position
         this.velocity = velocity
 
@@ -32,19 +32,16 @@ class Coin {
         this.image.src = imageSrc
         this.scale = scale
 
+        this.height = this.image.height * this.scale
+        this.width = this.image.width / this.framesMax * this.scale
+
         // Sprite Crop
         this.framesMax = framesMax
         this.framesCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 10
-
-        this.deceleration = .2
-        this.gravity = 0.5
-
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
+        this.framesHold = 12
         
-        // setting states for food 
+        this.gravity = 0.2
     }
 
     draw(){
@@ -61,21 +58,10 @@ class Coin {
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
-        /*
-        // Draw collision box
-        c.fisllStyle = "black"
-        c.fillRect(
-            this.position.x,
-            this.position.y,
-            this.image.width * this.scale / this.framesMax,
-            this.image.height * this.scale
-        )
-        */
     }
 
     animateFrames(){
         this.framesElapsed++
-
         if (this.framesElapsed % this.framesHold ===0){
             if(this.framesElapsed % this.framesHold === 0){
                 if (this.framesCurrent < this.framesMax -1){
@@ -87,10 +73,23 @@ class Coin {
         }
     }
 
-    update(){
-            this.draw()
-            this.animateFrames()
+    update() {
+        this.draw()
+        this.animateFrames()
+
+        // Handling platform gravity
+        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 150)) {
+            this.velocity.y = 0
+            console.log("hit bottom: " +this.position.y)
+        } else {
+            this.velocity.y += this.gravity
         }
+
+        // Move coin
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+        
+    }
 }
 
 // FOOD CLASS
