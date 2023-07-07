@@ -190,7 +190,6 @@ function animate(){
     c.fillStyle= 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
-    player.update()
     //snail.update()
     grunt.update()
     genCusts()
@@ -202,6 +201,8 @@ function animate(){
             console.log('delete cust')
         }
     }
+    player.update()
+
 
 
     // Player movement
@@ -239,19 +240,33 @@ function animate(){
         if(thisFood.FOODSTATE != "eaten"){
             for(const num in customers){
                 var thisCust = customers[num]
-                if(spriteCollision ({
-                    rectangle1: thisFood,
-                    rectangle2: thisCust
-                })
-                && thisCust.eating === false
-                ){
-                    console.log("Food & Customer collision!")
-                    thisCust.eat()
-                    thisFood.getEaten(thisCust)
+                if(thisCust.eating === false){
+                    if(spriteCollision ({
+                        rectangle1: thisFood,
+                        rectangle2: thisCust
+                    })){
+                        console.log("Food & Customer collision!")
+                        thisCust.eat()
+                        thisFood.getEaten(thisCust)    
+                    }
                 }
             }
         }
+    }
 
+    // Make Food stick to Cust if Food is eaten and Cust is eating
+    for(const i in player.foods){
+        var thisFood = player.foods[i]
+        if(thisFood.FOODSTATE === "eaten"){
+        }
+        for(const i in customers){
+            var thisCust = customers[i]
+            if(thisCust.eating === true){
+                console.log('followNOW')
+                thisFood.velocity.x = thisCust.velocity.x
+                thisFood.velocity.y = thisCust.velocity.y
+            }
+        }
     }
 
 }

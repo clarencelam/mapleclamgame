@@ -53,9 +53,6 @@ class Food {
 
     getEaten(cust){
         this.FOODSTATE = "eaten"
-
-        const yDifferential = cust.position.y - this.position.y
-        console.log(yDifferential)
     }
 
     draw(){
@@ -101,7 +98,6 @@ class Food {
     update(){
             this.draw()
             this.animateFrames()
-            console.log(this.state)
 
 
             switch(this.FOODSTATE){
@@ -136,6 +132,9 @@ class Food {
                     // have food follow customer
                     this.position.y += this.velocity.y
                     this.velocity.y += this.gravity
+                    if(this.position.y > canvas.height){
+                        this.FOODSTATE = "markedForDeath"
+                    }
                 break
             }
 
@@ -596,7 +595,6 @@ class Enemy{
         // For collision detection
         this.height = this.image.height * this.scale
         this.width = this.image.width / this.framesMax * this.scale
-        console.log(this.image.height)
     }
 
     draw(){
