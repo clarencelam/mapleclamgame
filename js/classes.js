@@ -42,6 +42,7 @@ class Coin {
         this.framesHold = 12
         
         this.gravity = 0.2
+        this.COINSTATE = "idle"
     }
 
     draw(){
@@ -77,10 +78,19 @@ class Coin {
         this.draw()
         this.animateFrames()
 
+        // TODO: upon setting COINSTATE to pickup, start a timeout to mark the coin for deletion
+        switch(this.COINSTATE){
+            case 'idle':
+                break
+            case 'pickedUp':
+                break
+
+        }
+
+
         // Handling platform gravity
         if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 150)) {
             this.velocity.y = 0
-            console.log("hit bottom: " +this.position.y)
         } else {
             this.velocity.y += this.gravity
         }

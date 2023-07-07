@@ -107,7 +107,7 @@ function genCoin(pos_x,pos_y){
             },
             velocity: {
                 x: 0,
-                y: -5
+                y: -6
             },
             imageSrc: './img/money/coin.png',
             scale: 1,
@@ -173,7 +173,6 @@ function animate(){
     c.fillStyle= 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
-    //snail.update()
     grunt.update()
     genCusts()
 
@@ -239,22 +238,8 @@ function animate(){
                         var pos_x = thisCust.position.x + (thisCust.width/2)
                         var pos_y = thisCust.position.y// + (thisCust.height/2)
 
-                        //genCoin(pos_x, pos_y-40)                
-                        //console.log(coins)
-                        const coin = new Coin({
-                            position:{
-                                x: pos_x,
-                                y: pos_y 
-                            },
-                            velocity: {
-                                x: 0,
-                                y: -10
-                            },
-                            imageSrc: './img/money/coin.png',
-                            scale: 1,
-                            framesMax: 4,
-                        })
-                        coins.push(coin)                
+                        // Generate coin at customer location
+                        genCoin(pos_x, pos_y-40)                
                     }
                 }
             }
@@ -295,6 +280,55 @@ function animate(){
         }
     }
 
+    // Check if Player collides with Coins
+    for(const i in coins){
+        var thisCoin = coins[i]
+        if(thisCoin.COINSTATE === "idle"){
+            if(spriteCollision({
+                rectangle1: player,
+                rectangle2: thisCoin
+            })){
+                // coin "jumps", update coinstate
+                thisCoin.velocity.y = -5
+                thisCoin.COINSTATE = "pickedUp"
+                console.log("coin picked up")
+            }
+        }
+    }
+    // Make coin stick to Player upon pickup
+    for(const i in coins){
+        var thisCoin = coins[i]
+        if(thisCoin.COINSTATE === "pickedUp"){
+                console.log("pickup attempt")
+
+                var playerCenterPointX = player.position.x + 25
+                var coinCenterPointX = thisCoin.position.x //+ (thisCoin.width/2)
+                var playerCenterPointY = player.position.y
+                var coinCenterPointY = thisCoin.position.y
+                var xDifferential = playerCenterPointX - coinCenterPointX 
+                var yDifferential = playerCenterPointY - coinCenterPointY // if positive, player below coin
+                console.log(xDifferential)
+
+                // Move food to middle of player sprite
+                if(xDifferential === 0){
+                    thisCoin.velocity.x = 0
+                } else if(xDifferential >0){
+                    thisCoin.velocity.x = 2
+                } else if(xDifferential<0){
+                    thisCoin.velocity.x = -2
+                }
+
+                /* laggy functiont trying to lock y
+                if(yDifferential === 0){
+                    thisCoin.velocity.y = 0
+                } else if(yDifferential >0){
+                    thisCoin.velocity.y += 1
+                } else if(yDifferential<0){
+                    thisCoin.velocity.y += -1
+                }
+                */
+        }
+    }
 }
 animate()
 
