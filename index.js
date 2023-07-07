@@ -265,7 +265,24 @@ function animate(){
                         rectangle1: thisFood,
                         rectangle2: thisCust
                     })){
-                        thisFood.position.x = thisCust.position.x + 25
+
+                        var custCenterPointX = thisCust.position.x + (thisCust.width/2)
+                        var custCenterPointY = thisCust.position.y + (thisCust.height/2)
+                        var foodCenterPointX = thisFood.position.x + (thisFood.width/2)
+                        var foodCenterPointY = thisFood.position.y + (thisFood.height/2)
+                        var xDifferential = custCenterPointX - foodCenterPointX 
+                        // if negative, cust is on left of food, vice versa
+                        var yDifferential = custCenterPointY - foodCenterPointY
+                        // if positive, cust is below food, vice versa
+
+                        if(xDifferential === 0){
+                            thisFood.velocity.x = 0
+                        } else if(xDifferential >0){
+                            thisFood.velocity.x = 1
+                        } else if(xDifferential<0){
+                            thisFood.velocity.x = -1
+                        }
+
                         thisFood.position.y = thisCust.position.y + 10
                     }
                 }
