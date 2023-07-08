@@ -186,10 +186,13 @@ function animate(){
 
     for(const num in coins){
         coins[num].update()
+        if(coins[num].COINSTATE === "markedForDeath"){
+            console.log('delete coin: ' + coins[num])
+            coins.splice(num, 1)
+        }
     }
 
     player.update()
-
 
 
     // Player movement
@@ -288,10 +291,9 @@ function animate(){
                 rectangle1: player,
                 rectangle2: thisCoin
             })){
-                // coin "jumps", update coinstate
-                thisCoin.velocity.y = -5
-                thisCoin.COINSTATE = "pickedUp"
+                thisCoin.getPickedUp()
                 console.log("coin picked up")
+                getCoins(1)
             }
         }
     }
@@ -299,7 +301,6 @@ function animate(){
     for(const i in coins){
         var thisCoin = coins[i]
         if(thisCoin.COINSTATE === "pickedUp"){
-                console.log("pickup attempt")
 
                 var playerCenterPointX = player.position.x + 25
                 var coinCenterPointX = thisCoin.position.x //+ (thisCoin.width/2)
@@ -307,15 +308,14 @@ function animate(){
                 var coinCenterPointY = thisCoin.position.y
                 var xDifferential = playerCenterPointX - coinCenterPointX 
                 var yDifferential = playerCenterPointY - coinCenterPointY // if positive, player below coin
-                console.log(xDifferential)
 
                 // Move food to middle of player sprite
                 if(xDifferential === 0){
                     thisCoin.velocity.x = 0
                 } else if(xDifferential >0){
-                    thisCoin.velocity.x = 2
+                    thisCoin.velocity.x = 3
                 } else if(xDifferential<0){
-                    thisCoin.velocity.x = -2
+                    thisCoin.velocity.x = -3
                 }
 
                 /* laggy functiont trying to lock y

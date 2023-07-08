@@ -23,3 +23,10 @@ function spriteCollision({ rectangle1, rectangle2 }) {
         rectangle1.position.y <= rectangle2.position.y + rectangle2Height
     )
 }
+
+let coinCointer = 0
+
+function getCoins(value){
+    coinCointer = coinCointer += value
+    document.querySelector('#coinCounter').innerHTML = coinCointer
+}

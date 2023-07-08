@@ -74,6 +74,12 @@ class Coin {
         }
     }
 
+    getPickedUp(){
+        this.markForDeathTimeout = 70
+        this.velocity.y = -5
+        this.COINSTATE = 'pickedUp'
+    }
+
     update() {
         this.draw()
         this.animateFrames()
@@ -83,10 +89,15 @@ class Coin {
             case 'idle':
                 break
             case 'pickedUp':
+                if(this.markForDeathTimeout<=0){
+                    this.COINSTATE = "markedForDeath"
+                } else{
+                    this.markForDeathTimeout -=1
+                }
                 break
-
+            case 'markedForDeath':
+                break
         }
-
 
         // Handling platform gravity
         if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 150)) {
