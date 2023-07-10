@@ -1,23 +1,43 @@
 class Sprite {
-    constructor({position, imageSrc, scale=1}){
+    constructor({position, imageSrc, scale=1, framesMax = 1, offset = { x: 0, y: 0 }}){
         this.position = position
         this.image = new Image()
         this.image.src = imageSrc
         this.scale = scale
+
+        this.framesMax = framesMax
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 10
+        this.offset = offset
     }
 
     draw(){
         c.drawImage(
             this.image,
-            this.position.x,
-            this.position.y,
-            this.image.width * this.scale,
-            this.image.height * this.scale   
-        )
+            // crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // position
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale)
     }
 
     update(){
         this.draw()
+    }
+}
+
+class Thornbush extends Sprite{
+    constructor({position, imageSrc, scale}){
+        super({
+            position, imageSrc, scale
+        })
+        
     }
 }
 
@@ -516,6 +536,17 @@ class Player {
             this.velocity.y += this.gravity
         }
 
+        if (this.velocity.y<0){
+            if(this.facing === 1){
+                this.switchSprite('jumpRight')
+                return
+            }
+            else if(this.facing === -1){
+                this.switchSprite('jump')
+            }
+        } else if(this.velocity.y>0){
+                this.switchSprite('idle')
+            }
     }
 }
 

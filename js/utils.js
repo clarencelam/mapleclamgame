@@ -30,3 +30,6 @@ function getCoins(value){
     coinCointer = coinCointer += value
     document.querySelector('#coinCounter').innerHTML = coinCointer
 }
+
+// DECLARE GAMESTATE
+let GAMESTATE = "ACTIVE"
