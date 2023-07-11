@@ -58,120 +58,11 @@ const player = new Player({
 })
 
 const customers = []
+const enemies = []
 const coins = []
 const thornBushes = []
 
-function genCusts(){
-    if(customers.length<4){
-        console.log('triggered cust spawn')
-        const snail = new Customer({
-            position:{
-                x: 200,
-                y: 200
-            },
-            velocity: {
-                x: 0,
-                y: 10
-            },
-            imageSrc: './img/greenSnail/idle.png',
-            scale: 1.4,
-            framesMax: 1,
-            sprites: {
-                idle: {
-                    imageSrc: './img/greenSnail/idle.png',
-                    framesMax: 1
-                },
-                walk: {
-                    imageSrc: './img/greenSnail/walk.png',
-                    framesMax: 5
-                },
-                idleRight: {
-                    imageSrc: './img/greenSnail/idleRight.png',
-                    framesMax: 1
-                },
-                walkRight: {
-                    imageSrc: './img/greenSnail/walkRight.png',
-                    framesMax: 5
-                },
-            }
-        })
-        customers.push(snail)
-        startRolls(snail, 3500, 3)
-    }
-}
-
-function genCoin(pos_x,pos_y){
-        console.log('triggered coin spawn')
-        const coin = new Coin({
-            position:{
-                x: pos_x,
-                y: pos_y
-            },
-            velocity: {
-                x: 0,
-                y: -6
-            },
-            imageSrc: './img/money/coin.png',
-            scale: 1,
-            framesMax: 4,
-        })
-        coins.push(coin)
-}
-
-function genThornBush(x, y){
-    const thornbush = new Thornbush({
-        position:{
-            x: 600,
-            y: 620
-        },
-        imageSrc: './img/thorns1.png',
-        scale: 0.18
-    })    
-    thornBushes.push(thornbush)
-}
-
-const grunt = new Enemy({
-    position:{
-        x: 400,
-        y: 200
-    },
-    velocity: {
-        x: 0,
-        y: 10
-    },
-    imageSrc: './img/badGuy1/idle.png',
-    scale: 1.4,
-    framesMax: 6,
-    sprites: {
-        idle: {
-            imageSrc: './img/badGuy1/idle.png',
-            framesMax: 6
-        },
-        idleRight: {
-            imageSrc: './img/badGuy1/idleRight.png',
-            framesMax: 6
-        },
-        walk: {
-            imageSrc: './img/badGuy1/walk.png',
-            framesMax: 4
-        },
-        walkRight: {
-            imageSrc: './img/badGuy1/walkRight.png',
-            framesMax: 4
-        },
-        jump:{
-            imageSrc: './img/badGuy1/jump.png',
-            framesMax: 1
-        },
-        jumpRight:{
-            imageSrc: './img/badGuy1/jumpRight.png',
-            framesMax: 1
-        }
-    }
-})
-
 genThornBush(600, 620)
-startRolls(grunt, 1000, 5)
 
 // declaring keys state 
 const keys = {
@@ -183,38 +74,11 @@ const keys = {
     },
 }
 
-
-const tutorial1 = new Message({
-    position:{
-        x: 100,
-        y: 100
-    },
-    imageSrc: './img/messages1/tutorial1.png',
-    scale: 0.8
-})    
-const tutorial2 = new Message({
-    position:{
-        x: 100,
-        y: 100
-    },
-    imageSrc: './img/messages1/tutorial2.png',
-    scale: 0.8
-})    
-const tutorial3 = new Message({
-    position:{
-        x: 100,
-        y: 100
-    },
-    imageSrc: './img/messages1/tutorial3.png',
-    scale: 0.8
-})    
-
-// DECLARE GAMESTATE
+// DECLARE STARTING GAMESTATE & LEVEL
+// GAMESTATES DETERMINE WHAT GAME FUNCTIONALITY IS ACTIVE
+// LEVEL DETERMINES WHAT MESSAGES ARE SHOWN ON THE SCREEN, CORRESPONDING TO EACH "STAGE" OF THE GAME
 let GAMESTATE = "TUTORIAL"
-
-// DECLARE LEVEL 
 let LEVEL = "TUTORIAL_M1"
-messages = []
 
 function animate(){
     window.requestAnimationFrame(animate)
@@ -227,190 +91,55 @@ function animate(){
         for(const i in messages){
             messages[i].update()
         }
-        if(LEVEL === "TUTORIAL_M1"){
-            messages.push(tutorial1)
-            window.addEventListener("click",(nextLevel) => {
-                LEVEL = "TUTORIAL_M2"
-            }, {once:true})
-        }
-         else if (LEVEL === "TUTORIAL_M2"){
-            messages.push(tutorial2)
-            window.addEventListener("click",(nextLevel)=>{
-                LEVEL = "TUTORIAL_M3"
-            }, {once:true})
-        }
-        else if (LEVEL === "TUTORIAL_M3"){
-            messages.push(tutorial3)
-            window.addEventListener("click", (nextLevel)=> {
-                LEVEL = "LEVEL1"
-                GAMESTATE = "ACTIVE"
-            }, {once:true})
-            }
-        }
+        iterateTutorial()
+    }
     
     // HANDLING "ACTIVE" GAMESTATE
     if(GAMESTATE === "ACTIVE"){
-        grunt.update()
-        genCusts()
-    
-        // Check if GAME OVER due to thornbush collision
-        for(const i in thornBushes){
-            var thisBush = thornBushes[i]
-            thisBush.update()
-            if(spriteCollision({
-                rectangle1: player,
-                rectangle2: thisBush
-            })){
-                // GAME OVER!
-                console.log("player hit bush")
-                coinCointer = 0
-                GAMESTATE = "GAMEOVER"
-                document.querySelector("#displayText").style.display = 'flex'
-                document.querySelector("#displayText").innerHTML = "GAME OVER"
-            }
-        }
-        
-        // Update Customer (snails)
-        for(const num in customers){
+
+        // UPDATE ALL OBJECTS
+         for (const num in customers) {
             customers[num].update()
-            if(customers[num].position.y > canvas.height){
+            if (customers[num].position.y > canvas.height) {
                 customers.splice(num, 1)
                 console.log('delete cust')
             }
         }
-    
-        // Update Coins, splice those MarkedForDeath
-        for(const num in coins){
+        for (const num in coins) {  // Update Coins, splice those MarkedForDeath
             coins[num].update()
-            if(coins[num].COINSTATE === "markedForDeath"){
+            if (coins[num].COINSTATE === "markedForDeath") {
                 console.log('delete coin: ' + coins[num])
                 coins.splice(num, 1)
             }
         }
-    
+        for (const i in enemies) {
+            enemies[i].update()
+        }
         player.update()
-    
-        // Handle Player Movement
-        if (keys.a.pressed && player.lastKey === 'a') {
-            player.velocity.x = -player.speed
-            player.switchSprite('move')
-            player.facing = -1
+
+
+        // LEVEL 1 SPAWNS
+        if(customers.length<6){
+            let x = Math.floor(Math.random()* canvas.width)
+            genCust(x, 200)
         }
-        else if (keys.d.pressed && player.lastKey === 'd') {
-            player.velocity.x = player.speed
-            player.switchSprite('move')
-            player.facing = 1
-        } else {
-            player.switchSprite('idle')
-            player.velocity.x = 0
+
+        if(enemies.length<1){
+            let x = Math.floor(Math.random()* canvas.width)
+            genGrunt(x,200)
         }
-        
+            
+
+        // Check if GAME OVER due to thornbush collision
+        handleThornBushPlayerInteractions() // defined in utils.js
+
         // Detect Food Customer Collision
-        for(const i in player.foods){
-            //console.log(player.foods[i])
-            var thisFood = player.foods[i]
-            if(thisFood.FOODSTATE != "eaten"){
-                for(const num in customers){
-                    var thisCust = customers[num]
-                    if(thisCust.eating === false){
-                        if(spriteCollision ({
-                            rectangle1: thisFood,
-                            rectangle2: thisCust
-                        })){
-                            console.log("Food & Customer collision!")
-                            thisCust.eat()
-                            thisFood.getEaten(thisCust)
-                            var pos_x = thisCust.position.x + (thisCust.width/2)
-                            var pos_y = thisCust.position.y// + (thisCust.height/2)
-    
-                            // Generate coin at customer location
-                            genCoin(pos_x, pos_y-40)                
-                        }
-                    }
-                }
-            }
-        }
-    
-        // Make Food stick to Cust if Food is eaten and Cust is eating
-        for(const i in player.foods){
-            var thisFood = player.foods[i]
-            if(thisFood.FOODSTATE === "eaten"){
-                for(const i in customers){
-                    var thisCust = customers[i]
-                    if(thisCust.eating === true){
-                        if(spriteCollision ({
-                            rectangle1: thisFood,
-                            rectangle2: thisCust
-                        })){
-                            var custCenterPointX = thisCust.position.x + (thisCust.width/2)
-                            var custCenterPointY = thisCust.position.y + (thisCust.height/2)
-                            var foodCenterPointX = thisFood.position.x + (thisFood.width/2)
-                            var foodCenterPointY = thisFood.position.y + (thisFood.height/2)
-                            var xDifferential = custCenterPointX - foodCenterPointX 
-                            var yDifferential = custCenterPointY - foodCenterPointY
-    
-                            // Move food to middle of customer sprite
-                            if(xDifferential === 0){
-                                thisFood.velocity.x = 0
-                            } else if(xDifferential >0){
-                                thisFood.velocity.x = 1
-                            } else if(xDifferential<0){
-                                thisFood.velocity.x = -1
-                            }
-    
-                            thisFood.position.y = thisCust.position.y + 10
-                        }
-                    }
-                }
-            }
-        }
+        // Make Food stick to Cust if Food is eaten and Cust is eating 
+        handleFoodPlayerInteractions() // defined in utils.js
     
         // Check if Player collides with Coins
-        for(const i in coins){
-            var thisCoin = coins[i]
-            if(thisCoin.COINSTATE === "idle"){
-                if(spriteCollision({
-                    rectangle1: player,
-                    rectangle2: thisCoin
-                })){
-                    thisCoin.getPickedUp()
-                    console.log("coin picked up")
-                    getCoins(1)
-                }
-            }
-        }
-        // Make coin stick to Player upon pickup
-        for(const i in coins){
-            var thisCoin = coins[i]
-            if(thisCoin.COINSTATE === "pickedUp"){
-    
-                    var playerCenterPointX = player.position.x + 25
-                    var coinCenterPointX = thisCoin.position.x //+ (thisCoin.width/2)
-                    var playerCenterPointY = player.position.y
-                    var coinCenterPointY = thisCoin.position.y
-                    var xDifferential = playerCenterPointX - coinCenterPointX 
-                    var yDifferential = playerCenterPointY - coinCenterPointY // if positive, player below coin
-    
-                    // Move food to middle of player sprite
-                    if(xDifferential === 0){
-                        thisCoin.velocity.x = 0
-                    } else if(xDifferential >0){
-                        thisCoin.velocity.x = 3
-                    } else if(xDifferential<0){
-                        thisCoin.velocity.x = -3
-                    }
-    
-                    /* laggy functiont trying to lock y
-                    if(yDifferential === 0){
-                        thisCoin.velocity.y = 0
-                    } else if(yDifferential >0){
-                        thisCoin.velocity.y += 1
-                    } else if(yDifferential<0){
-                        thisCoin.velocity.y += -1
-                    }
-                    */
-            }
-        }    
+        // Make coin stick to Player upon pickup 
+        handleCoinPlayerInteractions() // defined in utils.js
     }
 }
 

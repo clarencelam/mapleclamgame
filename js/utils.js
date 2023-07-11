@@ -1,3 +1,5 @@
+/// UTILS: Functions that will be commonly used to support other functionality
+
 function startRolls(sprite, decisionInterval, max){
     // generate 
     // may need to revisit this later to ensure Timeout is deleted when object is removed
@@ -22,12 +24,5 @@ function spriteCollision({ rectangle1, rectangle2 }) {
         rectangle1.position.y + rectangle1Height >= rectangle2.position.y &&
         rectangle1.position.y <= rectangle2.position.y + rectangle2Height
     )
-}
-
-let coinCointer = 0
-
-function getCoins(value){
-    coinCointer = coinCointer += value
-    document.querySelector('#coinCounter').innerHTML = coinCointer
 }
 

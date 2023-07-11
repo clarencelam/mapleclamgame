@@ -317,7 +317,7 @@ class Player {
 
         // Food Tracking
         this.cooking = false
-        this.cookSpeed = 10 // lower = faster (value = milliseconds between cook progress increments in setInterval)
+        this.cookSpeed = 15 // lower = faster (value = milliseconds between cook progress increments in setInterval)
         this.cookedFood = []
         this.cookedFoodLimit = 3
         this.foods = []
@@ -389,8 +389,10 @@ class Player {
             this.cookedFood.shift()
             const food = new Food({
                 position:{
-                x: this.position.x,
-                y: this.position.y + (this.image.height/2)
+                // x: this.position.x,
+                // y: this.position.y + (this.image.height/2)
+                x: this.position.x + 20,
+                y: this.position.y -20
             },
             velocity:{
                 x: this.facing * 10,
@@ -528,7 +530,11 @@ class Player {
                 this.cookedFood[i].position.y = 15
                 this.cookedFood[i].draw()
             }
-        }        
+            this.cookedFood[0].position.x = this.position.x + 20
+            this.cookedFood[0].position.y = this.position.y-20
+            this.cookedFood[0].scale = 1
+            this.cookedFood[0].draw()
+        }
 
         // Move PLayer
         this.position.x += this.velocity.x
@@ -545,7 +551,23 @@ class Player {
             this.velocity.y += this.gravity
         }
 
-        if (this.velocity.y<0){
+        // Handle Player Left/Right Movement
+        if (keys.a.pressed && this.lastKey === 'a') {
+            this.velocity.x = -this.speed
+            this.switchSprite('move')
+            this.facing = -1
+        }
+        else if (keys.d.pressed && this.lastKey === 'd') {
+            this.velocity.x = this.speed
+            this.switchSprite('move')
+            this.facing = 1
+        } else {
+            this.switchSprite('idle')
+            this.velocity.x = 0
+        }
+
+        // Handle Player Jump Sprite Updating
+        if (this.jumping === true){
             if(this.facing === 1){
                 this.switchSprite('jumpRight')
                 return
@@ -556,6 +578,7 @@ class Player {
         } else if(this.velocity.y>0){
                 this.switchSprite('idle')
             }
+
     }
 }
 
