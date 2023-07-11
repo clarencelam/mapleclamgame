@@ -41,6 +41,15 @@ class Thornbush extends Sprite{
     }
 }
 
+class Message extends Sprite{
+    constructor({position, imageSrc, scale}){
+        super({
+            position, imageSrc, scale
+        })
+        
+    }
+}
+
 // COIN CLASS
 
 class Coin {

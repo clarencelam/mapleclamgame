@@ -16,6 +16,7 @@ const background = new Sprite({
     scale: 1.41
 })
 
+// DEFINE PLAYER
 const player = new Player({
     position:{
         x: 0,
@@ -128,7 +129,6 @@ function genThornBush(x, y){
     })    
     thornBushes.push(thornbush)
 }
-genThornBush(600, 620)
 
 const grunt = new Enemy({
     position:{
@@ -170,6 +170,7 @@ const grunt = new Enemy({
     }
 })
 
+genThornBush(600, 620)
 startRolls(grunt, 1000, 5)
 
 // declaring keys state 
@@ -182,13 +183,72 @@ const keys = {
     },
 }
 
+
+const tutorial1 = new Message({
+    position:{
+        x: 100,
+        y: 100
+    },
+    imageSrc: './img/messages1/tutorial1.png',
+    scale: 0.8
+})    
+const tutorial2 = new Message({
+    position:{
+        x: 100,
+        y: 100
+    },
+    imageSrc: './img/messages1/tutorial2.png',
+    scale: 0.8
+})    
+const tutorial3 = new Message({
+    position:{
+        x: 100,
+        y: 100
+    },
+    imageSrc: './img/messages1/tutorial3.png',
+    scale: 0.8
+})    
+
+// DECLARE GAMESTATE
+let GAMESTATE = "TUTORIAL"
+
+// DECLARE LEVEL 
+let LEVEL = "TUTORIAL_M1"
+messages = []
+
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
 
-
+    // HANDLING "TUTORIAL" GAMESTATE
+    if(GAMESTATE === "TUTORIAL"){
+        for(const i in messages){
+            messages[i].update()
+        }
+        if(LEVEL === "TUTORIAL_M1"){
+            messages.push(tutorial1)
+            window.addEventListener("click",(nextLevel) => {
+                LEVEL = "TUTORIAL_M2"
+            }, {once:true})
+        }
+         else if (LEVEL === "TUTORIAL_M2"){
+            messages.push(tutorial2)
+            window.addEventListener("click",(nextLevel)=>{
+                LEVEL = "TUTORIAL_M3"
+            }, {once:true})
+        }
+        else if (LEVEL === "TUTORIAL_M3"){
+            messages.push(tutorial3)
+            window.addEventListener("click", (nextLevel)=> {
+                LEVEL = "LEVEL1"
+                GAMESTATE = "ACTIVE"
+            }, {once:true})
+            }
+        }
+    
+    // HANDLING "ACTIVE" GAMESTATE
     if(GAMESTATE === "ACTIVE"){
         grunt.update()
         genCusts()
