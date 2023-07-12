@@ -1,6 +1,4 @@
 // Coin cointing and iteration logic
-let coinCointer = 0
-
 function getCoins(value){
     coinCointer = coinCointer += value
     document.querySelector('#coinCounter').innerHTML = coinCointer

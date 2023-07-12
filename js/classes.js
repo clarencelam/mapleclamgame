@@ -1,3 +1,4 @@
+let drawBox = true
 class Sprite {
     constructor({position, imageSrc, scale=1, framesMax = 1, offset = { x: 0, y: 0 }}){
         this.position = position
@@ -12,7 +13,7 @@ class Sprite {
         this.offset = offset
     }
 
-    draw(){
+    draw(){        
         c.drawImage(
             this.image,
             // crop
@@ -37,7 +38,36 @@ class Thornbush extends Sprite{
         super({
             position, imageSrc, scale
         })
+        // Collision detection
+        this.height = 40
+        this.width = 40
+        this.offset_x = 5
+        this.offset_y = 10
         
+    }
+    draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        c.drawImage(
+            this.image,
+            // crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // position
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale)
     }
 }
 
@@ -61,9 +91,6 @@ class Coin {
         this.image.src = imageSrc
         this.scale = scale
 
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
-
         // Sprite Crop
         this.framesMax = framesMax
         this.framesCurrent = 0
@@ -71,10 +98,28 @@ class Coin {
         this.framesHold = 12
         
         this.gravity = 0.2
+
+        // Collision detection
+        this.height = 20
+        this.width = 20
+        this.offset_x = 5
+        this.offset_y = 5
+
         this.COINSTATE = "idle"
     }
 
     draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -165,8 +210,11 @@ class Food {
         // Dissapear functionality
         this.disappearTime = 500 // leave 100 for markedForDeath foods to "drop" off-screen
 
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
+        // Collision detection
+        this.height = 20
+        this.width = 20
+        this.offset_x = 0
+        this.offset_y = 10
         
         // setting states for food 
         this.FOODSTATE = "active"
@@ -177,6 +225,17 @@ class Food {
     }
 
     draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -190,16 +249,6 @@ class Food {
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
-        /*
-        // Draw collision box
-        c.fisllStyle = "black"
-        c.fillRect(
-            this.position.x,
-            this.position.y,
-            this.image.width * this.scale / this.framesMax,
-            this.image.height * this.scale
-        )
-        */
     }
 
     animateFrames(){
@@ -310,6 +359,7 @@ class Player {
         this.framesElapsed = 0
         this.framesHold = 30
         this.sprites = sprites
+
         for (const sprite in this.sprites) {
             sprites[sprite].image = new Image()
             sprites[sprite].image.src = sprites[sprite].imageSrc
@@ -323,8 +373,10 @@ class Player {
         this.foods = []
         
         // For collision detection
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
+        this.height = 50 //this.image.height * this.scale
+        this.width = 40 //this.image.width / this.framesMax * this.scale
+        this.offset_x = 10
+        this.offset_y = 10
     }
     
     jump(){
@@ -418,6 +470,17 @@ class Player {
     }
 
     draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -507,8 +570,6 @@ class Player {
         this.animateFrames()
         this.cookFood()
 
-        var lastVelocity = this.velocity.y // check if player is ascending or descending
-
         // Draw thrown food
         if(this.foods.length > 0){
             for (const food in this.foods) {
@@ -553,12 +614,20 @@ class Player {
 
         // Handle Player Left/Right Movement
         if (keys.a.pressed && this.lastKey === 'a') {
-            this.velocity.x = -this.speed
+            if(this.position.x<= 0){
+                this.velocity.x = 0
+            }else{
+                this.velocity.x = -this.speed
+            }
             this.switchSprite('move')
             this.facing = -1
         }
         else if (keys.d.pressed && this.lastKey === 'd') {
-            this.velocity.x = this.speed
+            if((this.position.x + this.width) >= canvas.width){
+                this.velocity.x = 0
+            } else{
+                this.velocity.x = this.speed
+            }
             this.switchSprite('move')
             this.facing = 1
         } else {
@@ -609,9 +678,11 @@ class Customer{
         // Movement
         this.roll = 0
 
-        // For collision detection
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
+        // Collision detection
+        this.height = 40
+        this.width = 50
+        this.offset_x = 5
+        this.offset_y = 5
 
         this.eating = false
         this.facing = -1 // 1 = right, -1 = left
@@ -623,6 +694,17 @@ class Customer{
     }
 
     draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -636,16 +718,6 @@ class Customer{
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
-        /*
-        // Draw collision box
-        c.fisllStyle = "black"
-        c.fillRect(
-            this.position.x,
-            this.position.y,
-            this.image.width * this.scale / this.framesMax,
-            this.image.height * this.scale
-        )
-        */
     }
 
     animateFrames(){
@@ -766,12 +838,25 @@ class Enemy{
         // Movement
         this.roll = 0
 
-        // For collision detection
-        this.height = this.image.height * this.scale
-        this.width = this.image.width / this.framesMax * this.scale
+        // Collision detection
+        this.height = 100
+        this.width = 50
+        this.offset_x = 5
+        this.offset_y = 5
     }
 
     draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -785,17 +870,6 @@ class Enemy{
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale   
         )
-
-        /*
-        // Draw collision box
-        c.fisllStyle = "black"
-        c.fillRect(
-            this.position.x,
-            this.position.y,
-            this.image.width * this.scale / this.framesMax,
-            this.image.height * this.scale
-        )
-        */
     }
 
     animateFrames(){

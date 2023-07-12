@@ -19,8 +19,8 @@ const background = new Sprite({
 // DEFINE PLAYER
 const player = new Player({
     position:{
-        x: 0,
-        y: 0
+        x: 1200,
+        y: 620
     },
     velocity: {
         x: 0,
@@ -61,6 +61,7 @@ const customers = []
 const enemies = []
 const coins = []
 const thornBushes = []
+let coinCointer = 0
 
 genThornBush(600, 620)
 
@@ -86,12 +87,14 @@ function animate(){
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
 
+
     // HANDLING "TUTORIAL" GAMESTATE
     if(GAMESTATE === "TUTORIAL"){
         for(const i in messages){
             messages[i].update()
         }
         iterateTutorial()
+        player.draw()
     }
     
     // HANDLING "ACTIVE" GAMESTATE
@@ -116,7 +119,6 @@ function animate(){
             enemies[i].update()
         }
         player.update()
-
 
         // LEVEL 1 SPAWNS
         if(customers.length<6){
