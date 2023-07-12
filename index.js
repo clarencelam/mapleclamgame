@@ -121,10 +121,11 @@ function animate(){
         player.update()
 
         // LEVEL 1 SPAWNS
-        if(customers.length<6){
+        if(customers.length<1){
             let x = Math.floor(Math.random()* canvas.width)
             genCust(x, 200)
         }
+
 
         if(enemies.length<1){
             let x = Math.floor(Math.random()* canvas.width)

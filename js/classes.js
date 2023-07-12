@@ -302,10 +302,6 @@ class Food {
                     // IF eaten, allow food to drop food off screen
                     // have food follow customer
                     this.position.y += this.velocity.y
-                   // this.velocity.y += this.gravity
-                    if(this.position.y > canvas.height){
-                        this.FOODSTATE = "markedForDeath"
-                    }
                 break
             }
 
@@ -574,13 +570,16 @@ class Player {
         // Draw thrown food
         if(this.foods.length > 0){
             for (const food in this.foods) {
-                this.foods[food].update()
-
                 // Remove expired Thrown Food
+                if(this.foods[food].position.y >= canvas.height){
+                    this.foods.splice(food,1)
+                    console.log("food drop off map! Index: " + food)
+                }
                 if(this.foods[food].disappearTime ===0){
                     this.foods.splice(food,1)
                     console.log("food expiry! Index: " + food)
-                }
+                } 
+                this.foods[food].update()
             }
         }
 
