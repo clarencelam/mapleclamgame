@@ -340,6 +340,10 @@ class Player {
         this.facing = -1 // 1 = right, -1 = left
         this.jumping = false // calculated in update() function
 
+        // handle gettingHit
+        this.gettingHit = false
+        this.hitCooldown = 0
+
         // stats
         this.speed = 3
         this.jumpHeight = 10
@@ -463,6 +467,15 @@ class Player {
                 progressBar.style.background = "#9c84b5" 
                 clearTimeout(resetBar)
             }
+        }
+    }
+
+    getHit(enemyFacing,damage){
+        this.gettingHit = true
+        if(enemyFacing === 1){ // hit from right, move left
+            this.velocity.x = damage
+        } else if(enemyFacing === -1){
+            this.velocity.x = -damage
         }
     }
 
@@ -612,27 +625,42 @@ class Player {
             this.velocity.y += this.gravity
         }
 
-        // Handle Player Left/Right Movement
-        if (keys.a.pressed && this.lastKey === 'a') {
-            if(this.position.x<= 0){
-                this.velocity.x = 0
-            }else{
-                this.velocity.x = -this.speed
-            }
-            this.switchSprite('move')
-            this.facing = -1
+        if(this.gettingHit === true && this.hitCooldown<20){
+            this.hitCooldown += 1
+            console.log(this.hitCooldown)
+        } else if (this.gettingHit === true && this.hitCooldown>=20){
+            this.gettingHit = false
+            this.hitCooldown = 0
         }
-        else if (keys.d.pressed && this.lastKey === 'd') {
-            if((this.position.x + this.width) >= canvas.width){
-                this.velocity.x = 0
-            } else{
-                this.velocity.x = this.speed
+
+        // Handle Player Left/Right Movement
+        if(this.gettingHit === false){
+            if (keys.a.pressed && this.lastKey === 'a') {
+                if(this.position.x<= 0){
+                    this.velocity.x = 0
+                }else{
+                    this.velocity.x = -this.speed
+                }
+                this.switchSprite('move')
+                this.facing = -1
             }
-            this.switchSprite('move')
-            this.facing = 1
-        } else {
-            this.switchSprite('idle')
-            this.velocity.x = 0
+            else if (keys.d.pressed && this.lastKey === 'd') {
+                if((this.position.x + this.width) >= canvas.width){
+                    this.velocity.x = 0
+                } 
+                else {
+                    this.velocity.x = this.speed
+                }
+                this.switchSprite('move')
+                this.facing = 1
+            } else {
+                this.switchSprite('idle')
+                this.velocity.x = 0
+            }    
+        } else{
+                if(this.position.x<= 0 || (this.position.x + this.width) >= canvas.width){
+                    this.velocity.x = 0
+                }
         }
 
         // Handle Player Jump Sprite Updating
@@ -817,6 +845,8 @@ class Enemy{
         this.image.src = imageSrc
         this.scale = scale
         this.facing = -1 // 1 = right, -1 = left
+        
+        this.isAttacking = false
 
         // stats
         this.speed = 5
@@ -887,7 +917,9 @@ class Enemy{
     }
 
     movementDecision(num){
-        if(num===0){
+        if(this.isAttacking===true){ // do not make new movements if enemy is currently attacking
+            return
+        } else if(num===0){
             this.switchSprite('idle')
             this.velocity.x = 0
         } else if(num===1){
@@ -907,10 +939,17 @@ class Enemy{
         }
     }
 
+    attack(){
+        this.switchSprite('attack')
+        this.isAttacking = true
+    }
+
     switchSprite(sprite) {
         let idleFramesHold = 40
         let walkFramesHold = 18
         let jumpFramesHold = 30
+        let attackFramesHold = 12
+
         switch (sprite) {
             case 'idle':
                 if(this.facing === -1){
@@ -948,23 +987,32 @@ class Enemy{
                     }
                 }
                 break
-                case 'jump':
-                    if (this.facing === -1) {
-                        if (this.image != this.sprites.jump.image) {
-                            this.framesHold = jumpFramesHold
-                            this.image = this.sprites.jump.image
-                            this.framesMax = this.sprites.jump.framesMax
-                            this.framesCurrent = 0
-                        }
-                    } else if (this.facing === 1) {
-                        if (this.image != this.sprites.jumpRight.image) {
-                            this.framesHold = jumpFramesHold
-                            this.image = this.sprites.jumpRight.image
-                            this.framesMax = this.sprites.jumpRight.framesMax
-                            this.framesCurrent = 0
-                        }
+            case 'jump':
+                if (this.facing === -1) {
+                    if (this.image != this.sprites.jump.image) {
+                        this.framesHold = jumpFramesHold
+                        this.image = this.sprites.jump.image
+                        this.framesMax = this.sprites.jump.framesMax
+                        this.framesCurrent = 0
                     }
-                    break    
+                } else if (this.facing === 1) {
+                    if (this.image != this.sprites.jumpRight.image) {
+                        this.framesHold = jumpFramesHold
+                        this.image = this.sprites.jumpRight.image
+                        this.framesMax = this.sprites.jumpRight.framesMax
+                        this.framesCurrent = 0
+                    }
+                }
+                break
+            case 'attack':
+                this.framesHold = attackFramesHold
+                if (this.facing === -1) {
+                    this.image = this.sprites.attack.image
+                } else if (this.facing === 1) {
+                    this.image = this.sprites.attackRight.image
+                }
+                this.framesMax = this.sprites.attack.framesMax
+                this.framesCurrent = 0
         }
     }
 
@@ -983,8 +1031,18 @@ class Enemy{
             this.facing = -1
             this.switchSprite('walk')
         }
-        this.position.x += this.velocity.x
+
+        // if this is attacking and in the attack sprite, finish attack sprite and set isAttacking to false
+        if(this.isAttacking=== true && (this.image === this.sprites.attack.image || this.image === this.sprites.attackRight.image)){
+            if(this.framesCurrent >= this.sprites.attack.framesMax-1){
+                this.isAttacking = false
+                this.movementDecision(0)
+            }
+        } else { // only move X axis if isAttacking === false
+            this.position.x += this.velocity.x
+        }
         this.position.y += this.velocity.y
+        console.log("attacking: " + this.isAttacking)
 
         // Reset sprites after Jump
         if((this.image === this.sprites.jump.image || this.image === this.sprites.jumpRight.image)

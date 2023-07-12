@@ -107,6 +107,14 @@ function genGrunt(x,y){
             jumpRight:{
                 imageSrc: './img/badGuy1/jumpRight.png',
                 framesMax: 1
+            },
+            attack:{
+                imageSrc: './img/badGuy1/attack.png',
+                framesMax: 6
+            },
+            attackRight:{
+                imageSrc: './img/badGuy1/attackRight.png',
+                framesMax: 6
             }
         }
     })

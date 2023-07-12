@@ -114,3 +114,18 @@ function handleFoodPlayerInteractions(){
                 
             }
 }
+
+// Player & Enemy interaction logic
+function handleEnemyPlayerInteractions(){
+    for(const i in enemies){
+        thisEnemy = enemies[i]
+        if(spriteCollision({
+            rectangle1: thisEnemy,
+            rectangle2: player
+        }) && thisEnemy.isAttacking === false){
+            console.log("attack")
+            thisEnemy.attack()
+            player.getHit(thisEnemy.facing,10)
+        }
+    }
+}

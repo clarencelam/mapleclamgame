@@ -63,7 +63,7 @@ const coins = []
 const thornBushes = []
 let coinCointer = 0
 
-genThornBush(600, 620)
+//genThornBush(600, 620)
 
 // declaring keys state 
 const keys = {
@@ -143,6 +143,8 @@ function animate(){
         // Check if Player collides with Coins
         // Make coin stick to Player upon pickup 
         handleCoinPlayerInteractions() // defined in utils.js
+
+        handleEnemyPlayerInteractions()
     }
 }
 
