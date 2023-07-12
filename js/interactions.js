@@ -126,6 +126,15 @@ function handleEnemyPlayerInteractions(){
             console.log("attack")
             thisEnemy.attack()
             player.getHit(thisEnemy.facing,10)
+
+            // Player drops coin
+            var pos_x = player.position.x + (player.width/2)
+            var pos_y = player.position.y
+            if(coinCointer>0){
+                genCoin(pos_x, pos_y-40)  
+                coinCointer -=1
+                document.querySelector('#coinCounter').innerHTML = coinCointer
+            }
         }
     }
 }

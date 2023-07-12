@@ -950,6 +950,8 @@ class Enemy{
         let jumpFramesHold = 30
         let attackFramesHold = 12
 
+        if(this.isAttacking === true) return // if isAttacking = true, do not switch sprites
+
         switch (sprite) {
             case 'idle':
                 if(this.facing === -1){
@@ -1005,14 +1007,21 @@ class Enemy{
                 }
                 break
             case 'attack':
-                this.framesHold = attackFramesHold
-                if (this.facing === -1) {
-                    this.image = this.sprites.attack.image
-                } else if (this.facing === 1) {
-                    this.image = this.sprites.attackRight.image
+                if(this.facing === -1){
+                    if(this.image != this.sprites.attack.image){
+                        this.framesHold = attackFramesHold
+                        this.image = this.sprites.attack.image
+                        this.framesMax = this.sprites.attack.framesMax
+                        this.framesCurrent = 0
+                    }
+                } else if(this.facing === 1){
+                    if(this.image != this.sprites.attackRight.image){
+                        this.framesHold = attackFramesHold
+                        this.image = this.sprites.attackRight.image
+                        this.framesMax = this.sprites.attackRight.framesMax
+                        this.framesCurrent = 0
+                    }
                 }
-                this.framesMax = this.sprites.attack.framesMax
-                this.framesCurrent = 0
         }
     }
 
@@ -1033,14 +1042,19 @@ class Enemy{
         }
 
         // if this is attacking and in the attack sprite, finish attack sprite and set isAttacking to false
-        if(this.isAttacking=== true && (this.image === this.sprites.attack.image || this.image === this.sprites.attackRight.image)){
-            if(this.framesCurrent >= this.sprites.attack.framesMax-1){
+        if(this.isAttacking=== true){
+            this.velocity.x = 0
+            console.log('current frame: '+ this.framesCurrent)
+            if(this.image !== this.sprites.attack.image && this.image !== this.sprites.attackRight.image){
+                this.switchSprite('attack')
+            }
+            if(this.framesCurrent === 5){
                 this.isAttacking = false
                 this.movementDecision(0)
-            }
-        } else { // only move X axis if isAttacking === false
-            this.position.x += this.velocity.x
-        }
+            } 
+        } 
+
+        this.position.x += this.velocity.x
         this.position.y += this.velocity.y
         console.log("attacking: " + this.isAttacking)
 
