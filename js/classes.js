@@ -42,6 +42,45 @@ class Message extends Sprite{
     }
 }
 
+class Platform extends Sprite{
+    constructor({position, imageSrc, scale}){
+        super({
+            position, imageSrc, scale
+        })
+        // Collision detection
+        this.height = 50 * scale
+        this.width = 215 * scale
+        this.offset_x = 0
+        this.offset_y = 0
+        this.offset.y = 10
+        
+    }
+    draw(){
+        // Draw collision box
+        if(drawBox === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )    
+        }
+        c.drawImage(
+            this.image,
+            // crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // position
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale)
+    }
+}
+
 
 class Thornbush extends Sprite{
     constructor({position, imageSrc, scale}){
@@ -346,12 +385,12 @@ class Player {
 
         // stats
         this.speed = 3
-        this.jumpHeight = 10
+        this.jumpHeight = 11 //default 10
         this.gravity = 0.3
 
         // movement mechanics
         this.lastkey
-        this.bottomYCords = 148 // base of level (where gravity should stop)
+        this.bottomYCords = 682 // base of level (where gravity should stop)
         this.lastVelocity
 
         // Srite Crop
@@ -477,6 +516,7 @@ class Player {
         } else if(enemyFacing === -1){
             this.velocity.x = -damage
         }
+        this.velocity.y-=4
     }
 
     draw(){
@@ -616,7 +656,7 @@ class Player {
         
         // Handling platform gravity
         // If player is at bottom of map, stop gravity
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height-this.bottomYCords)){
+        if (this.position.y + this.offset_y + this.height + this.velocity.y >= this.bottomYCords){
             this.velocity.y = 0
             // Player on bottom -- set jumping to false
             this.jumping = false
@@ -1044,7 +1084,6 @@ class Enemy{
         // if this is attacking and in the attack sprite, finish attack sprite and set isAttacking to false
         if(this.isAttacking=== true){
             this.velocity.x = 0
-            console.log('current frame: '+ this.framesCurrent)
             if(this.image !== this.sprites.attack.image && this.image !== this.sprites.attackRight.image){
                 this.switchSprite('attack')
             }
@@ -1056,7 +1095,6 @@ class Enemy{
 
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
-        console.log("attacking: " + this.isAttacking)
 
         // Reset sprites after Jump
         if((this.image === this.sprites.jump.image || this.image === this.sprites.jumpRight.image)

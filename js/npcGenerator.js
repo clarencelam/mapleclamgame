@@ -1,9 +1,23 @@
+// Generate platform
+function genPlatform(x, y){
+    const platform = new Platform({
+        position:{
+            x: x,
+            y: y
+        },
+        imageSrc: './img/platforms/platform1.png',
+        scale: 1.3
+    })    
+    platforms.push(platform)
+}
+
+
 // Generate thornbush
 function genThornBush(x, y){
     const thornbush = new Thornbush({
         position:{
-            x: 600,
-            y: 630
+            x: x,
+            y: y
         },
         imageSrc: './img/thorns1.png',
         scale: 0.15

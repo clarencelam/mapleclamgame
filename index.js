@@ -61,9 +61,9 @@ const customers = []
 const enemies = []
 const coins = []
 const thornBushes = []
+const platforms = []
 let coinCointer = 0
 
-//genThornBush(600, 620)
 
 // declaring keys state 
 const keys = {
@@ -81,11 +81,55 @@ const keys = {
 let GAMESTATE = "TUTORIAL"
 let LEVEL = "TUTORIAL_M1"
 
+genThornBush(700, 630)
+genPlatform(220,380)
+genPlatform(100,380)
+genPlatform(600,520)
+genPlatform(1100,200)
+genPlatform(1400,550)
+genPlatform(1400,380)
+
+
+// function addResidents(list, residents){
+//     for(const i in list){
+//         residents.push(list[i])
+//     }
+// }
+
+function checkPlatforms(platform){
+    return(
+        player.position.x + player.offset_x >= thisPlatform.position.x &&
+        player.position.x + player.offset_x + player.width <= thisPlatform.position.x + thisPlatform.width &&
+        player.position.y + player.offset_y + player.height <= thisPlatform.position.y
+    )
+}
+
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
+
+    mapleResidents = []
+    // addResidents(customers, mapleResidents)
+    // addResidents(enemies, mapleResidents)
+    // addResidents(coins, mapleResidents)
+    // mapleResidents.push(player)
+    // console.log(mapleResidents)
+
+    // Handle platform logic
+    player.bottomYCords = 682
+    for(const i in platforms){
+        // if player x within platform && y above platform, player y does not go below platform y
+        thisPlatform = platforms[i]
+        if(
+            checkPlatforms(thisPlatform)
+        ){
+            //  player y+height does not go below platform y
+            console.log("player on platform!!!")
+            player.bottomYCords = thisPlatform.position.y -1
+        } 
+    }
 
 
     // HANDLING "TUTORIAL" GAMESTATE
@@ -101,6 +145,9 @@ function animate(){
     if(GAMESTATE === "ACTIVE"){
 
         // UPDATE ALL OBJECTS
+        for (const i in platforms){
+            platforms[i].update()
+        }
          for (const num in customers) {
             customers[num].update()
             if (customers[num].position.y > canvas.height) {
