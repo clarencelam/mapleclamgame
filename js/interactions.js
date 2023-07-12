@@ -103,10 +103,10 @@ function handleFoodPlayerInteractions(){
                                 rectangle1: thisFood,
                                 rectangle2: thisCust
                             })){
-                                var custCenterPointX = thisCust.position.x + (thisCust.width/2)
-                                var custCenterPointY = thisCust.position.y + (thisCust.height/2)
-                                var foodCenterPointX = thisFood.position.x + (thisFood.width/2)
-                                var foodCenterPointY = thisFood.position.y + (thisFood.height/2)
+                                var custCenterPointX = thisCust.position.x + thisCust.offset_x + (thisCust.width/2)
+                                var custCenterPointY = thisCust.position.y + thisCust.offset_y + (thisCust.height/2)
+                                var foodCenterPointX = thisFood.position.x + thisFood.offset_x + (thisFood.width/2)
+                                var foodCenterPointY = thisFood.position.y + thisFood.offset_y + (thisFood.height/2)
                                 var xDifferential = custCenterPointX - foodCenterPointX 
                                 var yDifferential = custCenterPointY - foodCenterPointY
         

@@ -33,6 +33,16 @@ class Sprite {
     }
 }
 
+class Message extends Sprite{
+    constructor({position, imageSrc, scale}){
+        super({
+            position, imageSrc, scale
+        })
+        
+    }
+}
+
+
 class Thornbush extends Sprite{
     constructor({position, imageSrc, scale}){
         super({
@@ -68,15 +78,6 @@ class Thornbush extends Sprite{
             this.position.y - this.offset.y,
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale)
-    }
-}
-
-class Message extends Sprite{
-    constructor({position, imageSrc, scale}){
-        super({
-            position, imageSrc, scale
-        })
-        
     }
 }
 
