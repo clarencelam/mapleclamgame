@@ -104,18 +104,13 @@ function checkPlatforms(platform){
     )
 }
 
+decreaseTimer()
+
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
-
-    mapleResidents = []
-    // addResidents(customers, mapleResidents)
-    // addResidents(enemies, mapleResidents)
-    // addResidents(coins, mapleResidents)
-    // mapleResidents.push(player)
-    // console.log(mapleResidents)
 
     // Handle platform logic
     player.bottomYCords = 682
@@ -131,7 +126,6 @@ function animate(){
         } 
     }
 
-
     // HANDLING "TUTORIAL" GAMESTATE
     if(GAMESTATE === "TUTORIAL"){
         for(const i in messages){
@@ -139,6 +133,28 @@ function animate(){
         }
         iterateTutorial()
         player.draw()
+    }
+
+    // HANDLING "INACTIVE" GAMESTATE
+    if(GAMESTATE === "INACTIVE"){
+
+        // DRAW/UPDATE SELECT OBJECTS
+        player.update()
+        for (const i in platforms){
+            platforms[i].update()
+        }
+        for (const num in customers) {
+            customers[num].update()
+        }
+        for (const num in coins) {  
+            coins[num].update()
+        }
+        for (const i in enemies) {
+            enemies[i].update()
+        }
+        for(const i in messages){
+            messages[i].update()
+        }
     }
     
     // HANDLING "ACTIVE" GAMESTATE
@@ -168,7 +184,7 @@ function animate(){
         player.update()
 
         // LEVEL 1 SPAWNS
-        if(customers.length<1){
+        if(customers.length<5){
             let x = Math.floor(Math.random()* canvas.width)
             genCust(x, 200)
         }

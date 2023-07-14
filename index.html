@@ -18,51 +18,65 @@
     <div style="position: relative; display: inline-block">
 
         <div id="coinCounter"
-        style="        
+             style="      
+        color: white;  
         position: absolute;
-        top: 5%;
-        left: 50%
+        left: 90%;
+        bottom: 1%
         ">
-    0
-    </div>
+        </div>
+
+        <div id="timer"
+             style="      
+                color: black;  
+                position: absolute;
+                left: 50%;
+                top: 5%
+                ">
+            0
+        </div>
 
 
-        <div id="cookingTotal" 
-        style="
+
+        <div id="cookingTotal"
+             style="
         position: absolute;
         bottom: 0;
         width:50%;
         background: rgb(39, 12, 36);
         text-align: right">
-            <div id="cookingProgress" 
-            style="
+            <div id="cookingProgress"
+                 style="
             position: absolute;
             width:1%;
             height: 30px;
             background: #9c84b5;
             text-align: left;
-            "><img style="text-align: right" id="foodImage" 
-            src="img/chefHat.png"></div>
+            "><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
 
-            <div id="fullBar" 
-            style="
+            <div id="fullBar"
+                  
+                 style="
             position: relative;
             width: 100%;
-            text-align: right"
-            ><img style="text-align: right" id="foodImage" 
-            src="img/chefHat.png"></div>
+            text-align: right"><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
 
-            
+
         </div>
 
-        <div id="displayText" style="position: absolute; color: white; align-items: center; justify-content: center;
+        <div id="levelEnd"
+             style="position: absolute; color: black; align-items: center; justify-content: center;
         top: 0;
         left: 0;
         bottom: 0;
         right: 0;
         display: none">Tie</div>
 
-    <canvas></canvas>
+        <canvas></canvas>
     </div>
 
     <script src="js/utils.js"></script>

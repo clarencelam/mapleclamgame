@@ -33,3 +33,54 @@ function spriteCollision({ rectangle1, rectangle2 }) {
     )
 }
 
+let timer = 5
+
+function endLevel(){
+    // make Gamestate = inactive, only player moves
+    // display end level stats message 
+    GAMESTATE = "INACTIVE"
+
+    document.querySelector("#levelEnd").innerHTML = 'Level Complete'
+    document.querySelector("#levelEnd").style.display = 'flex'
+
+    messages = []
+    let daySummary = new Message({
+        position:{
+            x: 250,
+            y: 200
+        },
+        imageSrc: `./img/messages1/messageTemplate.png`,
+        scale: 0.8    
+    })
+    messages.push(daySummary)
+
+
+    // press space to go to betweenLevels state
+    window.addEventListener("click",(goHome) => {
+        //LEVEL = "TUTORIAL_M2"
+    }, {once:true})
+
+}
+
+function betweenLevels(){
+    // background = home (upgrade room), with portal to next level
+}
+
+function startLevel(){
+    // make Gamestate = active
+    // increment level
+}
+
+function decreaseTimer(){
+    if (timer > 0) {
+        timerID = setTimeout(decreaseTimer, 1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+        console.log(timer)
+    }
+
+    if (timer === 0){
+        endLevel()
+    }
+}
+
