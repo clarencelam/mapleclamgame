@@ -1,6 +1,7 @@
 // Coin cointing and iteration logic
 function getCoins(value){
     coinCointer = coinCointer += value
+    todaysCoins = todaysCoins += value
     document.querySelector('#coinCounter').innerHTML = coinCointer
 }
 

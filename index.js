@@ -62,7 +62,10 @@ const enemies = []
 const coins = []
 const thornBushes = []
 const platforms = []
+
 let coinCointer = 0
+let todaysCoins = 0
+let minimumCoins = 5
 
 
 // declaring keys state 
@@ -104,6 +107,7 @@ function checkPlatforms(platform){
     )
 }
 
+//decreaseTimer()
 decreaseTimer()
 
 function animate(){

@@ -33,14 +33,19 @@ function spriteCollision({ rectangle1, rectangle2 }) {
     )
 }
 
-let timer = 5
-
 function endLevel(){
     // make Gamestate = inactive, only player moves
     // display end level stats message 
     GAMESTATE = "INACTIVE"
 
-    document.querySelector("#levelEnd").innerHTML = 'Level Complete'
+    // determine win/loss/tie message
+    if(todaysCoins> minimumCoins){// win
+        document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>We'll pay you out the ${todaysCoins - minimumCoins} extra mesos<br><br>Good work. See you tomorrow.`
+    } else if(todaysCoins === minimumCoins){
+        document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
+    } else {
+        document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired.`
+    }
     document.querySelector("#levelEnd").style.display = 'flex'
 
     messages = []
@@ -71,16 +76,19 @@ function startLevel(){
     // increment level
 }
 
+timer = 5
 function decreaseTimer(){
-    if (timer > 0) {
-        timerID = setTimeout(decreaseTimer, 1000)
-        timer--
-        document.querySelector('#timer').innerHTML = timer
-        console.log(timer)
-    }
-
-    if (timer === 0){
-        endLevel()
-    }
+        if (timer > 0) {
+            timerID = setTimeout(decreaseTimer, 1000)
+            timer--
+            document.querySelector('#timer').innerHTML = timer
+            console.log(timer)
+        }
+    
+        if (timer === 0){
+            timerOn = false
+            endLevel()
+        }    
+    
 }
 
