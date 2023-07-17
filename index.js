@@ -115,7 +115,7 @@ function animate(){
     background.update()
 
     // Handle platform logic
-    player.bottomYCords = 682
+    player.bottomYCordsActive = 682 // re-apply base bottom Y coords
     for(const i in platforms){
         // if player x within platform && y above platform, player y does not go below platform y
         thisPlatform = platforms[i]
@@ -124,7 +124,7 @@ function animate(){
         ){
             //  player y+height does not go below platform y
             console.log("player on platform!!!")
-            player.bottomYCords = thisPlatform.position.y -1
+            player.bottomYCordsActive = thisPlatform.position.y -1
         } 
     }
 
@@ -157,6 +157,11 @@ function animate(){
         for(const i in messages){
             messages[i].update()
         }
+    }
+    
+    // HANDLING "BETWEENLEVELS" GAMESTATE
+    if(GAMESTATE === "BETWEENLEVELS"){
+        player.update()
     }
     
     // HANDLING "ACTIVE" GAMESTATE
@@ -235,6 +240,7 @@ window.addEventListener('keydown', (event) => {
             case ' ':
                 player.throw()
             }    
+            event.preventDefault()
     }
 )
 

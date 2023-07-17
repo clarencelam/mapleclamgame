@@ -33,9 +33,12 @@ function spriteCollision({ rectangle1, rectangle2 }) {
     )
 }
 
-timer = 5
 
-function endLevel() {
+// LEVEL ITERATION FUNCTIONS
+
+timer = 50
+
+function endLevel() { 
     if (GAMESTATE === "ACTIVE") {
         GAMESTATE = "INACTIVE"
         console.log("end level activated")
@@ -61,20 +64,21 @@ function endLevel() {
             } else if (todaysCoins === minimumCoins) {
                 document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
             }
-            window.addEventListener('click', () => {
+            document.getElementById("gameWindow").addEventListener('click', () => {
                     goBetweenLevels()
                     console.log('win gohome triggered')
             }, { once: true })
 
         } else {
             // LOSS CASE
-            document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired.`
+            document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired. Refresh to try again!`
         }
     }
 }
 
 function goBetweenLevels(){
     console.log("GAMESTATE CHANGE: GOING INBETWEEN LEVELS")
+    GAMESTATE = "BETWEENLEVELS"
     // clear objects
     document.querySelector("#levelEnd").style.display = 'none'
     messages = []

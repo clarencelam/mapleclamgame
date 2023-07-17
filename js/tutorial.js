@@ -25,19 +25,19 @@ function iterateTutorial(){
     if(LEVEL === "TUTORIAL_M1"){
         // messages.push(tutorial1)
         genTutorial(1)
-        window.addEventListener("click",(nextLevel) => {
+        document.getElementById("gameWindow").addEventListener("click",(nextLevel) => {
             LEVEL = "TUTORIAL_M2"
         }, {once:true})
     }
      else if (LEVEL === "TUTORIAL_M2"){
         genTutorial(2)
-        window.addEventListener("click",(nextLevel)=>{
+        document.getElementById("gameWindow").addEventListener("click",(nextLevel)=>{
             LEVEL = "TUTORIAL_M3"
         }, {once:true})
     }
     else if (LEVEL === "TUTORIAL_M3"){
         genTutorial(3)
-        window.addEventListener("click", (nextLevel)=> {
+        document.getElementById("gameWindow").addEventListener("click", (nextLevel)=> {
             startLevel1()
                 }, {once:true})
         }
