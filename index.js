@@ -108,8 +108,6 @@ function checkPlatforms(platform){
 }
 
 //decreaseTimer()
-decreaseTimer()
-
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'

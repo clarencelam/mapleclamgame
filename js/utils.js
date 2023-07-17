@@ -76,19 +76,21 @@ function startLevel(){
     // increment level
 }
 
-timer = 5
-function decreaseTimer(){
-        if (timer > 0) {
-            timerID = setTimeout(decreaseTimer, 1000)
-            timer--
-            document.querySelector('#timer').innerHTML = timer
-            console.log(timer)
-        }
-    
-        if (timer === 0){
-            timerOn = false
-            endLevel()
-        }    
-    
+timer = 30
+function decreaseTimer() {
+    if (timer > 0) {
+        console.log('timer increment')
+        timerID = setTimeout(decreaseTimer, 1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+        console.log(timer)
+    }
+
+
+
+    if (timer === 0) {
+        endLevel()
+    }
+
 }
 

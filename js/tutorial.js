@@ -13,6 +13,14 @@ function genTutorial(num){
     messages.push(tutorial)
 }
 
+function startLevel1(){
+    if(LEVEL != "LEVEL1"){
+        LEVEL = "LEVEL1"
+        GAMESTATE = "ACTIVE"
+        decreaseTimer()
+    }
+}
+
 function iterateTutorial(){
     if(LEVEL === "TUTORIAL_M1"){
         // messages.push(tutorial1)
@@ -30,8 +38,7 @@ function iterateTutorial(){
     else if (LEVEL === "TUTORIAL_M3"){
         genTutorial(3)
         window.addEventListener("click", (nextLevel)=> {
-            LEVEL = "LEVEL1"
-            GAMESTATE = "ACTIVE"
-        }, {once:true})
+            startLevel1()
+                }, {once:true})
         }
 }

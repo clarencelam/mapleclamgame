@@ -2,7 +2,7 @@
 function getCoins(value){
     coinCointer = coinCointer += value
     todaysCoins = todaysCoins += value
-    document.querySelector('#coinCounter').innerHTML = coinCointer
+    document.querySelector('#coinCounter').innerHTML = `Today's Coins: ${coinCointer}`
 }
 
 function handleCoinPlayerInteractions() {
