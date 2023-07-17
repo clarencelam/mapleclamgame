@@ -391,7 +391,7 @@ class Player {
         // movement mechanics
         this.lastkey
         this.bottomYCordsActive = 682 // base of level (where gravity should stop), set in index.js
-        this.bottomYCordsBetweeenLevels = 750
+        this.bottomYCordsBetweeenLevels
         this.lastVelocity
 
         // Srite Crop

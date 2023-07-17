@@ -36,8 +36,6 @@ function spriteCollision({ rectangle1, rectangle2 }) {
 
 // LEVEL ITERATION FUNCTIONS
 
-timer = 50
-
 function endLevel() { 
     if (GAMESTATE === "ACTIVE") {
         GAMESTATE = "INACTIVE"
@@ -66,7 +64,6 @@ function endLevel() {
             }
             document.getElementById("gameWindow").addEventListener('click', () => {
                     goBetweenLevels()
-                    console.log('win gohome triggered')
             }, { once: true })
 
         } else {
@@ -79,8 +76,13 @@ function endLevel() {
 function goBetweenLevels(){
     console.log("GAMESTATE CHANGE: GOING INBETWEEN LEVELS")
     GAMESTATE = "BETWEENLEVELS"
+
     // clear objects
-    document.querySelector("#levelEnd").style.display = 'none'
+    toHide = ["#coinCounter","#timer","#levelEnd","#cookingTotal"]
+    for(let i in toHide){
+        document.querySelector(`${toHide[i]}`).style.display = 'none'
+    }
+
     messages = []
     customers = []
     enemies = []
@@ -119,3 +121,80 @@ function decreaseTimer() {
 
 }
 
+
+function restartGame(){
+    timer = 3
+    console.log("reset pressed")
+
+    // hide and show appropriate HTML elements
+    document.querySelector("#levelEnd").style.display = 'none'
+    toShow = ["#coinCounter","#timer","#cookingTotal"]
+    for(let i in toShow){
+        document.querySelector(`${toShow[i]}`).style.display = 'inline'
+    }
+
+
+background = new Sprite({
+    position:{
+        x: 0,
+        y: 0
+    },
+    imageSrc: './img/background.png',
+    scale: 1.41
+})
+
+// DEFINE PLAYER
+player = new Player({
+    position:{
+        x: 1200,
+        y: 620
+    },
+    velocity: {
+        x: 0,
+        y: 10
+    },
+    imageSrc: './img/player/idle.png',
+    scale: 1.4,
+    framesMax: 4,
+    sprites: {
+        idle: {
+            imageSrc: './img/player/idle.png',
+            framesMax: 4
+        },
+        idleRight: {
+            imageSrc: './img/player/idleRight.png',
+            framesMax: 4
+        },
+        move: {
+            imageSrc: './img/player/move.png',
+            framesMax: 6
+        },
+        moveRight: {
+            imageSrc: './img/player/moveRight.png',
+            framesMax: 6
+        },
+        jump: {
+            imageSrc: './img/player/jump.png',
+            framesMax: 1
+        },
+        jumpRight: {
+            imageSrc: './img/player/jumpRight.png',
+            framesMax: 1
+        },
+    }
+})
+
+ coinCointer = 0
+ todaysCoins = 0
+ minimumCoins = 0
+
+    messages = []
+    customers = []
+    enemies = []
+    coins = []
+    thornBushes = []
+    platforms = []
+
+    GAMESTATE = "TUTORIAL"
+    LEVEL = "TUTORIAL_M1"
+}

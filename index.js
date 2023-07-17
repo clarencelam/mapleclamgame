@@ -17,7 +17,7 @@ var background = new Sprite({
 })
 
 // DEFINE PLAYER
-const player = new Player({
+var player = new Player({
     position:{
         x: 1200,
         y: 620
@@ -67,6 +67,7 @@ let coinCointer = 0
 let todaysCoins = 0
 let minimumCoins = 0
 
+timer = 3
 
 // declaring keys state 
 const keys = {
@@ -84,13 +85,13 @@ const keys = {
 let GAMESTATE = "TUTORIAL"
 let LEVEL = "TUTORIAL_M1"
 
-genThornBush(700, 630)
-genPlatform(220,380)
-genPlatform(100,380)
-genPlatform(600,520)
-genPlatform(1100,200)
-genPlatform(1400,550)
-genPlatform(1400,380)
+// genThornBush(700, 630)
+// genPlatform(220,380)
+// genPlatform(100,380)
+// genPlatform(600,520)
+// genPlatform(1100,200)
+// genPlatform(1400,550)
+// genPlatform(1400,380)
 
 
 // function addResidents(list, residents){
@@ -116,6 +117,7 @@ function animate(){
 
     // Handle platform logic
     player.bottomYCordsActive = 682 // re-apply base bottom Y coords
+    player.bottomYCordsBetweeenLevels = 770 // re-apply base bottom Y coords
     for(const i in platforms){
         // if player x within platform && y above platform, player y does not go below platform y
         thisPlatform = platforms[i]

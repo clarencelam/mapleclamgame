@@ -13,12 +13,19 @@ function genTutorial(num){
     messages.push(tutorial)
 }
 
-function startLevel1(){
-    if(LEVEL != "LEVEL1"){
+function startLevel1() {
+    if (LEVEL != "LEVEL1") {
         LEVEL = "LEVEL1"
         GAMESTATE = "ACTIVE"
         decreaseTimer()
     }
+    genThornBush(700, 630)
+    genPlatform(220, 380)
+    genPlatform(100, 380)
+    genPlatform(600, 520)
+    genPlatform(1100, 200)
+    genPlatform(1400, 550)
+    genPlatform(1400, 380)
 }
 
 function iterateTutorial(){
