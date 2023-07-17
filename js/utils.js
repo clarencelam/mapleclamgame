@@ -33,50 +33,73 @@ function spriteCollision({ rectangle1, rectangle2 }) {
     )
 }
 
-function endLevel(){
-    // make Gamestate = inactive, only player moves
-    // display end level stats message 
-    GAMESTATE = "INACTIVE"
+timer = 5
 
-    // determine win/loss/tie message
-    if(todaysCoins> minimumCoins){// win
-        document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>We'll pay you out the ${todaysCoins - minimumCoins} extra mesos<br><br>Good work. See you tomorrow.`
-    } else if(todaysCoins === minimumCoins){
-        document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
-    } else {
-        document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired.`
+function endLevel() {
+    if (GAMESTATE === "ACTIVE") {
+        GAMESTATE = "INACTIVE"
+        console.log("end level activated")
+
+        messages = []
+        let daySummary = new Message({
+            position: {
+                x: 250,
+                y: 200
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: 0.8
+        })
+        messages.push(daySummary)
+
+        document.querySelector("#levelEnd").style.display = 'flex'
+
+        // WIN CASE
+        if (todaysCoins >= minimumCoins) {
+            // press space to go to betweenLevels state
+            if (todaysCoins > minimumCoins) {
+                document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>We'll pay you out the ${todaysCoins - minimumCoins} extra mesos<br><br>Good work. See you tomorrow.`
+            } else if (todaysCoins === minimumCoins) {
+                document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
+            }
+            window.addEventListener('click', () => {
+                    goBetweenLevels()
+                    console.log('win gohome triggered')
+            }, { once: true })
+
+        } else {
+            // LOSS CASE
+            document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired.`
+        }
     }
-    document.querySelector("#levelEnd").style.display = 'flex'
+}
 
+function goBetweenLevels(){
+    console.log("GAMESTATE CHANGE: GOING INBETWEEN LEVELS")
+    // clear objects
+    document.querySelector("#levelEnd").style.display = 'none'
     messages = []
-    let daySummary = new Message({
-        position:{
-            x: 250,
-            y: 200
-        },
-        imageSrc: `./img/messages1/messageTemplate.png`,
-        scale: 0.8    
-    })
-    messages.push(daySummary)
+    customers = []
+    enemies = []
+    coins = []
+    thornBushes = []
+    platforms = []
 
-
-    // press space to go to betweenLevels state
-    window.addEventListener("click",(goHome) => {
-        //LEVEL = "TUTORIAL_M2"
-    }, {once:true})
-
-}
-
-function betweenLevels(){
     // background = home (upgrade room), with portal to next level
-}
+    background = new Sprite({
+        position:{
+            x: 0,
+            y: 0
+        },
+        imageSrc: './img/backgrounds/home.png',
+        scale: .57
+    })
+    }
 
 function startLevel(){
     // make Gamestate = active
     // increment level
 }
 
-timer = 30
 function decreaseTimer() {
     if (timer > 0) {
         console.log('timer increment')
@@ -85,8 +108,6 @@ function decreaseTimer() {
         document.querySelector('#timer').innerHTML = timer
         console.log(timer)
     }
-
-
 
     if (timer === 0) {
         endLevel()

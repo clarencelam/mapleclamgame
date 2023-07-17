@@ -7,7 +7,7 @@ canvas.height = (270*3)
 
 //c.fillRect(0,0, canvas.width, canvas.height)
 
-const background = new Sprite({
+var background = new Sprite({
     position:{
         x: 0,
         y: 0
@@ -57,15 +57,15 @@ const player = new Player({
     }
 })
 
-const customers = []
-const enemies = []
-const coins = []
-const thornBushes = []
-const platforms = []
+var customers = []
+var enemies = []
+var coins = []
+var thornBushes = []
+var platforms = []
 
 let coinCointer = 0
 let todaysCoins = 0
-let minimumCoins = 5
+let minimumCoins = 0
 
 
 // declaring keys state 
