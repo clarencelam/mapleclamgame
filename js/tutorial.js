@@ -19,6 +19,7 @@ function startLevel1() {
         GAMESTATE = "ACTIVE"
         decreaseTimer()
     }
+    playBgMusic()  
     genThornBush(700, 630)
     genPlatform(220, 380)
     genPlatform(100, 380)

@@ -7,6 +7,15 @@ canvas.height = (270*3)
 
 //c.fillRect(0,0, canvas.width, canvas.height)
 
+var audio = new Audio('music/henesys.mp3',loop="loop");
+function playBgMusic() {
+    audio.volume=.5
+    audio.play()
+  }
+function pauseBgMusic(){
+    audio.pause()
+}
+
 var background = new Sprite({
     position:{
         x: 0,
@@ -62,6 +71,7 @@ var enemies = []
 var coins = []
 var thornBushes = []
 var platforms = []
+var portals = []
 
 let coinCointer = 0
 let todaysCoins = 0
@@ -164,6 +174,10 @@ function animate(){
     // HANDLING "BETWEENLEVELS" GAMESTATE
     if(GAMESTATE === "BETWEENLEVELS"){
         player.update()
+
+        for (const i in portals) {
+            portals[i].update()
+        }
     }
     
     // HANDLING "ACTIVE" GAMESTATE

@@ -89,6 +89,7 @@ function goBetweenLevels(){
     coins = []
     thornBushes = []
     platforms = []
+    portals = []
 
     // background = home (upgrade room), with portal to next level
     background = new Sprite({
@@ -99,6 +100,16 @@ function goBetweenLevels(){
         imageSrc: './img/backgrounds/home.png',
         scale: .57
     })
+
+    advanceLevelPortal = new Portal({
+        position:{
+        x: 120,
+        y: 600
+        },
+     imageSrc: './img/portal/portalsprite.png',
+     scale: 1}
+     )
+    portals.push(advanceLevelPortal)
     }
 
 function startLevel(){
@@ -132,6 +143,8 @@ function restartGame(){
     for(let i in toShow){
         document.querySelector(`${toShow[i]}`).style.display = 'inline'
     }
+    pauseBgMusic()
+    
 
 
 background = new Sprite({
@@ -194,6 +207,7 @@ player = new Player({
     coins = []
     thornBushes = []
     platforms = []
+    portals = []
 
     GAMESTATE = "TUTORIAL"
     LEVEL = "TUTORIAL_M1"

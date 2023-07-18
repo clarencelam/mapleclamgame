@@ -42,6 +42,68 @@ class Message extends Sprite {
     }
 }
 
+class Portal extends Sprite {
+    constructor({ position, imageSrc, scale }) {
+        super({
+            position, imageSrc, scale
+        })
+        // Collision detection
+        this.height = 50 * scale
+        this.width = 215 * scale
+        this.offset_x = 0
+        this.offset_y = 0
+        this.offset.y = 10
+
+        this.framesMax = 5
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 20
+    }
+    animateFrames() {
+        this.framesElapsed++
+
+        if (this.framesElapsed % this.framesHold === 0) {
+            if (this.framesElapsed % this.framesHold === 0) {
+                if (this.framesCurrent < this.framesMax - 1) {
+                    this.framesCurrent++
+                } else {
+                    this.framesCurrent = 0
+                }
+            }
+        }
+    }
+    draw() {
+        // Draw collision box
+        if (drawBox === true) {
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )
+        }
+        c.drawImage(
+            this.image,
+            // crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // position
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale)
+    }
+    update() {
+        this.draw()
+        this.animateFrames()
+
+    }
+}
+
+
 class Platform extends Sprite {
     constructor({ position, imageSrc, scale }) {
         super({
