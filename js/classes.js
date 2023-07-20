@@ -1,4 +1,4 @@
-let drawBox = false
+let drawBox = true
 class Sprite {
     constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
         this.position = position
@@ -48,11 +48,11 @@ class Portal extends Sprite {
             position, imageSrc, scale
         })
         // Collision detection
-        this.height = 50 * scale
-        this.width = 215 * scale
-        this.offset_x = 0
-        this.offset_y = 0
-        this.offset.y = 10
+        this.height = 150 * scale
+        this.width = 75 * scale
+        this.offset_x = 5
+        this.offset_y = 20
+        this.offset.y =0
 
         this.framesMax = 5
         this.framesCurrent = 0
@@ -471,9 +471,9 @@ class Player {
         // Food Tracking
         this.cooking = false
         this.cookSpeed = 15 // lower = faster (value = milliseconds between cook progress increments in setInterval)
-        this.cookedFood = []
+        this.cookedFood = [] // food ready to shoot
         this.cookedFoodLimit = 3
-        this.foods = []
+        this.foods = [] // food live on map
 
         // For collision detection
         this.height = 50 //this.image.height * this.scale

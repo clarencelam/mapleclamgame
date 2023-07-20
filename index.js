@@ -73,11 +73,11 @@ var thornBushes = []
 var platforms = []
 var portals = []
 
-let coinCointer = 0
-let todaysCoins = 0
-let minimumCoins = 0
+// let coinCointer = 0
+// let todaysCoins = 0
+// let minimumCoins = 0
 
-timer = 10
+// timer = 3
 
 // declaring keys state 
 const keys = {
@@ -87,6 +87,9 @@ const keys = {
     d: {
         pressed: false
     },
+    ArrowDown:{
+        pressed: false
+    }
 }
 
 // DECLARE STARTING GAMESTATE & LEVEL
@@ -173,11 +176,41 @@ function animate(){
     
     // HANDLING "BETWEENLEVELS" GAMESTATE
     if(GAMESTATE === "BETWEENLEVELS"){
-        player.update()
-
         for (const i in portals) {
             portals[i].update()
         }
+        player.update()
+        for(const i in messages){
+            messages[i].update()
+        }
+
+        if(spriteCollision({rectangle1: player,
+            rectangle2: portals[0]})){
+                if(messages.length < 1){
+                    let nextLevelSummary = new Message({
+                        position: {
+                            x: 250,
+                            y: 200
+                        },
+                        imageSrc: `./img/messages1/messageTemplate.png`,
+                        scale: 0.8
+                    })
+                    messages.push(nextLevelSummary)
+            
+                    document.querySelector("#levelEnd").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
+                    document.querySelector("#levelEnd").style.display = 'flex'
+            
+                }
+            } else{
+                messages = []
+                document.querySelector("#levelEnd").style.display = 'none'
+            }
+    
+        if(spriteCollision({rectangle1: player,
+        rectangle2: portals[0]}) && keys.ArrowDown.pressed){
+            console.log("go to nextlevel")
+        }
+
     }
     
     // HANDLING "ACTIVE" GAMESTATE
@@ -255,6 +288,10 @@ window.addEventListener('keydown', (event) => {
                 break
             case ' ':
                 player.throw()
+                break
+            case 'ArrowDown':
+                keys.ArrowDown.pressed = true
+                break
             }    
             event.preventDefault()
     }
@@ -268,8 +305,10 @@ window.addEventListener('keyup', (event) => {
             break
         case 'a':
             case 'ArrowLeft':
-
             keys.a.pressed = false
             break    
+        case 'ArrowDown':
+            keys.ArrowDown.pressed = false
+            break
     }
 })
