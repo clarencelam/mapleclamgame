@@ -15,7 +15,7 @@
 </head>
 
 <body>
-      
+
     <div style="position: relative; display: flex;justify-content: center">
         MAPLE RESTAURANT
     </div>
@@ -29,11 +29,12 @@
                 padding: 20px">
         https://github.com/clarencelam/mapleclamgame
     </div>
-    
+
 
     <div style="position: relative; display: flex;justify-content: center">
 
-        <div id="gameWindow" style="position: relative">
+        <div id="gameWindow"
+             style="position: relative">
             <canvas>
             </canvas>
 
@@ -46,16 +47,27 @@
                right: 0;
                display: none">
             </div>
-        </div>
 
-        <div id="coinCounter"
-             style="      
-        color: white;  
-        position: absolute;
-        left: 40%;
-        bottom: 10%
-        ">
-        Today's Coins: 0
+            <div id="totalCoinCounter"
+            style="      
+           color: white;  
+           position: absolute;
+           left: 80%;
+           top: 5%
+       ">
+           Total Coins: 0
+       </div>
+       <div id="coinCounter"
+       style="      
+  color: white;  
+  position: absolute;
+  left: 80%;
+  top: 10%
+  ">
+      Today's Coins: 0
+  </div>
+
+
         </div>
 
         <div id="timer"
@@ -105,17 +117,18 @@
     justify-content: center;
     font-size: x-small;
     padding: 20px">
-    <button type="button" onclick="restartGame()">RESTART GAME</button>
+        <button type="button"
+                onclick="restartGame()">RESTART GAME</button>
     </div>
     <div style="position: relative; display: flex;justify-content: center;
     font-size: small;">
         <p>Please visit again! I'm working on these features:
-            <ul>
-                <li>player upgradability feature</li>
-                <li>levels up to 10</li>
-                <li>blue snail, red snail</li>
-            </ul>
-    </div>    
+        <ul>
+            <li>player upgradability feature</li>
+            <li>levels up to 10</li>
+            <li>blue snail, red snail</li>
+        </ul>
+    </div>
 
 
     <script src="js/utils.js"></script>

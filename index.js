@@ -77,7 +77,7 @@ let coinCointer = 0
 let todaysCoins = 0
 let minimumCoins = 0
 
-timer = 3
+timer = 10
 
 // declaring keys state 
 const keys = {

@@ -2,7 +2,9 @@
 function getCoins(value){
     coinCointer = coinCointer += value
     todaysCoins = todaysCoins += value
-    document.querySelector('#coinCounter').innerHTML = `Today's Coins: ${coinCointer}`
+    document.querySelector('#coinCounter').innerHTML = `Today's Coins: ${todaysCoins}`
+    document.querySelector('#totalCoinCounter').innerHTML = `Total Coins: ${coinCointer}`
+
 }
 
 function handleCoinPlayerInteractions() {
@@ -131,10 +133,9 @@ function handleEnemyPlayerInteractions(){
             // Player drops coin
             var pos_x = player.position.x + (player.width/2)
             var pos_y = player.position.y
-            if(coinCointer>0){
+            if(todaysCoins>0){
                 genCoin(pos_x, pos_y-40)  
-                coinCointer -=1
-                document.querySelector('#coinCounter').innerHTML = coinCointer
+                getCoins(-1)
             }
         }
     }

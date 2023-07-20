@@ -559,6 +559,11 @@ class Player {
                 framesMax: 8,
             })
             this.foods.push(food)
+
+            // Throw sound effect
+            var throwNoise = new Audio('sfx/throw.wav');
+            throwNoise.volume=.5
+            throwNoise.play()
         } else {
             var progressBar = document.getElementById("cookingProgress")
             // Warn user of no cookedFood by flashing progressBar red
