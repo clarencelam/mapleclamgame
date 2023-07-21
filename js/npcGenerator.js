@@ -13,6 +13,22 @@ function genFoodTruck(x, y) {
     foodTrucks.push(foodTruck)
 }
 
+function genPortal(x, y) {
+    const portal = new Portal(
+        {
+            position: {
+                x: x,
+                y: y
+
+            },
+            imageSrc: './img/portal/portalsprite.png',
+            scale: 1
+        }
+    )
+    portals.push(portal)
+}
+
+
 // Generate platform
 function genPlatform(x, y) {
     const platform = new Platform({

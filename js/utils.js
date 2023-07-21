@@ -51,3 +51,16 @@ function decreaseTimer() {
     }
 
 }
+
+function resetArrays(){
+    player.foods = []
+    player.cookedFood = []
+    messages = []
+    customers = []
+    enemies = []
+    coins = []
+    thornBushes = []
+    platforms = []
+    portals = []
+    foodTrucks = []
+}

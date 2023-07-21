@@ -74,11 +74,6 @@ var platforms = []
 var portals = []
 var foodTrucks = []
 
-// let coinCointer = 0
-// let todaysCoins = 0
-// let minimumCoins = 0
-
-// timer = 3
 
 // declaring keys state 
 const keys = {
@@ -167,6 +162,9 @@ function animate(){
 
     if(GAMESTATE === "BEFORELEVEL"){
         // DRAW/UPDATE SELECT OBJECTS
+        for (const i in portals) {
+            portals[i].update()
+        }
         for(const i in foodTrucks){
             foodTrucks[i].update()
         }
@@ -230,27 +228,27 @@ function animate(){
             messages[i].update()
         }
 
-        if(spriteCollision({rectangle1: player,
-            rectangle2: portals[0]})){
-                if(messages.length < 1){
-                    let nextLevelSummary = new Message({
-                        position: {
-                            x: 250,
-                            y: 200
-                        },
-                        imageSrc: `./img/messages1/messageTemplate.png`,
-                        scale: 0.8
-                    })
-                    messages.push(nextLevelSummary)
+        // if(spriteCollision({rectangle1: player,
+        //     rectangle2: portals[0]})){
+        //         if(messages.length < 1){
+        //             let nextLevelSummary = new Message({
+        //                 position: {
+        //                     x: 250,
+        //                     y: 200
+        //                 },
+        //                 imageSrc: `./img/messages1/messageTemplate.png`,
+        //                 scale: 0.8
+        //             })
+        //             messages.push(nextLevelSummary)
             
-                    document.querySelector("#nextLevel").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
-                    document.querySelector("#nextLevel").style.display = 'flex'
+        //             document.querySelector("#nextLevel").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
+        //             document.querySelector("#nextLevel").style.display = 'flex'
             
-                }
-            } else{
-                messages = []
-                document.querySelector("#nextLevel").style.display = 'none'
-            }
+        //         }
+        //     } else{
+        //         messages = []
+        //         document.querySelector("#nextLevel").style.display = 'none'
+        //     }
     
         if(spriteCollision({rectangle1: player,
         rectangle2: portals[0]}) && keys.ArrowDown.pressed){
