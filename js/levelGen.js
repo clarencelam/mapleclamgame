@@ -1,9 +1,9 @@
 let coinCointer = 0
 let todaysCoins = 0
 const defaultMinimumCoins = 5
-let minimumCoins = 0
-const defaultTimer = 5
-let timer = 5
+let minimumCoins = 3
+const defaultTimer = 20
+let timer = 20
 let day = 1
 
 // LEVEL ITERATION FUNCTIONS
@@ -175,7 +175,7 @@ function determineWinLoss() {
         document.querySelector("#levelEnd").style.top = `${daySummary.position.y + 100}` + 'px'
 
         if (todaysCoins > minimumCoins) {
-            document.querySelector("#levelEnd").innerHTML = `That's a wrap for day ${day}!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>${todaysCoins} mesos goes to us, so you'll bring home ${todaysCoins - minimumCoins} extra.<br><br>Good work. See you tomorrow.`
+            document.querySelector("#levelEnd").innerHTML = `That's a wrap for day ${day}!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>${minimumCoins} mesos goes to us, so you'll bring home ${todaysCoins - minimumCoins} extra.<br><br>Good work. See you tomorrow.`
         } else if (todaysCoins === minimumCoins) {
             document.querySelector("#levelEnd").innerHTML = `Day ${day} is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
         }else {

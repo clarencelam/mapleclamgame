@@ -1,4 +1,4 @@
-let drawBox = true
+let drawBox = false
 class Sprite {
     constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
         this.position = position
