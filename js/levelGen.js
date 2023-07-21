@@ -53,7 +53,7 @@ function nextLevel(){
         GAMESTATE = "BEFORELEVEL"
         // increment level difficulty
         minimumCoins = minimumCoins + randomRoll(5)
-        timer = defaultTimer
+        resetTimer()
         LEVEL +=1
     
         // background update
@@ -77,7 +77,19 @@ function nextLevel(){
             document.querySelector(`${toShow[i]}`).style.display = 'inline'
         }
 
+        // add message
+        let beforeLevelSummary = new Message({
+            position: {
+                x: 370,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: 0.5
+        })
+        messages.push(beforeLevelSummary)
 
+        document.querySelector("#beforeLevel").innerHTML = `Ready to open the restaurant? <br><br>Rent's gone up... <br><br>We'll need ${minimumCoins} mesos to get through the day!`
+    
         player.position.x = 1350
         player.position.y = 500
         genPortal(1300, 500)

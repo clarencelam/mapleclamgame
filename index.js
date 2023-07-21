@@ -182,39 +182,27 @@ function animate(){
         }
         player.update()
 
-        for(const i in messages){
-            messages[i].update()
-        }
 
-        if(spriteCollision({rectangle1: player,
-            rectangle2: foodTrucks[0]})){
+        // if player is over foodtruck, give option to start level
+        if(spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
+
+                for(const i in messages){
+                    messages[i].update()
+                }
+        
                 document.getElementById("gameWindow").addEventListener("click",(startLevel) => {
                     if(GAMESTATE === "BEFORELEVEL"){
                         GAMESTATE = "ACTIVE"
-                        document.querySelector("#nextLevel").style.display = 'none'
+                        // clear messages
+                        document.querySelector("#beforeLevel").style.display = 'none'
                         messages = []
                         decreaseTimer()    
                     }
                 }, {once:true})
-
-                if(messages.length < 1){
-                    let beforeLevelSummary = new Message({
-                        position: {
-                            x: 250,
-                            y: 200
-                        },
-                        imageSrc: `./img/messages1/messageTemplate.png`,
-                        scale: 0.8
-                    })
-                    messages.push(beforeLevelSummary)
-            
-                    document.querySelector("#nextLevel").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
-                    document.querySelector("#nextLevel").style.display = 'flex'
-            
-                }
+                document.querySelector("#beforeLevel").style.display = 'flex'
+                
             } else{
-                messages = []
-                document.querySelector("#nextLevel").style.display = 'none'
+                document.querySelector("#beforeLevel").style.display = 'none'
             }
     }
     
