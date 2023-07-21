@@ -97,7 +97,6 @@ const keys = {
 let GAMESTATE = "TUTORIAL"
 let LEVEL = "TUTORIAL_M1"
 
-
 function checkPlatforms(platform){
     return(
         player.position.x + player.offset_x >= thisPlatform.position.x &&
@@ -106,7 +105,6 @@ function checkPlatforms(platform){
     )
 }
 
-//decreaseTimer()
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'
@@ -123,26 +121,9 @@ function animate(){
             checkPlatforms(thisPlatform)
         ){
             //  player y+height does not go below platform y
-            console.log("player on platform!!!")
             player.bottomYCordsActive = thisPlatform.position.y -1
         } 
     }
-
-    // HANDLING "TUTORIAL" GAMESTATE
-    // if(GAMESTATE === "TUTORIAL"){
-    //     // DRAW/UPDATE SELECT OBJECTS
-    //     for(const i in foodTrucks){
-    //         foodTrucks[i].update()
-    //     }
-    //     for (const i in platforms){
-    //         platforms[i].update()
-    //     }
-    //     for(const i in messages){
-    //         messages[i].update()
-    //     }
-    //     handleTutorial()
-    //     player.update()
-    // }
 
     // HANDLING "INACTIVE" GAMESTATE
     if(GAMESTATE === "INACTIVE" || GAMESTATE === "TUTORIAL"){
@@ -150,6 +131,15 @@ function animate(){
             handleTutorial()
             handleCoinPlayerInteractions()
             handleFoodPlayerInteractions()
+        }
+        if (GAMESTATE === "INACTIVE") { // this gamestate is triggered when a level ends, after level summary is shown, but before going to BETEWEENLEVELS
+            if (keys.space.pressed && todaysCoins >= minimumCoins) {
+                incrementLevel()
+                goBetweenLevels() // go to gamestate === BETWEENLEVELS
+            } else{
+                //gameover
+                console.log("game over")
+            }
         }
         // DRAW/UPDATE SELECT OBJECTS
         for(const i in foodTrucks){
@@ -283,9 +273,13 @@ function animate(){
     }
     
     // HANDLING "ACTIVE" GAMESTATE
-    if(GAMESTATE === "ACTIVE"){
+    if(GAMESTATE === "ACTIVE" || GAMESTATE === "AFTERLEVEL"){
 
         // UPDATE ALL OBJECTS
+        for(const i in messages){
+            messages[i].update()
+        }
+
         for(const i in foodTrucks){
             foodTrucks[i].update()
         }
@@ -337,6 +331,12 @@ function animate(){
         handleCoinPlayerInteractions() // defined in utils.js
 
         handleEnemyPlayerInteractions()
+
+        if(GAMESTATE === "AFTERLEVEL"){
+            if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+                determineWinLoss()
+            }
+        }
     }
 }
 

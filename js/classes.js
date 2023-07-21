@@ -52,7 +52,7 @@ class Portal extends Sprite {
         this.width = 75 * scale
         this.offset_x = 5
         this.offset_y = 20
-        this.offset.y =0
+        this.offset.y = 0
 
         this.framesMax = 5
         this.framesCurrent = 0
@@ -576,6 +576,9 @@ class Player {
     }
 
     throw() {
+        if(GAMESTATE != "INACTIVE" && GAMESTATE != "AFTERLEVEL" && GAMESTATE != "BEFORELEVEL"){
+
+        
         // get food from cookedFood
         if (this.cookedFood.length > 0) {
             this.cookedFood.shift()
@@ -599,7 +602,7 @@ class Player {
 
             // Throw sound effect
             var throwNoise = new Audio('sfx/throw.wav');
-            throwNoise.volume=.5
+            throwNoise.volume = .5
             throwNoise.play()
         } else {
             var progressBar = document.getElementById("cookingProgress")
@@ -612,6 +615,7 @@ class Player {
                 clearTimeout(resetBar)
             }
         }
+    }
     }
 
     getHit(enemyFacing, damage) {
@@ -724,6 +728,10 @@ class Player {
         this.draw()
         this.animateFrames()
 
+        if(GAMESTATE != "INACTIVE"){ // if GAMESTATE is inactive, freeze player
+            
+        
+
         switch (GAMESTATE) {
             case 'BETWEENLEVELS':
                 // Handle Gravity
@@ -738,14 +746,11 @@ class Player {
                 }
                 break
 
-            case 'INACTIVE':
-            case 'ACTIVE':
-            case 'BEFORELEVEL':
-                case 'TUTORIAL':
 
+            case 'ACTIVE':
+            case 'TUTORIAL':
                 // Draw thrown food
                 this.cookFood()
-
                 if (this.foods.length > 0) {
                     for (const food in this.foods) {
                         this.foods[food].update()
@@ -773,6 +778,8 @@ class Player {
                     this.cookedFood[0].scale = 1
                     this.cookedFood[0].draw()
                 }
+                case 'AFTERLEVEL': // no food
+                case 'BEFORELEVEL':
 
                 // Handle Gravity
                 // If player is at bottom of map, stop gravity
@@ -845,6 +852,8 @@ class Player {
         }
 
     }
+}
+
 }
 
 class Customer {
@@ -978,6 +987,7 @@ class Customer {
         this.draw()
         this.animateFrames()
 
+        if(GAMESTATE != "INACTIVE"){ 
         // Prevent walking off map
         if (this.position.x <= 0) {
             this.velocity.x = 1
@@ -1002,6 +1012,7 @@ class Customer {
             }
         }
     }
+}
 
 }
 
@@ -1085,7 +1096,7 @@ class Enemy {
     }
 
     movementDecision(num) {
-        if (this.isAttacking === true) { // do not make new movements if enemy is currently attacking
+        if (this.isAttacking === true ) { // do not make new movements if enemy is currently attacking
             return
         } else if (num === 0) {
             this.switchSprite('idle')
@@ -1198,6 +1209,7 @@ class Enemy {
         this.draw()
         this.animateFrames()
 
+        if(GAMESTATE != "INACTIVE"){ 
         // Prevent walking off map
         if (this.position.x <= 0) {
             this.velocity.x = 1
@@ -1241,5 +1253,6 @@ class Enemy {
             this.velocity.y += this.gravity
         }
     }
+}
 
 }

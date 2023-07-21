@@ -48,6 +48,7 @@ function decreaseTimer() {
 
     if (timer === 0) {
         endLevel()
+        console.log('attempt endlevel')
     }
 
 }

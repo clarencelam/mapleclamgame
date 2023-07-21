@@ -1,15 +1,16 @@
 let coinCointer = 0
 let todaysCoins = 0
-const defaultMinimumCoins = 1
+const defaultMinimumCoins = 5
 let minimumCoins = 0
-const defaultTimer = 10
-let timer = 3
+const defaultTimer = 5
+let timer = 5
+let day = 1
 
 // LEVEL ITERATION FUNCTIONS
 
 function genLevel() {
     console.log("Generating Level: " + LEVEL)
-    if (LEVEL=== "TUTORIAL_M1"){
+    if (LEVEL === "TUTORIAL_M1") {
         genFoodTruck(580, 348)
         genPlatform(220, 380)
         genPlatform(100, 380)
@@ -19,6 +20,14 @@ function genLevel() {
         genPlatform(1400, 380)
     }
     else if (LEVEL === 1) {
+        genFoodTruck(580, 348)
+        genPlatform(220, 380)
+        genPlatform(100, 380)
+        genPlatform(600, 520)
+        genPlatform(1100, 200)
+        genPlatform(1400, 550)
+        genPlatform(1400, 380)
+
         playBgMusic()
         genThornBush(700, 630)
     }
@@ -86,9 +95,9 @@ function nextLevel() {
         })
         messages.push(beforeLevelSummary)
         if (levelCoinChange === 0) {
-            document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${LEVEL} of the restaurant biz! <br><br>Rent's stayed the same! <br><br>We'll need ${minimumCoins} mesos to get through the day!`
+            document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${day} of the restaurant biz! <br><br>Rent's stayed the same! <br><br>We'll need ${minimumCoins} mesos to get through the day!`
         } else {
-            document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${LEVEL} of the restaurant biz! <br><br>Rent's gone up... <br><br>We'll need ${minimumCoins} mesos to get through the day!`
+            document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${day} of the restaurant biz! <br><br>Rent's gone up... <br><br>We'll need ${minimumCoins} mesos to get through the day!`
         }
         GAMESTATE = "BEFORELEVEL"
         player.position.x = 1350
@@ -128,57 +137,83 @@ function goBetweenLevels() {
 }
 
 levelCoinChange = 0
-function incrementLevel(){
-        // increment level difficulty
-        levelCoinChange = randomRoll(3)
-        minimumCoins = minimumCoins + levelCoinChange
-        console.log("Leve coin requirement increase: " +levelCoinChange + ", for a total of: " + minimumCoins)
-        LEVEL +=1    
+function incrementLevel() {
+    // increment level difficulty
+    levelCoinChange = randomRoll(3)
+    minimumCoins = minimumCoins + levelCoinChange
+    console.log("Current level: " + LEVEL + " - Level coin requirement increase: " + levelCoinChange + ", for a total of: " + minimumCoins)
+
+    // for now, loop levels after 3
+    if(LEVEL===3){
+        LEVEL =1
+    }else{
+        LEVEL += 1
+    }
+    day +=1
 }
 
-function endLevel() {
-    // in this state, the level is just ended, and level summaries are being shown
-    if (GAMESTATE === "ACTIVE") {
+function determineWinLoss() {
+    // STATE WHERE DAY SUMMARY IS SHOWN, RIGHT BEFORE BETWEENLEVELS
+    if(keys.space.pressed){
+        console.log("show win/loss message")
+
+        keys.space.pressed = false
         GAMESTATE = "INACTIVE"
-        console.log("GAMESTATE CHANGE: INACTIVE -- ending level")
 
         messages = []
         let daySummary = new Message({
             position: {
                 x: 250,
-                y: 200
+                y: 50
             },
             imageSrc: `./img/messages1/messageTemplate.png`,
             scale: 0.8
         })
         messages.push(daySummary)
+        document.querySelector("#levelEnd").style.display = 'flex'
+        document.querySelector("#levelEnd").style.left = `${daySummary.position.x + 100}` + 'px'
+        document.querySelector("#levelEnd").style.top = `${daySummary.position.y + 100}` + 'px'
 
+        if (todaysCoins > minimumCoins) {
+            document.querySelector("#levelEnd").innerHTML = `That's a wrap for day ${day}!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>${todaysCoins} mesos goes to us, so you'll bring home ${todaysCoins - minimumCoins} extra.<br><br>Good work. See you tomorrow.`
+        } else if (todaysCoins === minimumCoins) {
+            document.querySelector("#levelEnd").innerHTML = `Day ${day} is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
+        }else {
+            // LOSS CASE
+            document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>It's been a good ${day} days with you, but... <br><br>You're fired. Refresh to try again!`
+        }
+
+    }
+}
+
+
+
+function endLevel() {
+    // triggered by TIMER === 0
+    // in this state, the game continues, but no food will be produced, and level may be ended by interacting with 
+    if (GAMESTATE === "ACTIVE") {
+        // Position truck's message over foodtruck object
+        msg_x = foodTrucks[0].position.x
+        msg_y = foodTrucks[0].position.y - 200
+
+        messages = []
+        let msg1 = new Message({
+            position: {
+                x: msg_x,
+                y: msg_y
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg1)
+        document.querySelector("#levelEnd").innerHTML = "Restaurant's closed<br>for the day!<br><br>Come over when you're<br>ready to close up.<br>"
+        document.querySelector("#levelEnd").style.left = `${msg_x + 50}` + 'px'
+        document.querySelector("#levelEnd").style.top = `${msg_y + 50}` + 'px'
         document.querySelector("#levelEnd").style.display = 'flex'
 
-        // WIN CASE
-        if (todaysCoins >= minimumCoins) {
-            // press space to go to betweenLevels state
-            // increment levels
-            if (todaysCoins > minimumCoins) {
-                document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>We'll pay you out the ${todaysCoins - minimumCoins} extra mesos<br><br>Good work. See you tomorrow.`
-            } else if (todaysCoins === minimumCoins) {
-                document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
-            }
-            // if(keys.space.pressed){
-            //     incrementLevel()
-            //     goBetweenLevels()
-            //     keys.space.pressed = false
-            // }
-            document.getElementById("gameWindow").addEventListener('click', () => {
-                incrementLevel()
-                goBetweenLevels()
-            }, { once: true })
-
-        } else {
-            // LOSS CASE
-            document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>You're fired. Refresh to try again!`
-        }
+        GAMESTATE = "AFTERLEVEL" // within this gamestate, determine stats
     }
+
 }
 
 
@@ -250,6 +285,7 @@ function restartGame() {
     coinCointer = 0
     todaysCoins = 0
     minimumCoins = defaultMinimumCoins
+    day = 1
 
     resetArrays()
 
