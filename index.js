@@ -72,6 +72,7 @@ var coins = []
 var thornBushes = []
 var platforms = []
 var portals = []
+var foodTrucks = []
 
 // let coinCointer = 0
 // let todaysCoins = 0
@@ -98,20 +99,6 @@ const keys = {
 let GAMESTATE = "TUTORIAL"
 let LEVEL = "TUTORIAL_M1"
 
-// genThornBush(700, 630)
-// genPlatform(220,380)
-// genPlatform(100,380)
-// genPlatform(600,520)
-// genPlatform(1100,200)
-// genPlatform(1400,550)
-// genPlatform(1400,380)
-
-
-// function addResidents(list, residents){
-//     for(const i in list){
-//         residents.push(list[i])
-//     }
-// }
 
 function checkPlatforms(platform){
     return(
@@ -156,7 +143,9 @@ function animate(){
     if(GAMESTATE === "INACTIVE"){
 
         // DRAW/UPDATE SELECT OBJECTS
-        player.update()
+        for(const i in foodTrucks){
+            foodTrucks[i].update()
+        }
         for (const i in platforms){
             platforms[i].update()
         }
@@ -169,9 +158,66 @@ function animate(){
         for (const i in enemies) {
             enemies[i].update()
         }
+        player.update()
+
         for(const i in messages){
             messages[i].update()
         }
+    }
+
+    if(GAMESTATE === "BEFORELEVEL"){
+        // DRAW/UPDATE SELECT OBJECTS
+        for(const i in foodTrucks){
+            foodTrucks[i].update()
+        }
+        for (const i in platforms){
+            platforms[i].update()
+        }
+        for (const num in customers) {
+            customers[num].update()
+        }
+        for (const num in coins) {  
+            coins[num].update()
+        }
+        for (const i in enemies) {
+            enemies[i].update()
+        }
+        player.update()
+
+        for(const i in messages){
+            messages[i].update()
+        }
+
+        if(spriteCollision({rectangle1: player,
+            rectangle2: foodTrucks[0]})){
+                document.getElementById("gameWindow").addEventListener("click",(startLevel) => {
+                    if(GAMESTATE === "BEFORELEVEL"){
+                        GAMESTATE = "ACTIVE"
+                        document.querySelector("#nextLevel").style.display = 'none'
+                        messages = []
+                        decreaseTimer()    
+                    }
+                }, {once:true})
+
+                if(messages.length < 1){
+                    let beforeLevelSummary = new Message({
+                        position: {
+                            x: 250,
+                            y: 200
+                        },
+                        imageSrc: `./img/messages1/messageTemplate.png`,
+                        scale: 0.8
+                    })
+                    messages.push(beforeLevelSummary)
+            
+                    document.querySelector("#nextLevel").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
+                    document.querySelector("#nextLevel").style.display = 'flex'
+            
+                }
+            } else{
+                messages = []
+                document.querySelector("#nextLevel").style.display = 'none'
+            }
     }
     
     // HANDLING "BETWEENLEVELS" GAMESTATE
@@ -197,18 +243,20 @@ function animate(){
                     })
                     messages.push(nextLevelSummary)
             
-                    document.querySelector("#levelEnd").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
-                    document.querySelector("#levelEnd").style.display = 'flex'
+                    document.querySelector("#nextLevel").innerHTML = `Ready to open the restaurant? <br><br>We'll need ${minimumCoins} mesos to stay afloat`
+                    document.querySelector("#nextLevel").style.display = 'flex'
             
                 }
             } else{
                 messages = []
-                document.querySelector("#levelEnd").style.display = 'none'
+                document.querySelector("#nextLevel").style.display = 'none'
             }
     
         if(spriteCollision({rectangle1: player,
         rectangle2: portals[0]}) && keys.ArrowDown.pressed){
+            // iterate levels
             console.log("go to nextlevel")
+            nextLevel()
         }
 
     }
@@ -217,6 +265,10 @@ function animate(){
     if(GAMESTATE === "ACTIVE"){
 
         // UPDATE ALL OBJECTS
+        for(const i in foodTrucks){
+            foodTrucks[i].update()
+        }
+
         for (const i in platforms){
             platforms[i].update()
         }

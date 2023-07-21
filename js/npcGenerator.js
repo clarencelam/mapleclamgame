@@ -1,35 +1,50 @@
+function genFoodTruck(x, y) {
+    const foodTruck = new FoodTruck(
+        {
+            position: {
+                x: x,
+                y: y
+
+            },
+            imageSrc: './img/npcs/shop.png',
+            scale: 0.65
+        }
+    )
+    foodTrucks.push(foodTruck)
+}
+
 // Generate platform
-function genPlatform(x, y){
+function genPlatform(x, y) {
     const platform = new Platform({
-        position:{
+        position: {
             x: x,
             y: y
         },
         imageSrc: './img/platforms/platform1.png',
         scale: 1.3
-    })    
+    })
     platforms.push(platform)
 }
 
 
 // Generate thornbush
-function genThornBush(x, y){
+function genThornBush(x, y) {
     const thornbush = new Thornbush({
-        position:{
+        position: {
             x: x,
             y: y
         },
         imageSrc: './img/thorns1.png',
         scale: 0.15
-    })    
+    })
     thornBushes.push(thornbush)
 }
 
 // Generate Coins
-function genCoin(pos_x,pos_y){
+function genCoin(pos_x, pos_y) {
     console.log('triggered coin spawn')
     const coin = new Coin({
-        position:{
+        position: {
             x: pos_x,
             y: pos_y
         },
@@ -46,10 +61,10 @@ function genCoin(pos_x,pos_y){
 
 
 // Generate customer object
-function genCust(x,y){
+function genCust(x, y) {
     console.log('triggered cust spawn')
     const snail = new Customer({
-        position:{
+        position: {
             x: x,
             y: y
         },
@@ -84,9 +99,9 @@ function genCust(x,y){
 }
 
 // Generate grunt
-function genGrunt(x,y){
+function genGrunt(x, y) {
     const grunt = new Enemy({
-        position:{
+        position: {
             x: x,
             y: y
         },
@@ -114,19 +129,19 @@ function genGrunt(x,y){
                 imageSrc: './img/badGuy1/walkRight.png',
                 framesMax: 4
             },
-            jump:{
+            jump: {
                 imageSrc: './img/badGuy1/jump.png',
                 framesMax: 1
             },
-            jumpRight:{
+            jumpRight: {
                 imageSrc: './img/badGuy1/jumpRight.png',
                 framesMax: 1
             },
-            attack:{
+            attack: {
                 imageSrc: './img/badGuy1/attack.png',
                 framesMax: 6
             },
-            attackRight:{
+            attackRight: {
                 imageSrc: './img/badGuy1/attackRight.png',
                 framesMax: 6
             }

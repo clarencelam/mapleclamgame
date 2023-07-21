@@ -103,6 +103,43 @@ class Portal extends Sprite {
     }
 }
 
+class FoodTruck extends Sprite {
+    constructor({ position, imageSrc, scale }) {
+        super({
+            position, imageSrc, scale
+        })
+        // Collision detection
+        this.height = 250 * scale
+        this.width = 420 * scale
+        this.offset_x = 25
+        this.offset_y = 0
+    }
+    draw() {
+        // Draw collision box
+        if (drawBox === true) {
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )
+        }
+        c.drawImage(
+            this.image,
+            // crop
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            // position
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            this.image.width / this.framesMax * this.scale,
+            this.image.height * this.scale)
+    }
+}
+
 
 class Platform extends Sprite {
     constructor({ position, imageSrc, scale }) {
@@ -703,6 +740,8 @@ class Player {
 
             case 'INACTIVE':
             case 'ACTIVE':
+            case 'BEFORELEVEL':
+
                 // Draw thrown food
                 this.cookFood()
 

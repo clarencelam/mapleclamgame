@@ -1,5 +1,9 @@
 /// UTILS: Functions that will be commonly used to support other functionality
 
+function randomRoll(max){
+    return Math.floor(Math.random()* max)
+}
+
 function startRolls(sprite, decisionInterval, max){
     // generate 
     // may need to revisit this later to ensure Timeout is deleted when object is removed
