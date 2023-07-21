@@ -5,16 +5,30 @@ function genTutorial(num) {
     if (num === 1) {
         let msg1 = new Message({
             position: {
-                x: 260,
-                y: 30
+                x: 600,
+                y: 130
             },
-            imageSrc: `./img/messages1/messageTemplate.png`,
-            scale: .8
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
         })
         messages.push(msg1)
-        document.querySelector("#tutorialMsg").innerHTML = "Hey... Hey new guy! <br><br>Get over here!"
-        document.querySelector("#tutorialMsg").style.display = 'flex'
-    } else if (num === 2) {
+        document.querySelector("#tutorialTextbox").innerHTML = "Hey... Hey new guy! <br><br>Get over here!<br><br>Use the arrow keys to <br>move!"
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    } 
+    else if (num === 1.1) {
+        let msg1 = new Message({
+            position: {
+                x: 600,
+                y: 130
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg1)
+        document.querySelector("#tutorialTextbox").innerHTML = "Talk to us!<br><br>Interact with the SPACE<br>key!"
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    }
+    else if (num === 2) {
         let msg2 = new Message({
             position: {
                 x: 260,
@@ -53,7 +67,20 @@ function genTutorial(num) {
         messages.push(msg4)
         document.querySelector("#tutorialMsg").innerHTML = "Hey, there's our first customer.<br><br>This is a great time to practice.<br><br>Try serving him with SPACEBAR, and come back!"
         document.querySelector("#tutorialMsg").style.display = 'flex'
-    } else if (num === 5) {
+    } else if (num === 4.5) {
+        let msg4 = new Message({
+            position: {
+                x: 600,
+                y: 130
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg4)
+        document.querySelector("#tutorialTextbox").innerHTML = "Good job!<br><br>Come back for<br> another tip..."
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    }
+        else if (num === 5) {
         let msg5 = new Message({
             position: {
                 x: 260,
@@ -63,9 +90,22 @@ function genTutorial(num) {
             scale: .8
         })
         messages.push(msg5)
-        document.querySelector("#tutorialMsg").innerHTML = "Good job.<br><br>We're just about to open for the day, so get ready.<br><br>Oh, forgot to mention...<br><br>Touching thorns is GAME OVER<br><br>And be careful for bandits roaming Maple Island..."
+        document.querySelector("#tutorialMsg").innerHTML = `Good job.<br><br>You see that coin you got?<br><br>That's 1 meso. We need ${minimumCoins} mesos to pay todays rent.<br>If you we cant pay rent, we'll close... That's GAME OVER.<br><br>Any extra, you can bring home. But rent keeps going up around here...`
         document.querySelector("#tutorialMsg").style.display = 'flex'
     }
+    else if (num === 6) {
+        let msg6 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        messages.push(msg6)
+        document.querySelector("#tutorialMsg").innerHTML = "Now, get ready...<br><br>We're just about to open for the day--<br><br>Oh, forgot to mention...<br><br>Watch for THORNS on the ground.<br>Touching THORNS is GAME OVER<br><br>And be careful for bandits roaming Maple Island<br>Looking for some monster kills..."
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+}
 }
 
 function startLevel1() {
@@ -82,58 +122,101 @@ function handleTutorial() {
         if (foodTrucks.length < 1) {
             genLevel()
             genTutorial(1)
-            document.getElementById("gameWindow").addEventListener("click", (nextLevel) => {
-                messages = []
-                LEVEL = "TUTORIAL_M2"
-                document.querySelector("#tutorialMsg").style.display = 'none'
-            }, { once: true })
+        }
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            messages = []
+            LEVEL = "TUTORIAL_M1.1"
+            document.querySelector("#tutorialTextbox").style.display = 'none'
+        }
+
+    }
+    else if(LEVEL === "TUTORIAL_M1.1"){
+
+        if(messages.length <1){
+            genTutorial(1.1)
+                }
+        if(keys.space.pressed){
+            messages = []
+            LEVEL = "TUTORIAL_M2"
+            document.querySelector("#tutorialTextbox").style.display = 'none'
         }
     }
     else if (LEVEL === "TUTORIAL_M2") {
+        // "welcome diologue"
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
-            genTutorial(2)
+            // if space pressed, show dialogue, suppress player movement
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(2)
+                LEVEL = "TUTORIAL_M3"
+            }
         } else {
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
         }
-        document.getElementById("gameWindow").addEventListener("click", (nextLevel) => {
-            LEVEL = "TUTORIAL_M3"
-        }, { once: true })
     }
     else if (LEVEL === "TUTORIAL_M3") {
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
-            genTutorial(3)
+            // if space pressed, show dialogue, suppress player movement
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(3)
+                LEVEL = "TUTORIAL_M4"
+            }
         } else {
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
         }
-        document.getElementById("gameWindow").addEventListener("click", (nextLevel) => {
-            LEVEL = "TUTORIAL_M4"
-        }, { once: true })
     }
     else if (LEVEL === "TUTORIAL_M4") {
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
-            genTutorial(4)
-        } else {
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(4)
+                LEVEL = "TUTORIAL_M4.5"
+            }
+         } 
+    } 
+    else if(LEVEL === "TUTORIAL_M4.5"){
+        // time to hunt tutorial snail
+        if(keys.space.pressed){
+            keys.space.pressed = false
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
         }
         if (todaysCoins === 1) {
             LEVEL = "TUTORIAL_M5"
+            genTutorial(4.5)
         }
-
-    } else if (LEVEL === "TUTORIAL_M5") {
+    }
+    else if (LEVEL === "TUTORIAL_M5") {
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
-            genTutorial(5)
-        } else {
-            messages = []
-            document.querySelector("#tutorialMsg").style.display = 'none'
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                messages = []
+                document.querySelector("#tutorialTextbox").style.display = 'none'
+                genTutorial(5)
+                LEVEL = "TUTORIAL_M6"
+            }
+     } 
+    }
+    else if(LEVEL === "TUTORIAL_M6"){
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                messages = []
+                genTutorial(6)
+                LEVEL = "TUTORIAL_M7"
+            }
         }
-        document.getElementById("gameWindow").addEventListener("click", (nextLevel) => {
+    }
+    else if(LEVEL === "TUTORIAL_M7"){
+        if(keys.space.pressed){
+            keys.space.pressed = false
             startLevel1()
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
-        }, { once: true })
+        }
     }
 
 }

@@ -164,6 +164,11 @@ function endLevel() {
             } else if (todaysCoins === minimumCoins) {
                 document.querySelector("#levelEnd").innerHTML = `Your day is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
             }
+            // if(keys.space.pressed){
+            //     incrementLevel()
+            //     goBetweenLevels()
+            //     keys.space.pressed = false
+            // }
             document.getElementById("gameWindow").addEventListener('click', () => {
                 incrementLevel()
                 goBetweenLevels()

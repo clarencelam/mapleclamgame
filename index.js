@@ -85,6 +85,9 @@ const keys = {
     },
     ArrowDown:{
         pressed: false
+    },
+    space:{
+        pressed: false
     }
 }
 
@@ -208,20 +211,28 @@ function animate(){
 
         // if player is over foodtruck, give option to start level
         if(foodTrucks.length>0 && spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
+            document.querySelector("#beforeLevel").style.display = 'flex'
                 for(const i in messages){
                     messages[i].update()
                 }
-        
-                document.getElementById("gameWindow").addEventListener("click",(startLevel) => {
-                    if(GAMESTATE === "BEFORELEVEL"){
-                        GAMESTATE = "ACTIVE"
-                        // clear messages
-                        document.querySelector("#beforeLevel").style.display = 'none'
-                        messages = []
-                        decreaseTimer()    
-                    }
-                }, {once:true})
-                document.querySelector("#beforeLevel").style.display = 'flex'
+                if(keys.space.pressed){
+                    keys.space.pressed = false
+                    GAMESTATE = "ACTIVE"
+                    // clear messages
+                    document.querySelector("#beforeLevel").style.display = 'none'
+                    messages = []
+                    decreaseTimer()    
+                }
+    
+                // document.getElementById("gameWindow").addEventListener("click",(startLevel) => {
+                //     if(GAMESTATE === "BEFORELEVEL"){
+                //         GAMESTATE = "ACTIVE"
+                //         // clear messages
+                //         document.querySelector("#beforeLevel").style.display = 'none'
+                //         messages = []
+                //         decreaseTimer()    
+                //     }
+                // }, {once:true})
                 
             } else{
                 document.querySelector("#beforeLevel").style.display = 'none'
@@ -350,6 +361,7 @@ window.addEventListener('keydown', (event) => {
                 break
             case ' ':
                 player.throw()
+                keys.space.pressed = true
                 break
             case 'ArrowDown':
                 keys.ArrowDown.pressed = true
@@ -372,5 +384,9 @@ window.addEventListener('keyup', (event) => {
         case 'ArrowDown':
             keys.ArrowDown.pressed = false
             break
+        case ' ':
+            keys.space.pressed = false
+            break
+
     }
 })
