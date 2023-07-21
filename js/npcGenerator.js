@@ -1,3 +1,4 @@
+
 function genFoodTruck(x, y) {
     const foodTruck = new FoodTruck(
         {

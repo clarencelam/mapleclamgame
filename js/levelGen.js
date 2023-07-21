@@ -9,16 +9,18 @@ let timer = 3
 
 function genLevel() {
     console.log("Generating Level: " + LEVEL)
-    if (LEVEL === 1) {
-        playBgMusic()
+    if (LEVEL=== "TUTORIAL_M1"){
         genFoodTruck(580, 348)
-        genThornBush(700, 630)
         genPlatform(220, 380)
         genPlatform(100, 380)
         genPlatform(600, 520)
         genPlatform(1100, 200)
         genPlatform(1400, 550)
         genPlatform(1400, 380)
+    }
+    else if (LEVEL === 1) {
+        playBgMusic()
+        genThornBush(700, 630)
     }
     else if (LEVEL === 2) {
         player.position.x = 100

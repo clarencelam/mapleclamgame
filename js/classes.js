@@ -741,6 +741,7 @@ class Player {
             case 'INACTIVE':
             case 'ACTIVE':
             case 'BEFORELEVEL':
+                case 'TUTORIAL':
 
                 // Draw thrown food
                 this.cookFood()

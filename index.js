@@ -28,8 +28,8 @@ var background = new Sprite({
 // DEFINE PLAYER
 var player = new Player({
     position:{
-        x: 1200,
-        y: 620
+        x: 50,
+        y: 10
     },
     velocity: {
         x: 0,
@@ -126,17 +126,28 @@ function animate(){
     }
 
     // HANDLING "TUTORIAL" GAMESTATE
-    if(GAMESTATE === "TUTORIAL"){
-        for(const i in messages){
-            messages[i].update()
-        }
-        iterateTutorial()
-        player.draw()
-    }
+    // if(GAMESTATE === "TUTORIAL"){
+    //     // DRAW/UPDATE SELECT OBJECTS
+    //     for(const i in foodTrucks){
+    //         foodTrucks[i].update()
+    //     }
+    //     for (const i in platforms){
+    //         platforms[i].update()
+    //     }
+    //     for(const i in messages){
+    //         messages[i].update()
+    //     }
+    //     handleTutorial()
+    //     player.update()
+    // }
 
     // HANDLING "INACTIVE" GAMESTATE
-    if(GAMESTATE === "INACTIVE"){
-
+    if(GAMESTATE === "INACTIVE" || GAMESTATE === "TUTORIAL"){
+        if(GAMESTATE === "TUTORIAL"){
+            handleTutorial()
+            handleCoinPlayerInteractions()
+            handleFoodPlayerInteractions()
+        }
         // DRAW/UPDATE SELECT OBJECTS
         for(const i in foodTrucks){
             foodTrucks[i].update()
@@ -149,6 +160,10 @@ function animate(){
         }
         for (const num in coins) {  
             coins[num].update()
+            if (coins[num].COINSTATE === "markedForDeath") {
+                console.log('delete coin: ' + coins[num])
+                coins.splice(num, 1)
+            }
         }
         for (const i in enemies) {
             enemies[i].update()
