@@ -182,10 +182,17 @@ function animate(){
         }
         player.update()
 
+        if(portals.length>0){
+            if(spriteCollision({rectangle1: player, rectangle2: portals[0]}) && keys.ArrowDown.pressed){
+                goBetweenLevels()
+                keys.ArrowDown.pressed = false
+                console.log("go back to GAMESTATE = 'BETWEENLEVELS'")
+            }
+        }
+
 
         // if player is over foodtruck, give option to start level
-        if(spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
-
+        if(foodTrucks.length>0 && spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
                 for(const i in messages){
                     messages[i].update()
                 }
@@ -204,6 +211,7 @@ function animate(){
             } else{
                 document.querySelector("#beforeLevel").style.display = 'none'
             }
+
     }
     
     // HANDLING "BETWEENLEVELS" GAMESTATE
@@ -242,6 +250,7 @@ function animate(){
         rectangle2: portals[0]}) && keys.ArrowDown.pressed){
             // iterate levels
             console.log("go to nextlevel")
+            keys.ArrowDown.pressed = false
             nextLevel()
         }
 
