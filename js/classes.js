@@ -291,6 +291,10 @@ class Coin {
         this.markForDeathTimeout = 70
         this.velocity.y = -5
         this.COINSTATE = 'pickedUp'
+        // Coin sound effect
+        var coinNoise = new Audio('sfx/pickup.wav');
+        coinNoise.volume = soundVolume
+        coinNoise.play()
     }
 
     update() {
@@ -524,6 +528,10 @@ class Player {
         if (this.jumping === false) {
             this.velocity.y -= this.jumpHeight
             this.jumping = true
+            // Jump sound effect
+            var jumpNoise = new Audio('sfx/jump.wav');
+            jumpNoise.volume = soundVolume
+            jumpNoise.play()
         }
     }
 
@@ -602,7 +610,7 @@ class Player {
 
             // Throw sound effect
             var throwNoise = new Audio('sfx/throw.wav');
-            throwNoise.volume = .5
+            throwNoise.volume = soundVolume
             throwNoise.play()
         } else {
             var progressBar = document.getElementById("cookingProgress")
@@ -626,6 +634,12 @@ class Player {
             this.velocity.x = -damage
         }
         this.velocity.y -= 4
+
+        // Gethit sound effect
+        var getHitNoise = new Audio('sfx/hit1.wav');
+        getHitNoise.volume = soundVolume
+        getHitNoise.play()
+
     }
 
     draw() {
@@ -896,6 +910,10 @@ class Customer {
     eat() {
         this.eating = true
         this.velocity.y -= 5
+        // eat sound effect
+        var eatNoise = new Audio('sfx/bite.m4a');
+        eatNoise.volume = soundVolume
+        eatNoise.play()
     }
 
     draw() {

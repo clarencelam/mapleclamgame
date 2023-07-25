@@ -7,14 +7,6 @@ canvas.height = (270*3)
 
 //c.fillRect(0,0, canvas.width, canvas.height)
 
-var audio = new Audio('music/henesys.mp3',loop="loop");
-function playBgMusic() {
-    audio.volume=.5
-    audio.play()
-  }
-function pauseBgMusic(){
-    audio.pause()
-}
 
 var background = new Sprite({
     position:{
@@ -95,7 +87,11 @@ const keys = {
 // GAMESTATES DETERMINE WHAT GAME FUNCTIONALITY IS ACTIVE
 // LEVEL DETERMINES WHAT MESSAGES ARE SHOWN ON THE SCREEN, CORRESPONDING TO EACH "STAGE" OF THE GAME
 let GAMESTATE = "TUTORIAL"
-let LEVEL = "TUTORIAL_M1"
+//let LEVEL = "TUTORIAL_M1"
+let LEVEL = "TUTORIAL_M7"
+
+let soundVolume = 0.7
+let musicVolume = 0.5
 
 function checkPlatforms(platform){
     return(

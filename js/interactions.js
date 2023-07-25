@@ -61,6 +61,7 @@ function handleThornBushPlayerInteractions(){
                     rectangle2: thisBush
                 })){
                     // GAME OVER!
+                    playFailSfx()
                     console.log("player hit bush")
                     coinCointer = 0
                     GAMESTATE = "GAMEOVER"

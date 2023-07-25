@@ -4,6 +4,36 @@ function randomRoll(max){
     return Math.floor(Math.random()* max)
 }
 
+// Play bg music
+var audio = new Audio('music/henesys.mp3');
+function playBgMusic() {
+    audio.volume=musicVolume
+    audio.play()
+    audio.loop = true
+  }
+function pauseBgMusic(){
+    audio.pause()
+}
+
+// teleport sfx
+function playTeleportSfx(){
+    var teleportNoise = new Audio('sfx/teleport.wav');
+    teleportNoise.volume = soundVolume
+    teleportNoise.play()    
+}
+
+function playWinGameSfx(){
+    var winNoise = new Audio('sfx/winGame.wav');
+    winNoise.volume = soundVolume
+    winNoise.play()    
+}
+
+function playFailSfx(){
+    var failNoise = new Audio('sfx/fail.wav');
+    failNoise.volume = soundVolume
+    failNoise.play()    
+}
+
 function startRolls(sprite, decisionInterval, max){
     // generate 
     // may need to revisit this later to ensure Timeout is deleted when object is removed

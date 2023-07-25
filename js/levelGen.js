@@ -27,7 +27,6 @@ function genLevel() {
         genPlatform(1100, 200)
         genPlatform(1400, 550)
         genPlatform(1400, 380)
-
         playBgMusic()
         genThornBush(700, 630)
     }
@@ -70,6 +69,8 @@ function nextLevel() {
             scale: 1.41
         })
 
+        playTeleportSfx()
+
         // initiate objects
         resetArrays()
 
@@ -109,8 +110,12 @@ function nextLevel() {
 
 function goBetweenLevels() {
     // In this state, mushroom is at home, resting between levels
+    // Function called after the conclusion of a successful level, after summary screen
     console.log("GAMESTATE CHANGE: GOING INBETWEEN LEVELS")
     GAMESTATE = "BETWEENLEVELS"
+
+    // play sound effect
+    playTeleportSfx()
 
     // clear objects
     toHide = ["#coinCounter", "#timer", "#levelEnd", "#cookingTotal"]
@@ -175,11 +180,14 @@ function determineWinLoss() {
         document.querySelector("#levelEnd").style.top = `${daySummary.position.y + 100}` + 'px'
 
         if (todaysCoins > minimumCoins) {
+            playWinGameSfx()
             document.querySelector("#levelEnd").innerHTML = `That's a wrap for day ${day}!<br><br>You made an incredible ${todaysCoins} mesos today!<br><br>${minimumCoins} mesos goes to us, so you'll bring home ${todaysCoins - minimumCoins} extra.<br><br>Good work. See you tomorrow.`
         } else if (todaysCoins === minimumCoins) {
+            playWinGameSfx()
             document.querySelector("#levelEnd").innerHTML = `Day ${day} is complete!<br><br>You made ${todaysCoins} mesos for the restaurant today.<br><br>${minimumCoins} mesos goes to us, so sorry-- nothing for you to take home tonight<br><br>Unfortunately work unions aren't big on maple island... better luck tomorrow.`
         }else {
             // LOSS CASE
+            playFailSfx()
             document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>It's been a good ${day} days with you, but... <br><br>You're fired. Refresh to try again!`
         }
 
