@@ -102,3 +102,14 @@ function resetArrays(){
     portals = []
     foodTrucks = []
 }
+
+function resetToActiveBackground(){
+    background = new Sprite({
+        position: {
+            x: 0,
+            y: 0
+        },
+        imageSrc: './img/backgrounds/henebg.png',
+        scale: 1.27
+    })
+}

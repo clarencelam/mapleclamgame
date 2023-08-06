@@ -149,33 +149,15 @@ function handleStartScreen(){
         GAMESTATE = "TUTORIAL"
         c.globalAlpha = 1
         LEVEL = "TUTORIAL_M1"
-         background = new Sprite({
-            position:{
-                x: 0,
-                y: 0
-            },
-            imageSrc: './img/background.png',
-            scale: 1.41
-        })
-    }
+        resetToActiveBackground()
+        }
 }
 
 
 function handleTutorial() {
     if (LEVEL === "STARTSCREEN"){
         if(keys.space.pressed){
-            GAMESTATE = "TUTORIAL"
-            c.globalAlpha = 1
             LEVEL = "TUTORIAL_M1"
-             background = new Sprite({
-                position:{
-                    x: 0,
-                    y: 0
-                },
-                imageSrc: './img/background.png',
-                scale: 1.41
-            })
-            
         }
     }
 

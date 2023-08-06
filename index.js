@@ -13,10 +13,9 @@ var background = new Sprite({
         x: 0,
         y: 0
     },
-    imageSrc: './img/background.png',
-    scale: 1.41
+    imageSrc: './img/backgrounds/henebg.png',
+    scale: 1.27
 })
-
 
 // DEFINE PLAYER
 var player = new Player({
@@ -89,6 +88,8 @@ const keys = {
 // LEVEL DETERMINES WHAT MESSAGES ARE SHOWN ON THE SCREEN, CORRESPONDING TO EACH "STAGE" OF THE GAME
 let GAMESTATE = "STARTSCREEN"
 let LEVEL = "STARTSCREEN"
+// FOR TESTING: 
+// let GAMESTATE = "TUTORIAL"
 // let LEVEL = "TUTORIAL_M7"
 
 let soundVolume = 0.7
@@ -109,8 +110,22 @@ function animate(){
     background.update()
 
     // Handle platform logic
-    player.bottomYCordsActive = 682 // re-apply base bottom Y coords
+    // Set the bottom of the map for objects to land upon
+    player.bottomYCordsActive = 703 // re-apply base bottom Y coords
     player.bottomYCordsBetweeenLevels = 770 // re-apply base bottom Y coords
+    for (const num in coins) {  
+        coins[num].bottomYCordsActive = 690
+    }
+    for (const num in customers) {
+        customers[num].bottomYCordsActive = 690
+    }
+    for (const num in enemies) {
+        enemies[num].bottomYCordsActive = 690
+    }
+    for (const num in player.foods) {
+        player.foods[num].bottomYCordsActive = 690
+    }
+
     for(const i in platforms){
         // if player x within platform && y above platform, player y does not go below platform y
         thisPlatform = platforms[i]

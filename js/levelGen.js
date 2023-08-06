@@ -3,7 +3,7 @@ let todaysCoins = 0
 const defaultMinimumCoins = 5
 let minimumCoins = 3
 const defaultTimer = 20
-let timer = 20
+let timer = 10
 let day = 1
 
 // LEVEL ITERATION FUNCTIONS
@@ -28,13 +28,13 @@ function genLevel() {
         genPlatform(1400, 550)
         genPlatform(1400, 380)
         playBgMusic()
-        genThornBush(700, 630)
+        genThornBush(700, 650)
     }
     else if (LEVEL === 2) {
         player.position.x = 100
         player.position.y = 100
         genFoodTruck(580, 348)
-        genThornBush(700, 630)
+        genThornBush(700, 650)
         genPlatform(220, 380)
         genPlatform(100, 380)
         genPlatform(600, 520)
@@ -46,7 +46,7 @@ function genLevel() {
         player.position.x = 100
         player.position.y = 100
         genFoodTruck(580, 348)
-        genThornBush(700, 630)
+        genThornBush(700, 650)
         genPlatform(220, 380)
         genPlatform(100, 380)
         genPlatform(600, 520)
@@ -60,15 +60,8 @@ function nextLevel() {
     // In this state, mushroom is in the next level map, but game is not yet active until they interact with the foodstand
     if (GAMESTATE === 'BETWEENLEVELS') {
         // background update
-        background = new Sprite({
-            position: {
-                x: 0,
-                y: 0
-            },
-            imageSrc: './img/background.png',
-            scale: 1.41
-        })
-
+        resetToActiveBackground()
+        
         playTeleportSfx()
 
         // initiate objects
@@ -76,7 +69,7 @@ function nextLevel() {
 
         genLevel()
         resetTimer()
-        genPortal(1300, 500)
+        genPortal(1300, 525)
 
         // show active game ui, suppress inbetween game ui
         document.querySelector("#nextLevel").style.display = 'none'
@@ -237,17 +230,7 @@ function restartGame() {
         document.querySelector(`${toShow[i]}`).style.display = 'inline'
     }
     pauseBgMusic()
-
-
-
-    background = new Sprite({
-        position: {
-            x: 0,
-            y: 0
-        },
-        imageSrc: './img/background.png',
-        scale: 1.41
-    })
+    resetToActiveBackground()
 
     // DEFINE PLAYER
     player = new Player({

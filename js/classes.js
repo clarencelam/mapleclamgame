@@ -245,6 +245,7 @@ class Coin {
         this.offset_y = 5
 
         this.COINSTATE = "idle"
+        this.bottomYCordsActive
     }
 
     draw() {
@@ -317,7 +318,7 @@ class Coin {
         }
 
         // Handling platform gravity
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 150)) {
+        if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
             this.velocity.y = 0
         } else {
             this.velocity.y += this.gravity
@@ -361,6 +362,7 @@ class Food {
 
         // setting states for food 
         this.FOODSTATE = "active"
+        this.bottomYCordsActive
     }
 
     getEaten(cust) {
@@ -427,7 +429,7 @@ class Food {
 
                 // Apply gravity except when on bottom platform
                 this.position.y += this.velocity.y
-                if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 148)) {
+                if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
                     this.velocity.y = 0
                 } else {
                     this.velocity.y += this.gravity
@@ -493,7 +495,7 @@ class Player {
 
         // movement mechanics
         this.lastkey
-        this.bottomYCordsActive = 682 // base of level (where gravity should stop), set in index.js
+        this.bottomYCordsActive // base of level (where gravity should stop), set in index.js
         this.bottomYCordsBetweeenLevels
         this.lastVelocity
 
@@ -905,6 +907,8 @@ class Customer {
 
         this.eating = false
         this.facing = -1 // 1 = right, -1 = left
+
+        this.bottomYCordsActive
     }
 
     eat() {
@@ -1023,7 +1027,7 @@ class Customer {
             this.velocity.y += this.gravity / 2
         } else {
             // If not eating, stop gravity when at floor of map
-            if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 140)) {
+            if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
                 this.velocity.y = 0
             } else {
                 this.velocity.y += this.gravity
@@ -1070,6 +1074,8 @@ class Enemy {
         this.width = 50
         this.offset_x = 5
         this.offset_y = 5
+
+        this.bottomYCordsActive
     }
 
     draw() {
@@ -1265,7 +1271,7 @@ class Enemy {
             }
         }
         // Handling platform gravity 
-        if (this.position.y + this.image.height + this.velocity.y >= (canvas.height - 148)) {
+        if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
             this.velocity.y = 0
         } else {
             this.velocity.y += this.gravity
