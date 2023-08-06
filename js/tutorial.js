@@ -117,8 +117,69 @@ function startLevel1() {
     }
 }
 
+
+function handleStartScreen(){
+    background = new Sprite({
+        position:{
+            x: 150,
+            y: 0
+        },
+        imageSrc: './img/backgrounds/login.jpeg',
+        scale: .8
+    })
+    background.update()
+
+    // put dark overlay over login screen
+    c.globalAlpha = 0.6
+    c.fillStyle = "black"
+    c.fillRect(0,0,canvas.width,canvas.height)
+
+    // "Press SPACEBAR to start game"
+    c.globalAlpha = 1
+    c.font = "40px Arial";
+    c.fillStyle = "white";
+    c.textAlign = "center";
+    c.fillText(
+      "Press SPACEBAR to start game",
+      canvas.width / 2,
+      canvas.height / 2 + 50
+    );
+    
+    if(keys.space.pressed){
+        GAMESTATE = "TUTORIAL"
+        c.globalAlpha = 1
+        LEVEL = "TUTORIAL_M1"
+         background = new Sprite({
+            position:{
+                x: 0,
+                y: 0
+            },
+            imageSrc: './img/background.png',
+            scale: 1.41
+        })
+    }
+}
+
+
 function handleTutorial() {
-    if (LEVEL === "TUTORIAL_M1") {
+    if (LEVEL === "STARTSCREEN"){
+        if(keys.space.pressed){
+            GAMESTATE = "TUTORIAL"
+            c.globalAlpha = 1
+            LEVEL = "TUTORIAL_M1"
+             background = new Sprite({
+                position:{
+                    x: 0,
+                    y: 0
+                },
+                imageSrc: './img/background.png',
+                scale: 1.41
+            })
+            
+        }
+    }
+
+    else if (LEVEL === "TUTORIAL_M1") {
         if (foodTrucks.length < 1) {
             genLevel()
             genTutorial(1)
