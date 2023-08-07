@@ -95,11 +95,11 @@ let LEVEL = "STARTSCREEN"
 let soundVolume = 0.7
 let musicVolume = 0.5
 
-function checkPlatforms(platform){
+function checkPlatforms(object,platform){
     return(
-        player.position.x + player.offset_x >= thisPlatform.position.x &&
-        player.position.x + player.offset_x + player.width <= thisPlatform.position.x + thisPlatform.width &&
-        player.position.y + player.offset_y + player.height <= thisPlatform.position.y
+        object.position.x + object.offset_x >= platform.position.x &&
+        object.position.x + object.offset_x + object.width <= platform.position.x + platform.width &&
+        object.position.y + object.offset_y + object.height <= platform.position.y
     )
 }
 
@@ -109,33 +109,7 @@ function animate(){
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
 
-    // Handle platform logic
-    // Set the bottom of the map for objects to land upon
-    player.bottomYCordsActive = 703 // re-apply base bottom Y coords
-    player.bottomYCordsBetweeenLevels = 770 // re-apply base bottom Y coords
-    for (const num in coins) {  
-        coins[num].bottomYCordsActive = 690
-    }
-    for (const num in customers) {
-        customers[num].bottomYCordsActive = 690
-    }
-    for (const num in enemies) {
-        enemies[num].bottomYCordsActive = 690
-    }
-    for (const num in player.foods) {
-        player.foods[num].bottomYCordsActive = 690
-    }
-
-    for(const i in platforms){
-        // if player x within platform && y above platform, player y does not go below platform y
-        thisPlatform = platforms[i]
-        if(
-            checkPlatforms(thisPlatform)
-        ){
-            //  player y+height does not go below platform y
-            player.bottomYCordsActive = thisPlatform.position.y -1
-        } 
-    }
+    handlePlatformLogic()
 
     // HANDLING GAMESTATES
     //

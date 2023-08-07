@@ -909,6 +909,8 @@ class Customer {
         this.facing = -1 // 1 = right, -1 = left
 
         this.bottomYCordsActive
+        this.leftXBarrier
+        this.rightXBarrier
     }
 
     eat() {
@@ -1015,6 +1017,13 @@ class Customer {
             this.velocity.x = 1
             this.switchSprite('walkRight')
         } else if (this.position.x + this.image.width >= canvas.width) {
+            this.velocity.x = -1
+            this.switchSprite('walk')
+        // Force customer to stay on floating platform
+        } else if (this.position.x + this.offset_x<= this.leftXBarrier){
+            this.velocity.x = 1
+            this.switchSprite('walkRight')
+        } else if(this.position.x + this.offset_x + this.width +1 >= this.rightXBarrier){
             this.velocity.x = -1
             this.switchSprite('walk')
         }

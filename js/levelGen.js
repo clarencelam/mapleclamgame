@@ -11,22 +11,16 @@ let day = 1
 function genLevel() {
     console.log("Generating Level: " + LEVEL)
     if (LEVEL === "TUTORIAL_M1") {
-        genFoodTruck(580, 348)
-        genPlatform(220, 380)
+        genFoodTruck(1100, 532)
         genPlatform(100, 380)
+        genPlatform(220, 380)
         genPlatform(600, 520)
-        genPlatform(1100, 200)
-        genPlatform(1400, 550)
-        genPlatform(1400, 380)
     }
     else if (LEVEL === 1) {
-        genFoodTruck(580, 348)
+        //genFoodTruck(580, 348)
         genPlatform(220, 380)
         genPlatform(100, 380)
         genPlatform(600, 520)
-        genPlatform(1100, 200)
-        genPlatform(1400, 550)
-        genPlatform(1400, 380)
         playBgMusic()
         genThornBush(700, 650)
     }

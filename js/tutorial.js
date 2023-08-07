@@ -5,8 +5,8 @@ function genTutorial(num) {
     if (num === 1) {
         let msg1 = new Message({
             position: {
-                x: 600,
-                y: 130
+                x: 1140,
+                y: 300
             },
             imageSrc: `./img/messages1/textBox.png`,
             scale: 2
@@ -18,8 +18,8 @@ function genTutorial(num) {
     else if (num === 1.1) {
         let msg1 = new Message({
             position: {
-                x: 600,
-                y: 130
+                x: 1140,
+                y: 300
             },
             imageSrc: `./img/messages1/textBox.png`,
             scale: 2
@@ -70,8 +70,8 @@ function genTutorial(num) {
     } else if (num === 4.5) {
         let msg4 = new Message({
             position: {
-                x: 600,
-                y: 130
+                x: 1140,
+                y: 300
             },
             imageSrc: `./img/messages1/textBox.png`,
             scale: 2

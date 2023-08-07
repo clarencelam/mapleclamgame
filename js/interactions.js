@@ -141,3 +141,65 @@ function handleEnemyPlayerInteractions(){
         }
     }
 }
+
+
+function handlePlatformLogic(){
+        // Handle platform logic
+    // Set the bottom of the map for objects to land upon
+    player.bottomYCordsActive = 703 // re-apply base bottom Y coords
+    player.bottomYCordsBetweeenLevels = 770 // re-apply base bottom Y coords
+    for (const num in coins) {  
+        coins[num].bottomYCordsActive = 690
+    }
+    for (const num in customers) {
+        customers[num].bottomYCordsActive = 690
+        customers[num].leftXBarrier = 0
+        customers[num].rightXBarrier = canvas.width
+    }
+    for (const num in enemies) {
+        enemies[num].bottomYCordsActive = 690
+    }
+    for (const num in player.foods) {
+        player.foods[num].bottomYCordsActive = 690
+    }
+
+    for(const i in platforms){
+        // if player x within platform && y above platform, player y does not go below platform y
+        thisPlatform = platforms[i]
+        if(
+            checkPlatforms(player,thisPlatform)
+        ){
+            //  player y+height does not go below platform y
+            player.bottomYCordsActive = thisPlatform.position.y -1
+        } 
+        for (const num in coins) {  
+            if(checkPlatforms(coins[num],thisPlatform)
+            ){
+                coins[num].bottomYCordsActive = thisPlatform.position.y - 15
+            }
+        }    
+        for (const num in customers) {  
+            if(checkPlatforms(customers[num],thisPlatform)
+            ){
+                customers[num].bottomYCordsActive = thisPlatform.position.y -18
+                // Make customer stay within border
+                customers[num].leftXBarrier = thisPlatform.position.x
+                customers[num].rightXBarrier = thisPlatform.position.x + thisPlatform.width
+                // console.log(customers[num].position.x + customers[num].offset_x + customers[num].width)
+                // console.log(thisPlatform.position.x + thisPlatform.width)
+            }
+        }    
+        for (const num in enemies) {  
+            if(checkPlatforms(enemies[num],thisPlatform)
+            ){
+                enemies[num].bottomYCordsActive = thisPlatform.position.y -5
+            }
+        }    
+        for (const num in player.foods) {  
+            if(checkPlatforms(player.foods[num],thisPlatform)
+            ){
+                player.foods[num].bottomYCordsActive = thisPlatform.position.y - 10
+            }
+        }    
+    }
+}
