@@ -486,6 +486,9 @@ class Player {
         this.potentialInteraction = false // determines if "..." interactivity alert should appear & shooting should be repressed
         this.interacting = false // disables movement
 
+        this.messageImage = new Image()
+        this.messageImage.src = './img/messages1/interactionAvailable.png'
+
         // handle gettingHit
         this.gettingHit = false
         this.hitCooldown = 0
@@ -660,16 +663,6 @@ class Player {
             )
         }
 
-        if(this.potentialInteraction === true){
-            c.fillStyle = "black"
-            c.fillRect(
-                this.position.x + this.offset_x,
-                this.position.y + this.offset_y - this.height,
-                this.width,
-                this.height
-            )
-        }
-
         c.drawImage(
             this.image,
             // Sprite Crop
@@ -683,6 +676,31 @@ class Player {
             this.image.width / this.framesMax * this.scale,
             this.image.height * this.scale
         )
+
+        // Draw interaction messagebox
+        if(this.potentialInteraction === true){
+            c.drawImage(
+                this.messageImage,
+                this.position.x + this.offset_x - 25,
+                this.position.y + this.offset_y - this.height - 15
+            )    
+        }
+
+        // Draw cooked food as visual indicators
+        if (this.cookedFood.length > 0) {
+            for (let i in this.cookedFood) {
+                this.cookedFood[i].scale = 1.2
+                this.cookedFood[i].position.x = 20 + (30 * i)
+                this.cookedFood[i].position.y = 15
+                this.cookedFood[i].draw()
+            }
+            if(this.potentialInteraction === false){
+            this.cookedFood[0].position.x = this.position.x + 20
+            this.cookedFood[0].position.y = this.position.y - 20
+            this.cookedFood[0].scale = 1
+            this.cookedFood[0].draw()
+            }
+        }
     }
 
     animateFrames() {
@@ -794,19 +812,6 @@ class Player {
                             console.log("food expiry! Index: " + food)
                         }
                     }
-                }
-                // Draw cooked unthrown food (ammo, essentially), setting its x & y position
-                if (this.cookedFood.length > 0) {
-                    for (let i in this.cookedFood) {
-                        this.cookedFood[i].scale = 1.2
-                        this.cookedFood[i].position.x = 20 + (30 * i)
-                        this.cookedFood[i].position.y = 15
-                        this.cookedFood[i].draw()
-                    }
-                    this.cookedFood[0].position.x = this.position.x + 20
-                    this.cookedFood[0].position.y = this.position.y - 20
-                    this.cookedFood[0].scale = 1
-                    this.cookedFood[0].draw()
                 }
                 case 'AFTERLEVEL': // no food
                 case 'BEFORELEVEL':
