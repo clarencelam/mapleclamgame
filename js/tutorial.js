@@ -168,21 +168,20 @@ function handleTutorial() {
         }
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
             messages = []
-            LEVEL = "TUTORIAL_M1.1"
-            document.querySelector("#tutorialTextbox").style.display = 'none'
-        }
-
-    }
-    else if(LEVEL === "TUTORIAL_M1.1"){
-
-        if(messages.length <1){
+            // LEVEL = "TUTORIAL_M1.1"
+            // document.querySelector("#tutorialTextbox").style.display = 'none'
             genTutorial(1.1)
-                }
-        if(keys.space.pressed){
-            messages = []
-            LEVEL = "TUTORIAL_M2"
-            document.querySelector("#tutorialTextbox").style.display = 'none'
+            player.potentialInteraction = true
+            if(keys.space.pressed){
+                player.interacting = true
+                messages = []
+                LEVEL = "TUTORIAL_M2"
+                document.querySelector("#tutorialTextbox").style.display = 'none'
+            }    
+        } else{
+            player.potentialInteraction = false
         }
+
     }
     else if (LEVEL === "TUTORIAL_M2") {
         // "welcome diologue"
@@ -198,7 +197,8 @@ function handleTutorial() {
             document.querySelector("#tutorialMsg").style.display = 'none'
         }
     }
-    else if (LEVEL === "TUTORIAL_M3") {
+    else if (LEVEL === "TUTORIAL_M3") { 
+        // still in player.interacting = true, player frozen
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
             // if space pressed, show dialogue, suppress player movement
             if(keys.space.pressed){
@@ -206,10 +206,7 @@ function handleTutorial() {
                 genTutorial(3)
                 LEVEL = "TUTORIAL_M4"
             }
-        } else {
-            messages = []
-            document.querySelector("#tutorialMsg").style.display = 'none'
-        }
+        } 
     }
     else if (LEVEL === "TUTORIAL_M4") {
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
@@ -226,6 +223,8 @@ function handleTutorial() {
             keys.space.pressed = false
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
+            player.interacting = false
+            player.potentialInteraction = false
         }
         if (todaysCoins === 1) {
             LEVEL = "TUTORIAL_M5"
@@ -234,13 +233,17 @@ function handleTutorial() {
     }
     else if (LEVEL === "TUTORIAL_M5") {
         if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            player.potentialInteraction = true
             if(keys.space.pressed){
+                player.interacting = true
                 keys.space.pressed = false
                 messages = []
                 document.querySelector("#tutorialTextbox").style.display = 'none'
                 genTutorial(5)
                 LEVEL = "TUTORIAL_M6"
             }
+     } else{
+        player.potentialInteraction = false
      } 
     }
     else if(LEVEL === "TUTORIAL_M6"){
@@ -259,6 +262,8 @@ function handleTutorial() {
             startLevel1()
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
+            player.interacting = false
+            player.potentialInteraction = false
         }
     }
 

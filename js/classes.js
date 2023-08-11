@@ -483,6 +483,8 @@ class Player {
         this.scale = scale
         this.facing = -1 // 1 = right, -1 = left
         this.jumping = false // calculated in update() function
+        this.potentialInteraction = false // determines if "..." interactivity alert should appear & shooting should be repressed
+        this.interacting = false // disables movement
 
         // handle gettingHit
         this.gettingHit = false
@@ -588,9 +590,11 @@ class Player {
     throw() {
         if(GAMESTATE != "INACTIVE" && GAMESTATE != "AFTERLEVEL" && GAMESTATE != "BEFORELEVEL"){
 
-        
+        if(this.interacting === true || this.potentialInteraction === true){
+            playClickSfx()
+        } 
         // get food from cookedFood
-        if (this.cookedFood.length > 0) {
+        else if (this.cookedFood.length > 0) {
             this.cookedFood.shift()
             const food = new Food({
                 position: {
@@ -651,6 +655,16 @@ class Player {
             c.fillRect(
                 this.position.x + this.offset_x,
                 this.position.y + this.offset_y,
+                this.width,
+                this.height
+            )
+        }
+
+        if(this.potentialInteraction === true){
+            c.fillStyle = "black"
+            c.fillRect(
+                this.position.x + this.offset_x,
+                this.position.y + this.offset_y - this.height,
                 this.width,
                 this.height
             )

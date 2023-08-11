@@ -34,6 +34,13 @@ function playFailSfx(){
     failNoise.play()    
 }
 
+function playClickSfx(){
+    var clickNoise = new Audio('sfx/click_sfx.m4a');
+    clickNoise.volume = soundVolume
+    clickNoise.play()    
+}
+
+
 function startRolls(sprite, decisionInterval, max){
     // generate 
     // may need to revisit this later to ensure Timeout is deleted when object is removed
