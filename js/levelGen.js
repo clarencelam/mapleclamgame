@@ -3,7 +3,7 @@ let todaysCoins = 0
 const defaultMinimumCoins = 5
 let minimumCoins = 3
 const defaultTimer = 20
-let timer = 10
+let timer = 20
 let day = 1
 
 // LEVEL ITERATION FUNCTIONS
@@ -73,15 +73,15 @@ function nextLevel() {
         }
 
         // add beforeLevel message
-        let beforeLevelSummary = new Message({
-            position: {
-                x: 370,
-                y: 30
-            },
-            imageSrc: `./img/messages1/messageTemplate.png`,
-            scale: 0.55
-        })
-        messages.push(beforeLevelSummary)
+        // let beforeLevelSummary = new Message({
+        //     position: {
+        //         x: 370,
+        //         y: 30
+        //     },
+        //     imageSrc: `./img/messages1/messageTemplate.png`,
+        //     scale: 0.55
+        // })
+        // messages.push(beforeLevelSummary)
         if (levelCoinChange === 0) {
             document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${day} of the restaurant biz! <br><br>Rent's stayed the same! <br><br>We'll need ${minimumCoins} mesos to get through the day!`
         } else {
@@ -129,8 +129,10 @@ function goBetweenLevels() {
 }
 
 levelCoinChange = 0
+
 function incrementLevel() {
     // increment level difficulty
+    // Called in GAMESTATE = INACTIVE when player closes summary screen
     levelCoinChange = randomRoll(3)
     minimumCoins = minimumCoins + levelCoinChange
     console.log("Current level: " + LEVEL + " - Level coin requirement increase: " + levelCoinChange + ", for a total of: " + minimumCoins)
@@ -146,10 +148,8 @@ function incrementLevel() {
 
 function determineWinLoss() {
     // STATE WHERE DAY SUMMARY IS SHOWN, RIGHT BEFORE BETWEENLEVELS
-    if(keys.space.pressed){
         console.log("show win/loss message")
 
-        keys.space.pressed = false
         GAMESTATE = "INACTIVE"
 
         messages = []
@@ -178,37 +178,16 @@ function determineWinLoss() {
             document.querySelector("#levelEnd").innerHTML = `You made ${todaysCoins} mesos from your shift today. The minimum was ${minimumCoins}.<br><br>It's been a good ${day} days with you, but... <br><br>You're fired. Refresh to try again!`
         }
 
-    }
+    
 }
 
 
 
 function endLevel() {
     // triggered by TIMER === 0
-    // in this state, the game continues, but no food will be produced, and level may be ended by interacting with 
     if (GAMESTATE === "ACTIVE") {
-        // Position truck's message over foodtruck object
-        msg_x = foodTrucks[0].position.x
-        msg_y = foodTrucks[0].position.y - 200
-
-        messages = []
-        let msg1 = new Message({
-            position: {
-                x: msg_x,
-                y: msg_y
-            },
-            imageSrc: `./img/messages1/textBox.png`,
-            scale: 2
-        })
-        messages.push(msg1)
-        document.querySelector("#levelEnd").innerHTML = "Restaurant's closed<br>for the day!<br><br>Come over when you're<br>ready to close up.<br>"
-        document.querySelector("#levelEnd").style.left = `${msg_x + 50}` + 'px'
-        document.querySelector("#levelEnd").style.top = `${msg_y + 50}` + 'px'
-        document.querySelector("#levelEnd").style.display = 'flex'
-
-        GAMESTATE = "AFTERLEVEL" // within this gamestate, determine stats
+        determineWinLoss()
     }
-
 }
 
 

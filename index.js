@@ -93,7 +93,7 @@ let LEVEL = "STARTSCREEN"
 // let LEVEL = "TUTORIAL_M7"
 
 let soundVolume = 0.7
-let musicVolume = 0.5
+let musicVolume = 0.4
 
 function checkPlatforms(object,platform){
     return(
@@ -179,6 +179,11 @@ function animate(){
         for (const i in enemies) {
             enemies[i].update()
         }
+
+        for(const i in messages){
+            messages[i].update()
+        }
+        
         player.update()
 
         if(portals.length>0){
@@ -190,27 +195,47 @@ function animate(){
         }
 
 
-        // if player is over foodtruck, give option to start level
-        if(foodTrucks.length>0 && spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
-            document.querySelector("#beforeLevel").style.display = 'flex'
-                for(const i in messages){
-                    messages[i].update()
-                }
+        // If the player is over the foodtruck, give interaction prompt to start level
+        if(spriteCollision({rectangle1: player, rectangle2: foodTrucks[0]})){
+            if(player.interacting === false){
+                // enable 'space' to open start-level dialogue 
+                player.potentialInteraction = true
                 if(keys.space.pressed){
+                    player.interacting = true
                     keys.space.pressed = false
+                    
+                    let beforeLevelSummary = new Message({
+                        position: {
+                            x: 370,
+                            y: 30
+                        },
+                        imageSrc: `./img/messages1/messageTemplate.png`,
+                        scale: 0.55
+                    })
+                    messages.push(beforeLevelSummary)            
+                    document.querySelector("#beforeLevel").style.display = 'flex'
+                }    
+            } else if(player.interacting === true){
+                // 'space' to close dialogue & start level
+                if(keys.space.pressed){
+                    player.interacting = false
+                    player.potentialInteraction = false
+                    keys.space.pressed = false
+                    
                     GAMESTATE = "ACTIVE"
-                    // clear messages
                     document.querySelector("#beforeLevel").style.display = 'none'
                     messages = []
-                    decreaseTimer()    
-                }                
-            } else{
-                document.querySelector("#beforeLevel").style.display = 'none'
+                    decreaseTimer()   
+                }    
             }
+        } else{
+            player.potentialInteraction = false
+        }
 
     }
     
-    // HANDLING "BETWEENLEVELS" GAMESTATE
+    // HANDLING "BETWEENLEVELS" GAMESTATE 
+    // Character is in "home screen"
     if(GAMESTATE === "BETWEENLEVELS"){
         for (const i in portals) {
             portals[i].update()
@@ -230,7 +255,7 @@ function animate(){
     }
     
     // HANDLING "ACTIVE" GAMESTATE
-    if(GAMESTATE === "ACTIVE" || GAMESTATE === "AFTERLEVEL"){
+    if(GAMESTATE === "ACTIVE"){
 
         // UPDATE ALL OBJECTS
         for(const i in messages){
@@ -289,11 +314,7 @@ function animate(){
 
         handleEnemyPlayerInteractions()
 
-        if(GAMESTATE === "AFTERLEVEL"){
-            if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
-                determineWinLoss()
-            }
-        }
+
     }
 }
 

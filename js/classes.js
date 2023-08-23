@@ -591,13 +591,14 @@ class Player {
     }
 
     throw() {
-        if(GAMESTATE != "INACTIVE" && GAMESTATE != "AFTERLEVEL" && GAMESTATE != "BEFORELEVEL"){
-
         if(this.interacting === true || this.potentialInteraction === true){
             playClickSfx()
         } 
+
+        if(GAMESTATE != "INACTIVE" && GAMESTATE != "AFTERLEVEL" && GAMESTATE != "BEFORELEVEL"){
+
         // get food from cookedFood
-        else if (this.cookedFood.length > 0) {
+        if (this.cookedFood.length > 0) {
             this.cookedFood.shift()
             const food = new Food({
                 position: {
@@ -830,8 +831,10 @@ class Player {
         }
 
         // Move PLayer
-        this.position.x += this.velocity.x
-        this.position.y += this.velocity.y
+        if(!this.interacting){
+            this.position.x += this.velocity.x
+            this.position.y += this.velocity.y    
+        }
 
         // Apply hit cooldown of 20
         if (this.gettingHit === true && this.hitCooldown < 20) {
