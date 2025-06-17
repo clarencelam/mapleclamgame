@@ -91,10 +91,8 @@ function decreaseTimer() {
 }
 
 function resetTimer(){
-    if(timer === 0){
-        timer = defaultTimer
-        document.querySelector('#timer').innerHTML = timer
-    }
+    timer = defaultTimer
+    document.querySelector('#timer').innerHTML = timer
 }
 
 function resetArrays(){

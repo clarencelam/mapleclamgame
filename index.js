@@ -103,6 +103,10 @@ function checkPlatforms(object,platform){
     )
 }
 
+if (document.querySelector('#levelCounter')) {
+    document.querySelector('#levelCounter').innerHTML = `Level: ${typeof LEVEL === 'number' ? LEVEL : 1}`;
+}
+
 function animate(){
     window.requestAnimationFrame(animate)
     c.fillStyle= 'black'
@@ -288,17 +292,21 @@ function animate(){
         }
         player.update()
 
-        // LEVEL 1 SPAWNS
-        if(customers.length<5){
-            let x = Math.floor(Math.random()* canvas.width)
-            genCust(x, 200)
-        }
+    // DYNAMIC SPAWNS - adjust based on level
+    if(customers.length < Math.min(10 + Math.floor(levelCounter / 2), 15)){ // Gradually increase customer count
+        let x = Math.floor(Math.random()* canvas.width)
+        genCust(x, 200)
+    }
 
-
-        if(enemies.length<1){
-            let x = Math.floor(Math.random()* canvas.width)
-            genGrunt(x,200)
+    // Enemy spawning handled in level generation, but maintain minimum
+    const minEnemies = Math.floor(levelCounter / 3) + 1
+    if(enemies.length < minEnemies){
+        let x = Math.floor(Math.random()* canvas.width)
+        // Ensure enemy doesn't spawn too close to player
+        if (Math.abs(x - player.position.x) > 300) {
+            genGrunt(x, 200)
         }
+    }
             
 
         // Check if GAME OVER due to thornbush collision

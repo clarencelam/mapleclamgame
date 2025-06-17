@@ -21,56 +21,124 @@ function handleCoinPlayerInteractions() {
             }
         }
         else if (thisCoin.COINSTATE === "pickedUp") {
+            // MODIFIED: Adjust target to player's approximate center for both X and Y
+            // (Assumes player height/width ~50; adjust offsets if your player sprite differs)
+            var playerCenterPointX = player.position.x + 25;  // Existing (rough center)
+            var playerCenterPointY = player.position.y + 25;  // NEW: Target player's vertical center
+            var coinCenterPointX = thisCoin.position.x + (thisCoin.width / 2);
+            var coinCenterPointY = thisCoin.position.y + (thisCoin.height / 2);
+            var xDifferential = playerCenterPointX - coinCenterPointX;
+            var yDifferential = playerCenterPointY - coinCenterPointY;  // If positive, player is below coin
 
-            var playerCenterPointX = player.position.x + 25
-            var coinCenterPointX = thisCoin.position.x //+ (thisCoin.width/2)
-            var playerCenterPointY = player.position.y
-            var coinCenterPointY = thisCoin.position.y
-            var xDifferential = playerCenterPointX - coinCenterPointX
-            var yDifferential = playerCenterPointY - coinCenterPointY // if positive, player below coin
-
-            // Move food to middle of player sprite
+            // Existing: Always follow X (even during jump for immediate responsiveness)
             if (xDifferential === 0) {
-                thisCoin.velocity.x = 0
+                thisCoin.velocity.x = 0;
             } else if (xDifferential > 0) {
-                thisCoin.velocity.x = 3
+                thisCoin.velocity.x = 3;  // Move right toward player
             } else if (xDifferential < 0) {
-                thisCoin.velocity.x = -3
+                thisCoin.velocity.x = -3;  // Move left toward player
             }
 
-            /* laggy functiont trying to lock y
-            if(yDifferential === 0){
-                thisCoin.velocity.y = 0
-            } else if(yDifferential >0){
-                thisCoin.velocity.y += 1
-            } else if(yDifferential<0){
-                thisCoin.velocity.y += -1
+            // NEW: Only follow Y after the initial jump is done (preserves the "big jump")
+            // Use smaller velocity for smoothness (adjust 2/-2 if too fast/slow)
+            if (thisCoin.initialJumpDone) {
+                if (yDifferential === 0) {
+                    thisCoin.velocity.y = 0;  // Stop if aligned
+                } else if (yDifferential > 0) {
+                    thisCoin.velocity.y = 2;  // Move down toward player (gentle speed)
+                } else if (yDifferential < 0) {
+                    thisCoin.velocity.y = -2;  // Move up toward player (gentle speed)
+                }
             }
-            */
+            // Note: No gravity is applied post-jump (due to Coin.update() changes), so Y-following works smoothly
         }
     }
 }
 
-function handleThornBushPlayerInteractions(){
-            // Check if GAME OVER due to thornbush collision
-            for(const i in thornBushes){
-                var thisBush = thornBushes[i]
-                thisBush.update()
-                if(spriteCollision({
-                    rectangle1: player,
-                    rectangle2: thisBush
-                })){
-                    // GAME OVER!
-                    playFailSfx()
-                    console.log("player hit bush")
-                    coinCointer = 0
-                    GAMESTATE = "GAMEOVER"
-                    document.querySelector("#displayText").style.display = 'flex'
-                    document.querySelector("#displayText").innerHTML = "GAME OVER"
-                }
-            }
-    
+
+// function handleCoinPlayerInteractions() {
+//     for (const i in coins) {
+//         var thisCoin = coins[i]
+//         if (thisCoin.COINSTATE === "idle") {
+//             if (spriteCollision({
+//                 rectangle1: player,
+//                 rectangle2: thisCoin
+//             })) {
+//                 thisCoin.getPickedUp()
+//                 console.log("coin picked up")
+//                 getCoins(1)
+//             }
+//         }
+//         else if (thisCoin.COINSTATE === "pickedUp") {
+
+//             var playerCenterPointX = player.position.x + 25
+//             var coinCenterPointX = thisCoin.position.x //+ (thisCoin.width/2)
+//             var playerCenterPointY = player.position.y
+//             var coinCenterPointY = thisCoin.position.y
+//             var xDifferential = playerCenterPointX - coinCenterPointX
+//             var yDifferential = playerCenterPointY - coinCenterPointY // if positive, player below coin
+
+//             // Move food to middle of player sprite
+//             if (xDifferential === 0) {
+//                 thisCoin.velocity.x = 0
+//             } else if (xDifferential > 0) {
+//                 thisCoin.velocity.x = 3
+//             } else if (xDifferential < 0) {
+//                 thisCoin.velocity.x = -3
+//             }
+
+//             /* laggy functiont trying to lock y
+//             if(yDifferential === 0){
+//                 thisCoin.velocity.y = 0
+//             } else if(yDifferential >0){
+//                 thisCoin.velocity.y += 1
+//             } else if(yDifferential<0){
+//                 thisCoin.velocity.y += -1
+//             }
+//             */
+//         }
+//     }
+// }
+
+function handleThornBushPlayerInteractions() {
+    // Check if GAME OVER due to thornbush collision
+    for (const i in thornBushes) {
+        var thisBush = thornBushes[i];
+        thisBush.update();
+        if (spriteCollision({
+            rectangle1: player,
+            rectangle2: thisBush
+        })) {
+            // UPDATED: Removed game-over logic; now just logs for debugging or future effects
+            // (e.g., you could add a sound or velocity change here if desired)
+            console.log("Player hit bush - no game over, but collision detected");
+            // Optionally: Add non-fatal effects, e.g., play a sound or reduce speed temporarily
+            // playSomeSound(); // Example placeholder
+        }
+    }
 }
+
+// function handleThornBushPlayerInteractions(){
+//             // Check if GAME OVER due to thornbush collision
+//             for(const i in thornBushes){
+//                 var thisBush = thornBushes[i]
+//                 thisBush.update()
+//                 if(spriteCollision({
+//                     rectangle1: player,
+//                     rectangle2: thisBush
+//                 })){
+//                     // GAME OVER!
+//                     playFailSfx()
+//                     console.log("player hit bush")
+//                     coinCointer = 0
+//                     GAMESTATE = "GAMEOVER"
+//                     document.querySelector("#displayText").style.display = 'flex'
+//                     document.querySelector("#displayText").innerHTML = "GAME OVER"
+//                 }
+//             }
+    
+// }
+
 
 // Food interaction logic
 function handleFoodPlayerInteractions(){

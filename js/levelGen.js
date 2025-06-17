@@ -1,10 +1,13 @@
 let coinCointer = 0
 let todaysCoins = 0
-const defaultMinimumCoins = 5
-let minimumCoins = 3
-const defaultTimer = 20
-let timer = 20
+const defaultMinimumCoins = 1
+let minimumCoins = 1
+levelCoinChange = 0
+const defaultTimer = 12
 let day = 1
+let playerlives = 10
+let levelCounter = 1  //  Track current level number
+
 
 // LEVEL ITERATION FUNCTIONS
 
@@ -23,30 +26,81 @@ function genLevel() {
         genPlatform(600, 520)
         playBgMusic()
         genThornBush(700, 650)
+        resetTimer()
+        GAMESTATE = "ACTIVE"
+        decreaseTimer()
     }
-    else if (LEVEL === 2) {
-        player.position.x = 100
-        player.position.y = 100
-        genFoodTruck(580, 348)
-        genThornBush(700, 650)
-        genPlatform(220, 380)
-        genPlatform(100, 380)
-        genPlatform(600, 520)
-        genPlatform(1100, 200)
-        genPlatform(1400, 550)
-        genPlatform(1400, 380)
+    else {
+        // NEW: Dynamic level generation for levels 2+
+        generateDynamicLevel()
     }
-    else if (LEVEL === 3) {
-        player.position.x = 100
-        player.position.y = 100
-        genFoodTruck(580, 348)
-        genThornBush(700, 650)
-        genPlatform(220, 380)
-        genPlatform(100, 380)
-        genPlatform(600, 520)
-        genPlatform(1100, 200)
-        genPlatform(1400, 550)
-        genPlatform(1400, 380)
+}
+// NEW: Dynamic level generation function
+function generateDynamicLevel() {
+    player.position.x = 100
+    player.position.y = 100
+    
+    // Always include a food truck (positioned randomly but accessibly)
+    const foodTruckX = Math.random() * (canvas.width - 500) + 200 // Keep away from edges
+    const foodTruckY = Math.random() * 200 + 300 // Between y=300-500
+    genFoodTruck(foodTruckX, foodTruckY)
+    
+    // Generate thornbushes (1-3 per level)
+    const thornCount = Math.floor(Math.random() * 3) + 1
+    for (let i = 0; i < thornCount; i++) {
+        const thornX = Math.random() * (canvas.width - 100)
+        genThornBush(thornX, 650)
+    }
+    
+    // Generate platforms with variety but ensure accessibility
+    generateAccessiblePlatforms()
+    }
+
+
+// NEW: Generate platforms that are accessible to the player
+function generateAccessiblePlatforms() {
+    const maxJumpHeight = 180 // Player's max jump reach
+    const floorY = 703 // player.bottomYCordsActive
+    const minPlatformY = 200 // Don't generate platforms too high
+    const platformWidth = 215 // Standard platform width
+    
+    // Always generate some low platforms for basic navigation
+    const basePlatforms = Math.floor(Math.random() * 3) + 2 // 2-4 base platforms
+    for (let i = 0; i < basePlatforms; i++) {
+        const x = Math.random() * (canvas.width - platformWidth)
+        const y = Math.random() * 200 + 430 // Between y=430-630
+        genPlatform(x, y)
+    }
+    
+    // Generate connected platform chains (ensuring accessibility)
+    const chainCount = Math.floor(Math.random() * 2) + 1 // 1-2 chains
+    for (let chain = 0; chain < chainCount; chain++) {
+        generatePlatformChain()
+    }
+}
+// NEW: Generate a chain of connected platforms
+function generatePlatformChain() {
+    const maxJumpHeight = 180
+    const maxJumpDistance = 200 // Horizontal jump distance
+    const platformWidth = 215
+    const chainLength = Math.floor(Math.random() * 4) + 2 // 2-5 platforms per chain
+    
+    // Start position for the chain
+    let currentX = Math.random() * (canvas.width - chainLength * maxJumpDistance)
+    let currentY = Math.random() * 300 + 250 // Between y=250-550
+    
+    for (let i = 0; i < chainLength; i++) {
+        genPlatform(currentX, currentY)
+        
+        // Calculate next platform position (within jump range)
+        if (i < chainLength - 1) {
+            const nextX = currentX + (Math.random() * maxJumpDistance) + 50 // Move right
+            const nextY = currentY + (Math.random() * maxJumpHeight * 2) - maxJumpHeight // Can go up or down
+            
+            // Ensure next platform is within bounds and accessible
+            currentX = Math.max(0, Math.min(canvas.width - platformWidth, nextX))
+            currentY = Math.max(200, Math.min(600, nextY)) // Keep within reasonable bounds
+        }
     }
 }
 
@@ -62,6 +116,9 @@ function nextLevel() {
         resetArrays()
 
         genLevel()
+        if (timerID) {
+            clearTimeout(timerID);
+        }    
         resetTimer()
         genPortal(1300, 525)
 
@@ -71,17 +128,7 @@ function nextLevel() {
         for (let i in toShow) {
             document.querySelector(`${toShow[i]}`).style.display = 'inline'
         }
-
-        // add beforeLevel message
-        // let beforeLevelSummary = new Message({
-        //     position: {
-        //         x: 370,
-        //         y: 30
-        //     },
-        //     imageSrc: `./img/messages1/messageTemplate.png`,
-        //     scale: 0.55
-        // })
-        // messages.push(beforeLevelSummary)
+    
         if (levelCoinChange === 0) {
             document.querySelector("#beforeLevel").innerHTML = `Welcome to day ${day} of the restaurant biz! <br><br>Rent's stayed the same! <br><br>We'll need ${minimumCoins} mesos to get through the day!`
         } else {
@@ -128,22 +175,21 @@ function goBetweenLevels() {
 
 }
 
-levelCoinChange = 0
-
 function incrementLevel() {
     // increment level difficulty
     // Called in GAMESTATE = INACTIVE when player closes summary screen
-    levelCoinChange = randomRoll(3)
     minimumCoins = minimumCoins + levelCoinChange
     console.log("Current level: " + LEVEL + " - Level coin requirement increase: " + levelCoinChange + ", for a total of: " + minimumCoins)
 
-    // for now, loop levels after 3
-    if(LEVEL===3){
-        LEVEL =1
-    }else{
-        LEVEL += 1
+    // NEW: Always increment level instead of looping
+    LEVEL += 1
+    day += 1
+    levelCounter += 1 
+
+    // Update level counter UI
+    if (document.querySelector('#levelCounter')) {
+        document.querySelector('#levelCounter').innerHTML = `Level: ${levelCounter}`
     }
-    day +=1
 }
 
 function determineWinLoss() {
@@ -190,20 +236,23 @@ function endLevel() {
     }
 }
 
-
-
 function restartGame() {
-    timer = defaultTimer
-    console.log("reset pressed")
+    timer = defaultTimer;
+    console.log("reset pressed");
+
+    // Clear the existing timer to prevent it from continuing
+    if (timerID) {
+        clearTimeout(timerID);
+    }
 
     // hide and show appropriate HTML elements
-    document.querySelector("#levelEnd").style.display = 'none'
-    toShow = ["#coinCounter", "#timer", "#cookingTotal"]
+    document.querySelector("#levelEnd").style.display = 'none';
+    toShow = ["#coinCounter", "#timer", "#cookingTotal", "#livesCounter", "#levelCounter"];
     for (let i in toShow) {
-        document.querySelector(`${toShow[i]}`).style.display = 'inline'
+        document.querySelector(`${toShow[i]}`).style.display = 'inline';
     }
-    pauseBgMusic()
-    resetToActiveBackground()
+    pauseBgMusic();
+    resetToActiveBackground();
 
     // DEFINE PLAYER
     player = new Player({
@@ -244,15 +293,29 @@ function restartGame() {
                 framesMax: 1
             },
         }
-    })
+    });
 
-    coinCointer = 0
-    todaysCoins = 0
-    minimumCoins = defaultMinimumCoins
-    day = 1
+    // NEW: Reset lives and update UI
+    player.lives = playerlives;
+    if (document.querySelector('#livesCounter')) {
+        document.querySelector('#livesCounter').innerHTML = `Lives: ${player.lives}`;
+    }
 
-    resetArrays()
+    coinCointer = 0;
+    todaysCoins = 0;
+    minimumCoins = defaultMinimumCoins;
+    day = 1;
+    levelCounter = 1; 
 
-    GAMESTATE = "TUTORIAL"
-    LEVEL = "TUTORIAL_M1"
+    // Update level counter UI
+    if (document.querySelector('#levelCounter')) {
+        document.querySelector('#levelCounter').innerHTML = `Level: ${levelCounter}`
+    }
+
+    resetArrays();
+
+    GAMESTATE = "TUTORIAL";
+    LEVEL = "TUTORIAL_M1";
 }
+
+

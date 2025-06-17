@@ -108,15 +108,6 @@ function genTutorial(num) {
 }
 }
 
-function startLevel1() {
-    if (LEVEL != 1) {
-        LEVEL = 1
-        genLevel()
-        GAMESTATE = "ACTIVE"
-        decreaseTimer()
-    }
-}
-
 
 function handleStartScreen(){
     background = new Sprite({
@@ -259,7 +250,8 @@ function handleTutorial() {
     else if(LEVEL === "TUTORIAL_M7"){
         if(keys.space.pressed){
             keys.space.pressed = false
-            startLevel1()
+            LEVEL = 1
+            genLevel()
             messages = []
             document.querySelector("#tutorialMsg").style.display = 'none'
             player.interacting = false

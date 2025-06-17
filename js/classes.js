@@ -246,6 +246,8 @@ class Coin {
 
         this.COINSTATE = "idle"
         this.bottomYCordsActive
+        this.initialJumpDone = false;
+
     }
 
     draw() {
@@ -317,18 +319,59 @@ class Coin {
                 break
         }
 
+        // NEW: Detect when the initial jump peaks (velocity.y is no longer negative)
+        // This sets the flag to true once the coin starts "falling" after the jump
+        if (this.COINSTATE === 'pickedUp' && !this.initialJumpDone && this.velocity.y >= 0) {
+            this.initialJumpDone = true;
+        }
+
         // Handling platform gravity
-        if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
-            this.velocity.y = 0
-        } else {
-            this.velocity.y += this.gravity
+        // MODIFIED: Only apply gravity if not in 'pickedUp' or if the initial jump isn't done yet
+        // This preserves the jump's arc but disables gravity afterward to allow Y-following
+        if (this.COINSTATE !== 'pickedUp' || !this.initialJumpDone) {
+            if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
+                this.velocity.y = 0
+            } else {
+                this.velocity.y += this.gravity
+            }
         }
 
         // Move coin
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
-
     }
+
+    // update() {
+    //     this.draw()
+    //     this.animateFrames()
+
+    //     // TODO: upon setting COINSTATE to pickup, start a timeout to mark the coin for deletion
+    //     switch (this.COINSTATE) {
+    //         case 'idle':
+    //             break
+    //         case 'pickedUp':
+    //             if (this.markForDeathTimeout <= 0) {
+    //                 this.COINSTATE = "markedForDeath"
+    //             } else {
+    //                 this.markForDeathTimeout -= 1
+    //             }
+    //             break
+    //         case 'markedForDeath':
+    //             break
+    //     }
+
+    //     // Handling platform gravity
+    //     if (this.position.y + this.image.height + this.velocity.y >= this.bottomYCordsActive) {
+    //         this.velocity.y = 0
+    //     } else {
+    //         this.velocity.y += this.gravity
+    //     }
+
+    //     // Move coin
+    //     this.position.x += this.velocity.x
+    //     this.position.y += this.velocity.y
+
+    // }
 }
 
 // FOOD CLASS
@@ -492,6 +535,9 @@ class Player {
         // handle gettingHit
         this.gettingHit = false
         this.hitCooldown = 0
+        this.interacting = false // disables movement
+        this.lives = playerlives;  // Initialize player with x lives
+
 
         // stats
         this.speed = 3
@@ -530,17 +576,33 @@ class Player {
         this.offset_y = 10
     }
 
+    // jump() {
+    //     // set Jumping = true, apply jump velocity
+    //     if (this.jumping === false) {
+    //         this.velocity.y -= this.jumpHeight
+    //         this.jumping = true
+    //         // Jump sound effect
+    //         var jumpNoise = new Audio('sfx/jump.wav');
+    //         jumpNoise.volume = soundVolume
+    //         jumpNoise.play()
+    //     }
+    // }
     jump() {
         // set Jumping = true, apply jump velocity
-        if (this.jumping === false) {
-            this.velocity.y -= this.jumpHeight
-            this.jumping = true
+        // Original condition: if (this.jumping === false)
+        // Updated: Check if vertical velocity is 0 (i.e., player is grounded/not falling)
+        // This prevents jumping in mid-air, including during falls from walking off platforms,
+        // while allowing jumps only when on the ground or a platform.
+        if (this.velocity.y === 0) {
+            this.velocity.y -= this.jumpHeight;
+            this.jumping = true;
             // Jump sound effect
             var jumpNoise = new Audio('sfx/jump.wav');
-            jumpNoise.volume = soundVolume
-            jumpNoise.play()
+            jumpNoise.volume = soundVolume;
+            jumpNoise.play();
         }
     }
+
 
     cookFood() {
         // If not cooking and cooked limit is not reached, then add a food to cookedFood
@@ -637,19 +699,32 @@ class Player {
     }
 
     getHit(enemyFacing, damage) {
-        this.gettingHit = true
+        this.gettingHit = true;
         if (enemyFacing === 1) { // hit from right, move left
-            this.velocity.x = damage
+            this.velocity.x = damage;
         } else if (enemyFacing === -1) {
-            this.velocity.x = -damage
+            this.velocity.x = -damage;
         }
-        this.velocity.y -= 4
+        this.velocity.y -= 4;
 
         // Gethit sound effect
         var getHitNoise = new Audio('sfx/hit1.wav');
-        getHitNoise.volume = soundVolume
-        getHitNoise.play()
+        getHitNoise.volume = soundVolume;
+        getHitNoise.play();
 
+        // NEW: Decrement lives on hit, update UI, and check for game over
+        this.lives -= 1;  // Reduce lives by 1
+        if (document.querySelector('#livesCounter')) {
+            document.querySelector('#livesCounter').innerHTML = `Lives: ${this.lives}`;  // Update UI immediately
+        }
+        if (this.lives <= 0) {
+            // Trigger game over if no lives left (similar to original thornbush logic)
+            console.log("Player out of lives - GAME OVER");
+            playFailSfx();  // Reuse existing fail sound
+            GAMESTATE = "GAMEOVER";
+            document.querySelector("#displayText").style.display = 'flex';
+            document.querySelector("#displayText").innerHTML = "GAME OVER - Out of Lives!";
+        }
     }
 
     draw() {
