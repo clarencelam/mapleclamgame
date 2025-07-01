@@ -95,6 +95,12 @@ let LEVEL = "STARTSCREEN"
 let soundVolume = 0.7
 let musicVolume = 0.4
 
+// New: Global variables for upgrade costs and limits (adjust as needed)
+const DOUBLE_JUMP_COST = 5;
+const SPEED_UPGRADE_COST = 3;
+const MAX_SPEED_LEVEL = 3;
+
+
 function checkPlatforms(object,platform){
     return(
         object.position.x + object.offset_x >= platform.position.x &&
@@ -105,6 +111,63 @@ function checkPlatforms(object,platform){
 
 if (document.querySelector('#levelCounter')) {
     document.querySelector('#levelCounter').innerHTML = `Level: ${typeof LEVEL === 'number' ? LEVEL : 1}`;
+}
+
+// New: Function to show the upgrade menu (called in BETWEENLEVELS)
+function showUpgradeMenu() {
+    document.querySelector("#upgradeShop").style.display = 'flex';
+    updateUpgradeMenu();  // New: Helper to refresh button states based on player's upgrades
+}
+
+// New: Function to hide the upgrade menu
+// function hideUpgradeMenu() {
+//     document.querySelector("#upgradeShop").style.display = 'none';
+// }
+function hideUpgradeMenu() {
+    const shop = document.querySelector("#upgradeShop");
+    console.log("Found upgradeShop:", shop);
+    if (shop) {
+      shop.style.setProperty("display", "none", "important");
+      console.log("Forced display to none");
+    } else {
+      console.warn("#upgradeShop not found in DOM");
+    }
+  }
+    
+// New: Function to update the upgrade menu's button states (e.g., disable if bought or maxed)
+function updateUpgradeMenu() {
+    const doubleJumpButton = document.querySelector("#buyDoubleJump");
+    const speedButton = document.querySelector("#buySpeed");
+    
+    // Disable double-jump if already purchased
+    doubleJumpButton.disabled = player.hasDoubleJump;
+    doubleJumpButton.textContent = player.hasDoubleJump ? "Double Jump (Owned)" : `Buy Double Jump (${DOUBLE_JUMP_COST} coins)`;
+    
+    // Disable speed if at max level
+    speedButton.disabled = player.speedLevel >= MAX_SPEED_LEVEL;
+    speedButton.textContent = player.speedLevel >= MAX_SPEED_LEVEL ? "Speed Maxed" : `Upgrade Speed (${SPEED_UPGRADE_COST} coins) - Level ${player.speedLevel + 1}`;
+}
+
+// New: Function to handle upgrade purchases
+function purchaseUpgrade(type) {
+    if (type === 'doubleJump' && !player.hasDoubleJump && coinCointer >= DOUBLE_JUMP_COST) {
+        coinCointer -= DOUBLE_JUMP_COST;
+        player.hasDoubleJump = true;
+        player.maxJumps = 2;  // Enable double-jump
+        // Play purchase sound
+        playClickSfx()
+    } else if (type === 'speed' && player.speedLevel < MAX_SPEED_LEVEL && coinCointer >= SPEED_UPGRADE_COST) {
+        coinCointer -= SPEED_UPGRADE_COST;
+        player.speedLevel++;
+        player.speed += 1;  // Increase speed by 1 per level
+        // Play purchase sound
+        playClickSfx()
+    } else {
+        playFailSfx()
+    }
+    // Update coin UI and menu
+    document.querySelector("#totalCoinCounter").innerHTML = `Total Coins: ${coinCointer}`;
+    updateUpgradeMenu();
 }
 
 function animate(){
@@ -241,6 +304,7 @@ function animate(){
     // HANDLING "BETWEENLEVELS" GAMESTATE 
     // Character is in "home screen"
     if(GAMESTATE === "BETWEENLEVELS"){
+
         for (const i in portals) {
             portals[i].update()
         }
@@ -253,6 +317,8 @@ function animate(){
             // iterate levels
             console.log("go to nextlevel")
             keys.ArrowDown.pressed = false
+            // New: Hide menu before proceeding to next level
+            hideUpgradeMenu();
             nextLevel()
         }
 
@@ -352,8 +418,16 @@ window.addEventListener('keydown', (event) => {
             case 'ArrowDown':
                 keys.ArrowDown.pressed = true
                 break
-            }    
+            }   
             event.preventDefault()
+            if (event.key.toLowerCase() === 'u' && GAMESTATE === "BETWEENLEVELS") {
+                const shop = document.querySelector("#upgradeShop");
+                if (shop.style.display === 'flex') {
+                    hideUpgradeMenu();
+                } else {
+                    showUpgradeMenu();
+                }
+            }  
     }
 )
 

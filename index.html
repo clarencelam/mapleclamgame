@@ -137,7 +137,14 @@ latest commit: Jun 17, 2025
             0
         </div>
 
-
+    <!-- New: Upgrade Shop Menu -->
+    <div id="upgradeShop" style="position: absolute; color: #525252; font-family: Arial; top: 20%; left: 30%; background: rgba(255, 255, 255, 0.8); padding: 20px; border: 2px solid black; display: none; text-align: center;">
+        <h3>Upgrade Shop</h3>
+        <p>Total Coins: <span id="shopCoinCount">0</span></p> <!-- Dynamically updated via JS -->
+        <button id="buyDoubleJump" onclick="purchaseUpgrade('doubleJump')">Buy Double Jump (50 coins)</button><br><br>
+        <button id="buySpeed" onclick="purchaseUpgrade('speed')">Upgrade Speed (30 coins) - Level 1</button><br><br>
+        <p>Press 'U' to close or use the portal to proceed.</p>
+    </div>
 
         <div id="cookingTotal"
              style="
@@ -198,7 +205,6 @@ latest commit: Jun 17, 2025
     <script src="js/levelGen.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/npcGenerator.js"></script>
-    <script src="js/interactions.js"></script>
     <script src="js/tutorial.js"></script>
     <script src="index.js"></script>
 </body>
