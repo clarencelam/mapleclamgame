@@ -540,9 +540,14 @@ class Player {
 
 
         // stats
-        this.speed = 3
         this.jumpHeight = 11 //default 10
         this.gravity = 0.3
+        this.speed = 3;  // Existing, but now modifiable via upgrades
+        this.maxJumps = 1;  // New: Default to single jump; increases to 2 for double-jump
+        this.jumpCount = 0;  // New: Tracks jumps in air for double-jump limit
+        this.hasDoubleJump = false;  // New: Tracks if double-jump is purchased
+        this.speedLevel = 0;  // New: Tracks speed upgrade level (0-3)
+
 
         // movement mechanics
         this.lastkey
@@ -576,25 +581,11 @@ class Player {
         this.offset_y = 10
     }
 
-    // jump() {
-    //     // set Jumping = true, apply jump velocity
-    //     if (this.jumping === false) {
-    //         this.velocity.y -= this.jumpHeight
-    //         this.jumping = true
-    //         // Jump sound effect
-    //         var jumpNoise = new Audio('sfx/jump.wav');
-    //         jumpNoise.volume = soundVolume
-    //         jumpNoise.play()
-    //     }
-    // }
     jump() {
-        // set Jumping = true, apply jump velocity
-        // Original condition: if (this.jumping === false)
-        // Updated: Check if vertical velocity is 0 (i.e., player is grounded/not falling)
-        // This prevents jumping in mid-air, including during falls from walking off platforms,
-        // while allowing jumps only when on the ground or a platform.
-        if (this.velocity.y === 0) {
-            this.velocity.y -= this.jumpHeight;
+        // Modified: Allow jumping if under maxJumps (supports double-jump)
+        if (this.jumpCount < this.maxJumps) {
+            this.velocity.y = -this.jumpHeight;
+            this.jumpCount++;
             this.jumping = true;
             // Jump sound effect
             var jumpNoise = new Audio('sfx/jump.wav');
@@ -603,6 +594,11 @@ class Player {
         }
     }
 
+    // New method: Reset jump count when player lands (to allow jumping again)
+    resetJumps() {
+        this.jumpCount = 0;
+        this.jumping = false;
+    }
 
     cookFood() {
         // If not cooking and cooked limit is not reached, then add a food to cookedFood
@@ -863,7 +859,7 @@ class Player {
                 if (this.position.y + this.offset_y + this.height + this.velocity.y >= this.bottomYCordsBetweeenLevels) {
                     this.velocity.y = 0
                     // Player on bottom -- set jumping to false
-                    this.jumping = false
+                    this.resetJumps();  // New: Reset jump count on landing
                 } else {
                     // If player is above bottom of map, apply gravity
                     this.velocity.y += this.gravity
@@ -897,7 +893,7 @@ class Player {
                 if (this.position.y + this.offset_y + this.height + this.velocity.y >= this.bottomYCordsActive) {
                     this.velocity.y = 0
                     // Player on bottom -- set jumping to false
-                    this.jumping = false
+                    this.resetJumps();  // New: Reset jump count on landing
                 } else {
                     // If player is above bottom of map, apply gravity
                     this.velocity.y += this.gravity
@@ -950,7 +946,7 @@ class Player {
                 this.velocity.x = 0
             }
         }
-
+        
         // Handle Player Jump Sprite Updating
         if (this.jumping === true) {
             if (this.facing === 1) {

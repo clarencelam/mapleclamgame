@@ -25,7 +25,7 @@ function genLevel() {
         genPlatform(100, 380)
         genPlatform(600, 520)
         playBgMusic()
-        genThornBush(700, 650)
+
         resetTimer()
         GAMESTATE = "ACTIVE"
         decreaseTimer()
@@ -40,18 +40,8 @@ function generateDynamicLevel() {
     player.position.x = 100
     player.position.y = 100
     
-    // Always include a food truck (positioned randomly but accessibly)
-    const foodTruckX = Math.random() * (canvas.width - 500) + 200 // Keep away from edges
-    const foodTruckY = Math.random() * 200 + 300 // Between y=300-500
-    genFoodTruck(foodTruckX, foodTruckY)
-    
-    // Generate thornbushes (1-3 per level)
-    const thornCount = Math.floor(Math.random() * 3) + 1
-    for (let i = 0; i < thornCount; i++) {
-        const thornX = Math.random() * (canvas.width - 100)
-        genThornBush(thornX, 650)
-    }
-    
+    genFoodTruck(1100, 532)
+        
     // Generate platforms with variety but ensure accessibility
     generateAccessiblePlatforms()
     }
@@ -147,6 +137,8 @@ function goBetweenLevels() {
     // Function called after the conclusion of a successful level, after summary screen
     console.log("GAMESTATE CHANGE: GOING INBETWEEN LEVELS")
     GAMESTATE = "BETWEENLEVELS"
+    // New: Automatically show upgrade menu in BETWEENLEVELS
+    showUpgradeMenu();
 
     // play sound effect
     playTeleportSfx()
@@ -254,6 +246,13 @@ function restartGame() {
     pauseBgMusic();
     resetToActiveBackground();
 
+        // New: Reset upgrade-related properties
+        player.maxJumps = 1;
+        player.jumpCount = 0;
+        player.hasDoubleJump = false;
+        player.speedLevel = 0;
+        player.speed = 3;  // Reset to default
+    
     // DEFINE PLAYER
     player = new Player({
         position: {
@@ -313,7 +312,8 @@ function restartGame() {
     }
 
     resetArrays();
-
+    hideUpgradeMenu()
+    
     GAMESTATE = "TUTORIAL";
     LEVEL = "TUTORIAL_M1";
 }
