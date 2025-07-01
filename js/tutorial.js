@@ -1,0 +1,227 @@
+messages = []
+
+function genTutorial(num) {
+    messages = []
+    if (num === 1) {
+        let msg1 = new Message({
+            position: {
+                x: 1140,
+                y: 300
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg1)
+        document.querySelector("#tutorialTextbox").innerHTML = "Hey... Hey new guy! <br><br>Get over here!<br><br>Use the arrow keys to <br>move!"
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    } 
+    else if (num === 1.1) {
+        let msg1 = new Message({
+            position: {
+                x: 1140,
+                y: 300
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg1)
+        document.querySelector("#tutorialTextbox").innerHTML = "Talk to us!<br><br>Interact with the SPACE<br>key!"
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    }
+    else if (num === 2) {
+        let msg2 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        messages.push(msg2)
+        document.querySelector("#tutorialMsg").innerHTML = "First day hey? Let me show you the ropes<br><br>Your job is to serve food to the animals of Maple Island."
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+    } else if (num === 3) {
+        let msg3 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        messages.push(msg3)
+        document.querySelector("#tutorialMsg").innerHTML = "See those sushi pieces on the top left?<br><br>That's your 'ammo'. Fire it at our hungry Maple monsters.<br><br>You do that with the SPACEBAR."
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+    } else if (num === 4) {
+        let msg4 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        if (customers.length < 1) {
+            genCust(200, 200)
+        }
+        messages.push(msg4)
+        document.querySelector("#tutorialMsg").innerHTML = "Hey, there's our first customer.<br><br>This is a great time to practice.<br><br>Try serving him with SPACEBAR, and come back!"
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+    } else if (num === 4.5) {
+        let msg4 = new Message({
+            position: {
+                x: 1140,
+                y: 300
+            },
+            imageSrc: `./img/messages1/textBox.png`,
+            scale: 2
+        })
+        messages.push(msg4)
+        document.querySelector("#tutorialTextbox").innerHTML = "Good job!<br><br>Come back for<br> another tip..."
+        document.querySelector("#tutorialTextbox").style.display = 'flex'
+    }
+        else if (num === 5) {
+        let msg5 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        messages.push(msg5)
+        document.querySelector("#tutorialMsg").innerHTML = `Good job.<br><br>You see that coin you got?<br><br>That's 1 meso. We need ${minimumCoins} mesos to pay todays rent.<br>If you we cant pay rent, we'll close... That's GAME OVER.<br><br>Any extra, you can bring home. But rent keeps going up around here...`
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+    }
+    else if (num === 6) {
+        let msg6 = new Message({
+            position: {
+                x: 260,
+                y: 30
+            },
+            imageSrc: `./img/messages1/messageTemplate.png`,
+            scale: .8
+        })
+        messages.push(msg6)
+        document.querySelector("#tutorialMsg").innerHTML = "Now, get ready...<br><br>We're just about to open for the day--<br><br>Oh, forgot to mention...<br>Careful for bandits roaming Maple Island<br>Looking for some monster kills..."
+        document.querySelector("#tutorialMsg").style.display = 'flex'
+}
+}
+
+
+
+function handleTutorial() {
+    if (LEVEL === "STARTSCREEN"){
+        if(keys.space.pressed){
+            LEVEL = "TUTORIAL_M1"
+        }
+    }
+
+    else if (LEVEL === "TUTORIAL_M1") {
+        if (foodTrucks.length < 1) {
+            genLevel()
+            genTutorial(1)
+        }
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            messages = []
+            // LEVEL = "TUTORIAL_M1.1"
+            // document.querySelector("#tutorialTextbox").style.display = 'none'
+            genTutorial(1.1)
+            player.potentialInteraction = true
+            if(keys.space.pressed){
+                player.interacting = true
+                messages = []
+                LEVEL = "TUTORIAL_M2"
+                document.querySelector("#tutorialTextbox").style.display = 'none'
+            }    
+        } else{
+            player.potentialInteraction = false
+        }
+
+    }
+    else if (LEVEL === "TUTORIAL_M2") {
+        // "welcome diologue"
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            // if space pressed, show dialogue, suppress player movement
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(2)
+                LEVEL = "TUTORIAL_M3"
+            }
+        } else {
+            messages = []
+            document.querySelector("#tutorialMsg").style.display = 'none'
+        }
+    }
+    else if (LEVEL === "TUTORIAL_M3") { 
+        // still in player.interacting = true, player frozen
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            // if space pressed, show dialogue, suppress player movement
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(3)
+                LEVEL = "TUTORIAL_M4"
+            }
+        } 
+    }
+    else if (LEVEL === "TUTORIAL_M4") {
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                genTutorial(4)
+                LEVEL = "TUTORIAL_M4.5"
+            }
+         } 
+    } 
+    else if(LEVEL === "TUTORIAL_M4.5"){
+        // time to hunt tutorial snail
+        if(keys.space.pressed){
+            keys.space.pressed = false
+            messages = []
+            document.querySelector("#tutorialMsg").style.display = 'none'
+            player.interacting = false
+            player.potentialInteraction = false
+        }
+        if (todaysCoins === 1) {
+            LEVEL = "TUTORIAL_M5"
+            genTutorial(4.5)
+        }
+    }
+    else if (LEVEL === "TUTORIAL_M5") {
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            player.potentialInteraction = true
+            if(keys.space.pressed){
+                player.interacting = true
+                keys.space.pressed = false
+                messages = []
+                document.querySelector("#tutorialTextbox").style.display = 'none'
+                genTutorial(5)
+                LEVEL = "TUTORIAL_M6"
+            }
+     } else{
+        player.potentialInteraction = false
+     } 
+    }
+    else if(LEVEL === "TUTORIAL_M6"){
+        if (spriteCollision({ rectangle1: player, rectangle2: foodTrucks[0] })) {
+            if(keys.space.pressed){
+                keys.space.pressed = false
+                messages = []
+                genTutorial(6)
+                LEVEL = "TUTORIAL_M7"
+            }
+        }
+    }
+    else if(LEVEL === "TUTORIAL_M7"){
+        if(keys.space.pressed){
+            keys.space.pressed = false
+            LEVEL = 1
+            genLevel()
+            messages = []
+            document.querySelector("#tutorialMsg").style.display = 'none'
+            player.interacting = false
+            player.potentialInteraction = false
+        }
+    }
+
+}

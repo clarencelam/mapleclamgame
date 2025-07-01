@@ -1,0 +1,210 @@
+<head>
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+          rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="position: relative; display: flex;justify-content: center">
+        MAPLE RESTAURANT -- PRE-RELEASE VERSION (UNDER CONSTRUCTION)
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+                font-size: x-small;
+                padding-top: 20px">
+        a web-based maplestory arcade game, written in vanilla javascript 
+    </div>    
+    <div style="position: relative; display: flex;justify-content: center; 
+                    font-size: x-small;
+                    padding: 20px">
+        <a href = "https://github.com/clarencelam/mapleclamgame">www.github.com/clarencelam/mapleclamgame</a>
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+    font-size: x-small;">
+latest commit: Jul 1, 2025
+</div>
+
+    <div style="position: relative; display: flex;justify-content: center; 
+                font-size: x-small;
+                padding: 20px">
+        Not working as expected? Please give me a minute to load assets and refresh! I'm running on a free server.
+    </div>
+
+    <div style="position: relative; display: flex;justify-content: center">
+
+        <div id="gameWindow"
+             style="position: relative">
+            <canvas>
+            </canvas>
+
+            <div id="nextLevel"
+                 style="position: absolute; color: #525252;
+                    font-family: Arial;
+               top: 37%;
+               left: 330px;
+               bottom: 0;
+               right: 0;
+               display: none">
+            </div>
+
+            <div id="beforeLevel"
+            style="position: absolute; color: #525252;
+               font-family: Arial;
+          top: 10%;
+          left: 420px;
+          bottom: 0;
+          right: 0;
+          display: none">
+       </div>
+
+
+            <div id="levelEnd"
+            style="position: absolute; color: #525252;
+               font-family: Arial;
+               top: 12%;
+        left: 330px;
+          bottom: 0;
+          right: 0;
+          display: none">
+       </div>
+
+        <div id="tutorialMsg"
+        style="position: absolute; color: #525252;
+            font-family: Arial;
+        top: 12%;
+        left: 330px;
+        bottom: 0;
+        right: 0;
+        display: none">
+    </div>
+
+    <div id="tutorialTextbox"
+    style="position: absolute; color: #525252;
+        font-family: Arial;
+    top: 350px;
+    left: 1190px;
+    bottom: 0;
+    right: 0;
+    display: none">
+</div>
+
+
+            <div id="totalCoinCounter"
+            style="      
+           color: white;  
+           position: absolute;
+           left: 80%;
+           top: 5%
+       ">
+           Total Coins: 0
+       </div>
+       <div id="coinCounter"
+       style="      
+  color: white;  
+  position: absolute;
+  left: 80%;
+  top: 10%
+  ">
+      Today's Coins: 0
+  </div>
+  <div id="livesCounter" style="color: white; position: absolute; left: 80%; top: 15%">
+    Lives: 10
+</div>
+<div id="levelCounter" style="color: white; position: absolute; left: 80%; top: 20%">
+    Level: 1
+</div>
+
+
+        </div>
+
+        <div id="timer"
+             style="      
+                color: black;  
+                position: absolute;
+                left: 50%;
+                top: 5%
+                ">
+            0
+        </div>
+
+    <!-- New: Upgrade Shop Menu -->
+    <div id="upgradeShop" style="position: absolute; color: #525252; font-family: Arial; top: 20%; left: 10%; background: rgba(255, 255, 255, 0.8); padding: 20px; border: 2px solid black; display: none; text-align: center;">
+        <h3>Upgrade Shop</h3>
+        <p>Total Coins: <span id="shopCoinCount">0</span></p> <!-- Dynamically updated via JS -->
+        <button id="buyDoubleJump" onclick="purchaseUpgrade('doubleJump')">Buy Double Jump (50 coins)</button><br><br>
+        <button id="buySpeed" onclick="purchaseUpgrade('speed')">Upgrade Speed (30 coins) - Level 1</button><br><br>
+        <p>Press 'U' to close or use the portal to proceed.</p>
+    </div>
+
+        <div id="cookingTotal"
+             style="
+        position: absolute;
+        bottom: 0;
+        width:50%;
+        background: rgb(39, 12, 36);
+        text-align: right">
+            <div id="cookingProgress"
+                 style="
+            position: absolute;
+            width:1%;
+            height: 30px;
+            background: #9c84b5;
+            text-align: left;
+            "><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
+
+            <div id="fullBar"
+                  
+                 style="
+            position: relative;
+            width: 100%;
+            text-align: right"><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
+        </div>
+
+
+    </div>
+    <div style="position: relative; 
+    display: flex;
+    justify-content: center;
+    font-size: x-small;
+    padding: 20px">
+        <button type="button"
+                onclick="restartGame()">RESTART GAME</button>
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+    font-size: large;
+    padding: 20px">
+     🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
+</div>
+
+    <div style="position: relative; display: flex;justify-content: center;
+    font-size: small;">
+        <p>Please visit again! I'm working on these features:
+        <ul>
+            <li>Improved tutorial</li>
+            <li>Clear level increments</li>
+            <li>Standardized framerate (currently dependent on refresh rate)</li>
+            <li>Loading screen to eliminate issues with asset loading</li>
+        </ul>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/levelGen.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/npcGenerator.js"></script>
+    <script src="js/tutorial.js"></script>
+    <script src="index.js"></script>
+</body>
