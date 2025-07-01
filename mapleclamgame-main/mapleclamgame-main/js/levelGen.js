@@ -13,19 +13,8 @@ let levelCounter = 1  //  Track current level number
 
 function genLevel() {
     console.log("Generating Level: " + LEVEL)
-<<<<<<< HEAD
-    if (LEVEL === "TUTORIAL_M1") {
-        genFoodTruck(1100, 532)
-        genPlatform(100, 380)
-        genPlatform(220, 380)
-        genPlatform(600, 520)
-    }
-    else if (LEVEL === 1) {
-        //genFoodTruck(580, 348)
-=======
      if (LEVEL === 1) {
         genFoodTruck(800, 532)
->>>>>>> main
         genPlatform(220, 380)
         genPlatform(100, 380)
         genPlatform(600, 520)
@@ -45,11 +34,7 @@ function generateDynamicLevel() {
     player.position.x = 100
     player.position.y = 100
     
-<<<<<<< HEAD
-    genFoodTruck(1100, 532)
-=======
     genFoodTruck(800, 532)
->>>>>>> main
         
     // Generate platforms with variety but ensure accessibility
     generateAccessiblePlatforms()
@@ -228,8 +213,6 @@ function determineWinLoss() {
     
 }
 
-<<<<<<< HEAD
-=======
 function handleStartScreen(){
     background = new Sprite({
         position:{
@@ -270,7 +253,6 @@ function handleStartScreen(){
         resetToActiveBackground()
         }
 }
->>>>>>> main
 
 
 function endLevel() {

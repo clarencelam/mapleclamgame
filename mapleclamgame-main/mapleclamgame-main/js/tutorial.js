@@ -38,11 +38,7 @@ function genTutorial(num) {
             scale: .8
         })
         messages.push(msg2)
-<<<<<<< HEAD
-        document.querySelector("#tutorialMsg").innerHTML = "First day hey? Let me show you the ropes<br><br>Your job is to serve food to the animals of Maple Island.<br><br>We've got to move around and sell food to pay our rent."
-=======
         document.querySelector("#tutorialMsg").innerHTML = "First day hey? Let me show you the ropes<br><br>Your job is to serve food to the animals of Maple Island."
->>>>>>> main
         document.querySelector("#tutorialMsg").style.display = 'flex'
     } else if (num === 3) {
         let msg3 = new Message({
@@ -54,11 +50,7 @@ function genTutorial(num) {
             scale: .8
         })
         messages.push(msg3)
-<<<<<<< HEAD
-        document.querySelector("#tutorialMsg").innerHTML = "See that food on the top left?<br><br>It's your job to serve it to our hungry Maple monsters.<br><br>You do that with the SPACEBAR."
-=======
         document.querySelector("#tutorialMsg").innerHTML = "See those sushi pieces on the top left?<br><br>That's your 'ammo'. Fire it at our hungry Maple monsters.<br><br>You do that with the SPACEBAR."
->>>>>>> main
         document.querySelector("#tutorialMsg").style.display = 'flex'
     } else if (num === 4) {
         let msg4 = new Message({
@@ -111,54 +103,12 @@ function genTutorial(num) {
             scale: .8
         })
         messages.push(msg6)
-<<<<<<< HEAD
-        document.querySelector("#tutorialMsg").innerHTML = "Now, get ready...<br><br>We're just about to open for the day--<br><br>Oh, forgot to mention...<br><br>Watch for THORNS on the ground.<br>Touching THORNS is GAME OVER<br><br>And be careful for bandits roaming Maple Island<br>Looking for some monster kills..."
-=======
         document.querySelector("#tutorialMsg").innerHTML = "Now, get ready...<br><br>We're just about to open for the day--<br><br>Oh, forgot to mention...<br>Careful for bandits roaming Maple Island<br>Looking for some monster kills..."
->>>>>>> main
         document.querySelector("#tutorialMsg").style.display = 'flex'
 }
 }
 
 
-<<<<<<< HEAD
-function handleStartScreen(){
-    background = new Sprite({
-        position:{
-            x: 150,
-            y: 0
-        },
-        imageSrc: './img/backgrounds/login.jpeg',
-        scale: .8
-    })
-    background.update()
-
-    // put dark overlay over login screen
-    c.globalAlpha = 0.6
-    c.fillStyle = "black"
-    c.fillRect(0,0,canvas.width,canvas.height)
-
-    // "Press SPACEBAR to start game"
-    c.globalAlpha = 1
-    c.font = "40px Arial";
-    c.fillStyle = "white";
-    c.textAlign = "center";
-    c.fillText(
-      "Press SPACEBAR to start game",
-      canvas.width / 2,
-      canvas.height / 2 + 50
-    );
-    
-    if(keys.space.pressed){
-        GAMESTATE = "TUTORIAL"
-        c.globalAlpha = 1
-        LEVEL = "TUTORIAL_M1"
-        resetToActiveBackground()
-        }
-}
-
-=======
->>>>>>> main
 
 function handleTutorial() {
     if (LEVEL === "STARTSCREEN"){

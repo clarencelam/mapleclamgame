@@ -23,11 +23,7 @@ function genPortal(x, y) {
 
             },
             imageSrc: './img/portal/portalsprite.png',
-<<<<<<< HEAD
-            scale: 1
-=======
             scale: 1,
->>>>>>> main
         }
     )
     portals.push(portal)
