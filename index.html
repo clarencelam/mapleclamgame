@@ -1,0 +1,315 @@
+<!-- index.html -->
+<head>
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+          rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="position: relative; display: flex;justify-content: center">
+        MAPLE RESTAURANT -- PRE-RELEASE VERSION (UNDER CONSTRUCTION)
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+                font-size: x-small;
+                padding-top: 20px">
+        a web-based maplestory arcade game, written in vanilla javascript 
+    </div>    
+    <div style="position: relative; display: flex;justify-content: center; 
+                    font-size: x-small;
+                    padding: 20px">
+        <a href = "https://github.com/clarencelam/mapleclamgame">www.github.com/clarencelam/mapleclamgame</a>
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+    font-size: x-small;">
+latest commit: Jul 1, 2025
+</div>
+
+    <div style="position: relative; display: flex;justify-content: center; 
+                font-size: x-small;
+                padding: 20px">
+        Not working as expected? Please give me a minute to load assets and refresh! I'm running on a free server.
+    </div>
+
+    <div style="position: relative; display: flex;justify-content: center">
+
+        <div id="gameWindow"
+             style="position: relative">
+            <canvas>
+            </canvas>
+
+        <!-- NEW: Audio Settings Gear Icon -->
+        <div id="audioGearIcon" 
+             style="position: absolute; 
+                    top: 5px; 
+                    right: 5px; 
+                    width: 30px; 
+                    height: 30px; 
+                    background: rgba(0, 0, 0, 0.7); 
+                    border-radius: 50%; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    color: white; 
+                    font-size: 16px; 
+                    user-select: none;"
+             onclick="toggleAudioSettings()">
+            ⚙️
+        </div>
+
+        <!-- NEW: Audio Settings Panel -->
+        <div id="audioSettingsPanel" 
+             style="position: absolute; 
+                    top: 40px; 
+                    right: 5px; 
+                    width: 250px; 
+                    background: rgba(0, 0, 0, 0.9); 
+                    border: 2px solid white; 
+                    border-radius: 8px; 
+                    padding: 15px; 
+                    color: white; 
+                    font-family: Arial; 
+                    font-size: 12px; 
+                    display: none; 
+                    z-index: 1000;">
+            <h3 style="margin: 0 0 15px 0; text-align: center;">Audio Settings</h3>
+            
+            <!-- Music Volume Slider -->
+            <div style="margin-bottom: 15px;">
+                <label for="musicVolumeSlider">Music Volume:</label>
+                <input type="range" 
+                       id="musicVolumeSlider" 
+                       min="0" 
+                       max="100" 
+                       value="40" 
+                       style="width: 100%; margin-top: 5px;"
+                       oninput="updateMusicVolume(this.value)">
+                <span id="musicVolumeDisplay">40%</span>
+            </div>
+
+            <!-- Music Track Selection -->
+            <div style="margin-bottom: 15px;">
+                <label for="musicTrackSelect">Music Track:</label>
+                <select id="musicTrackSelect" 
+                        style="width: 100%; margin-top: 5px; padding: 3px;"
+                        onchange="changeMusicTrack(this.value)">
+                    <option value="henesys">Henesys</option>
+                    <option value="ellinia">Ellinia</option>
+                    <option value="title">Title</option>
+                </select>
+            </div>
+
+            <!-- Master Mute Button -->
+            <div style="margin-bottom: 10px;">
+                <button id="masterMuteButton" 
+                        onclick="toggleMasterMute()" 
+                        style="width: 100%; 
+                               padding: 8px; 
+                               background: #4CAF50; 
+                               color: white; 
+                               border: none; 
+                               border-radius: 4px; 
+                               cursor: pointer;">
+                    🔊 Audio On
+                </button>
+            </div>
+
+            <!-- Close Button -->
+            <div style="text-align: center;">
+                <button onclick="toggleAudioSettings()" 
+                        style="padding: 5px 15px; 
+                               background: #666; 
+                               color: white; 
+                               border: none; 
+                               border-radius: 4px; 
+                               cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+
+
+            <div id="nextLevel"
+                 style="position: absolute; color: #525252;
+                    font-family: Arial;
+               top: 37%;
+               left: 330px;
+               bottom: 0;
+               right: 0;
+               display: none">
+            </div>
+
+            <div id="beforeLevel"
+            style="position: absolute; color: #525252;
+               font-family: Arial;
+          top: 10%;
+          left: 420px;
+          bottom: 0;
+          right: 0;
+          display: none">
+       </div>
+
+
+            <div id="levelEnd"
+            style="position: absolute; color: #525252;
+               font-family: Arial;
+               top: 12%;
+        left: 330px;
+          bottom: 0;
+          right: 0;
+          display: none">
+       </div>
+
+        <div id="tutorialMsg"
+    style="position: absolute; color: white;
+        font-family: Arial;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        border: 2px solid white;
+        border-radius: 5px;
+        font-size: 12px;
+        max-width: 300px;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        display: none">
+    </div>
+
+    <!-- NEW: Tutorial textbox with better positioning -->
+    <div id="tutorialTextbox"
+    style="position: absolute; color: white;
+        font-family: Arial;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        border: 2px solid white;
+        border-radius: 5px;
+        font-size: 12px;
+        max-width: 300px;
+        top: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        display: none">
+</div>
+
+
+
+            <div id="totalCoinCounter"
+            style="      
+           color: white;  
+           position: absolute;
+           left: 80%;
+           top: 5%
+       ">
+           Total Coins: 0
+       </div>
+       <div id="coinCounter"
+       style="      
+  color: white;  
+  position: absolute;
+  left: 80%;
+  top: 10%
+  ">
+      Today's Coins: 0
+  </div>
+  <div id="livesCounter" style="color: white; position: absolute; left: 80%; top: 15%">
+    Lives: 10
+</div>
+<div id="levelCounter" style="color: white; position: absolute; left: 80%; top: 20%">
+    Level: 1
+</div>
+
+
+        </div>
+
+        <div id="timer"
+             style="      
+                color: black;  
+                position: absolute;
+                left: 50%;
+                top: 5%
+                ">
+            0
+        </div>
+
+    <!-- New: Upgrade Shop Menu -->
+    <div id="upgradeShop" style="position: absolute; color: #525252; font-family: Arial; top: 20%; left: 10%; background: rgba(255, 255, 255, 0.8); padding: 20px; border: 2px solid black; display: none; text-align: center;">
+        <h3>Upgrade Shop</h3>
+        <p>Total Coins: <span id="shopCoinCount">0</span></p> <!-- Dynamically updated via JS -->
+        <button id="buyDoubleJump" onclick="purchaseUpgrade('doubleJump')">Buy Double Jump (50 coins)</button><br><br>
+        <button id="buySpeed" onclick="purchaseUpgrade('speed')">Upgrade Speed (30 coins) - Level 1</button><br><br>
+        <p>Press 'U' to close or use the portal to proceed.</p>
+    </div>
+
+        <div id="cookingTotal"
+             style="
+        position: absolute;
+        bottom: 0;
+        width:50%;
+        background: rgb(39, 12, 36);
+        text-align: right">
+            <div id="cookingProgress"
+                 style="
+            position: absolute;
+            width:1%;
+            height: 30px;
+            background: #9c84b5;
+            text-align: left;
+            "><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
+
+            <div id="fullBar"
+                  
+                 style="
+            position: relative;
+            width: 100%;
+            text-align: right"><img style="text-align: right"
+                     id="foodImage"
+                     src="img/chefHat.png"></div>
+        </div>
+
+
+    </div>
+    <div style="position: relative; 
+    display: flex;
+    justify-content: center;
+    font-size: x-small;
+    padding: 20px">
+        <button type="button"
+                onclick="restartGame()">RESTART GAME</button>
+    </div>
+    <div style="position: relative; display: flex;justify-content: center; 
+    font-size: large;
+    padding: 20px">
+     🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
+</div>
+
+    <div style="position: relative; display: flex;justify-content: center;
+    font-size: small;">
+        <p>Please visit again! I'm working on these features:
+        <ul>
+            <li>Improved tutorial</li>
+            <li>Clear level increments</li>
+            <li>Standardized framerate (currently dependent on refresh rate)</li>
+            <li>Loading screen to eliminate issues with asset loading</li>
+        </ul>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/levelGen.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="index.js"></script>
+</body>
